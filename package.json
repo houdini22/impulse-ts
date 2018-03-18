@@ -1,0 +1,28 @@
+{
+  "name": "deeplearnjs-starter-typescript",
+  "version": "0.0.1",
+  "description": "Starter project for using deeplearn.js with TypeScript",
+  "dependencies": {
+    "deeplearn": "0.3.15"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.100",
+    "lodash": "^4.17.4",
+    "mkdirp": "~0.5.1",
+    "tsify": "~3.0.3",
+    "tslint": "~5.8.0",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "~2.6.1",
+    "uglifyjs": "~2.4.11",
+    "watchify": "~3.9.0"
+  },
+  "scripts": {
+    "prep": "yarn && mkdirp dist",
+    "watch": "watchify main.ts -p [tsify] -v --debug -o dist/bundle.js",
+    "build": "browserify main.ts -p [tsify] -o dist/bundle.js",
+    "lint": "tslint -p . -t verbose",
+    "deploy": "yarn build && uglifyjs dist/bundle.js -c -m -o dist/bundle.min.js",
+    "lint-fix": "tslint --fix -c ./tslint.json 'src/**/*.ts'"
+  },
+  "license": "Apache-2.0"
+}
