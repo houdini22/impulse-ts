@@ -1,56 +1,60 @@
-import { AbstractLayer } from './abstract'
-import { fillRandom, resize } from '../math/matrix'
-import { Dimension, Layers } from '../types'
+import { AbstractLayer } from "./abstract";
+import { fillRandom, resize } from "../math/matrix";
+import { Dimension, Layers } from "../types";
 
 abstract class AbstractLayer1D extends AbstractLayer {
-  protected depth: number = 1
+  protected depth: number = 1;
 
-  configure () {
-    resize(this.W, this.height, this.width)
-    fillRandom(this.W, this.width)
+  configure() {
+    resize(this.W, this.height, this.width);
+    fillRandom(this.W, this.width);
 
-    resize(this.b, this.height, 1)
-    fillRandom(this.b, this.width)
+    resize(this.b, this.height, 1);
+    fillRandom(this.b, this.width);
 
-    resize(this.gW, this.height, this.width)
-    resize(this.gb, this.height, 1)
+    resize(this.gW, this.height, this.width);
+    resize(this.gb, this.height, 1);
   }
 
-  is1D (): boolean {
-    return true
+  is1D(): boolean {
+    return true;
   }
 
-  is3D (): boolean {
-    return false
+  is3D(): boolean {
+    return false;
   }
 
-  transition (previousLayer: Layers) {
+  transition(previousLayer: Layers) {
     if (previousLayer.is1D()) {
-      this.setWidth(previousLayer.getSize())
+      this.setWidth(previousLayer.getSize());
     } else if (previousLayer.is3D()) {
-      this.setWidth(previousLayer.getOutputWidth() * previousLayer.getOutputHeight() * previousLayer.getOutputDepth())
+      this.setWidth(
+        previousLayer.getOutputWidth() *
+          previousLayer.getOutputHeight() *
+          previousLayer.getOutputDepth()
+      );
     }
   }
 
-  setSize (value: Dimension) {
-    this.setHeight(value[0])
+  setSize(value: Dimension) {
+    this.setHeight(value[0]);
   }
 
-  getSize (): number {
-    return this.height
+  getSize(): number {
+    return this.height;
   }
 
-  getOutputWidth () {
-    return this.width
+  getOutputWidth() {
+    return this.width;
   }
 
-  getOutputHeight () {
-    return this.height
+  getOutputHeight() {
+    return this.height;
   }
 
-  getOutputDepth () {
-    return 1
+  getOutputDepth() {
+    return 1;
   }
 }
 
-export { AbstractLayer1D }
+export { AbstractLayer1D };

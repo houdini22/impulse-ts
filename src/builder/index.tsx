@@ -1,4 +1,4 @@
-import Abstract from './abstract'
+import Abstract from "./abstract";
 
-export { Abstract }
-export default { Abstract }
+export { Abstract };
+export default { Abstract };

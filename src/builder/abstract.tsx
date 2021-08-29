@@ -1,43 +1,43 @@
-import { isFunction } from 'lodash'
-import { Dimension, LayerType, Layers } from '../types'
-import { factory as layerFactory } from '../layer/utils'
-import Network from '../network'
+import { isFunction } from "lodash";
+import { Dimension, LayerType, Layers } from "../types";
+import { factory as layerFactory } from "../layer/utils";
+import Network from "../network";
 
 abstract class AbstractBuilder {
-  protected dimensions: Dimension = null
-  protected previousLayer: Layers = null
-  protected network: Network = null
+  protected dimensions: Dimension = null;
+  protected previousLayer: Layers = null;
+  protected network: Network = null;
 
-  constructor (dimension: Dimension) {
-    this.dimensions = dimension
-    this.network = new Network(dimension)
+  constructor(dimension: Dimension) {
+    this.dimensions = dimension;
+    this.network = new Network(dimension);
   }
 
-  createLayer (type: LayerType, callback: Function) {
-    const layer = layerFactory(type)
+  createLayer(type: LayerType, callback: Function) {
+    const layer = layerFactory(type);
 
     if (isFunction(callback)) {
-      callback(layer)
+      callback(layer);
     }
 
     if (this.previousLayer === null) {
-      this.firstLayerTransition(layer)
+      this.firstLayerTransition(layer);
     } else {
-      layer.transition(this.previousLayer)
+      layer.transition(this.previousLayer);
     }
 
-    layer.configure()
+    layer.configure();
 
-    this.network.addLayer(layer)
-    this.previousLayer = layer
+    this.network.addLayer(layer);
+    this.previousLayer = layer;
   }
 
-  getNetwork (): Network {
-    return this.network
+  getNetwork(): Network {
+    return this.network;
   }
 
-  abstract firstLayerTransition (layer: Layers)
+  abstract firstLayerTransition(layer: Layers);
 }
 
-export { AbstractBuilder }
-export default AbstractBuilder
+export { AbstractBuilder };
+export default AbstractBuilder;
