@@ -1,8 +1,6 @@
 import {
-  add,
   colwise,
   elementWiseDivide,
-  elementWiseMultiply,
   forEach,
   Matrix,
   replicateRows,
