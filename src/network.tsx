@@ -1,5 +1,4 @@
 import { Dimension, Layers } from './types'
-import { AbstractLayer } from './layer'
 import { cols, Matrix, subtract } from './math/matrix'
 
 class Network {

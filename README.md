@@ -3,7 +3,7 @@
 This is a starter project demonstrating how to use
 [deeplearn.js](https://deeplearn.js) in a TypeScript environment.
 
-Before we start, see [`main.ts`](./main.ts) for the example code. It sums a 1D
+Before we start, see [`main.ts`](main.tsx) for the example code. It sums a 1D
 array with a scalar (taking advantage of broadcasting) and outputs the result
 in the console. Feel free to also check [`package.json`](./package.json) for the
 scripts we will be using.
