@@ -12,7 +12,7 @@ abstract class AbstractBuilder {
   }
 
   createLayer(type: Layers, callback: Function) {
-    const layer = new type()
+    const layer = new type();
 
     if (typeof callback === "function") {
       callback(layer);

@@ -12,7 +12,7 @@ module.exports = {
   resolve: {
     extensions: [".tsx"],
     alias: {
-      "impulseTsToolkit": path.resolve(__dirname, '../build/Release/impulseTsToolkit.node')
+      "impulseTsToolkit": path.resolve(__dirname, '../build/Debug/impulseTsToolkit.node')
     }
   },
   module: {

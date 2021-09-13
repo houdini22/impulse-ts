@@ -1,0 +1,1 @@
+cmd_Debug/impulseTsToolkit.node := ln -f "Debug/obj.target/impulseTsToolkit.node" "Debug/impulseTsToolkit.node" 2>/dev/null || (rm -rf "Debug/impulseTsToolkit.node" && cp -af "Debug/obj.target/impulseTsToolkit.node" "Debug/impulseTsToolkit.node")

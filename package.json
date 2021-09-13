@@ -21,7 +21,7 @@
     "build-prod": "webpack --config ./configs/prod.js",
     "build-example": "webpack --config ./configs/example.js",
     "prettier-write": "prettier --write \"src/**/*.tsx\"",
-    "preinstall": "node-gyp clean || true; node-gyp configure build",
+    "preinstall": "node-gyp clean || true; node-gyp --debug configure build",
     "install": "node-gyp rebuild"
   },
   "license": "Copyright Michał Baniowski",

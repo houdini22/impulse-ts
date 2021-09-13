@@ -583,6 +583,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "elementWiseDivide": () => (/* binding */ elementWiseDivide),
 /* harmony export */   "replicateRows": () => (/* binding */ replicateRows)
 /* harmony export */ });
+/* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! impulseTsToolkit */ "./build/Debug/impulseTsToolkit.node");
+/* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -591,8 +593,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var _require = __webpack_require__(/*! impulseTsToolkit */ "./build/Release/impulseTsToolkit.node"),
-    MatrixMultiplication = _require.MatrixMultiplication;
 
 var Matrix = /*#__PURE__*/function () {
   function Matrix() {
@@ -637,7 +637,7 @@ var multiply = function multiply(m1, m2) {
   }
 
   var result = new Matrix(m1.rows, m2.cols);
-  result.data = MatrixMultiplication(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixMultiply)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
 var add = function add(m1, m2) {
@@ -650,14 +650,7 @@ var add = function add(m1, m2) {
   }
 
   var result = new Matrix(m1.rows, m2.cols);
-
-  for (var row = 0; row < m1.rows; row++) {
-    for (var col = 0; col < m1.cols; col++) {
-      var index = row * m1.cols + col;
-      result.data[index] = m1.data[index] + m2.data[index];
-    }
-  }
-
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseAdd)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
 var subtract = function subtract(m1, m2) {
@@ -670,14 +663,7 @@ var subtract = function subtract(m1, m2) {
   }
 
   var result = new Matrix(m1.rows, m2.cols);
-
-  for (var row = 0; row < m1.rows; row++) {
-    for (var col = 0; col < m1.cols; col++) {
-      var index = row * m1.cols + col;
-      result.data[index] = m1.data[index] - m2.data[index];
-    }
-  }
-
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseSubtract)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
 var resize = function resize(m1, rows, cols) {
@@ -701,14 +687,7 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   }
 
   var result = new Matrix(m1.rows, m1.cols);
-
-  for (var row = 0; row < m1.rows; row++) {
-    for (var col = 0; col < m1.cols; col++) {
-      var index = row * m1.cols + col;
-      result.data[index] = m1.data[index] * m2.data[index];
-    }
-  }
-
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseMultiply)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
 var sum = function sum(m) {
@@ -746,14 +725,7 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
   }
 
   var result = new Matrix(m1.rows, m1.cols);
-
-  for (var row = 0; row < m1.rows; row++) {
-    for (var col = 0; col < m1.cols; col++) {
-      var index = row * m1.cols + col;
-      result.data[index] = m1.data[index] / m2.data[index];
-    }
-  }
-
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseDivide)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
 var replicateRows = function replicateRows(m, numRows) {
@@ -860,16 +832,16 @@ var LayerType;
 
 /***/ }),
 
-/***/ "./build/Release/impulseTsToolkit.node":
-/*!*********************************************!*\
-  !*** ./build/Release/impulseTsToolkit.node ***!
-  \*********************************************/
+/***/ "./build/Debug/impulseTsToolkit.node":
+/*!*******************************************!*\
+  !*** ./build/Debug/impulseTsToolkit.node ***!
+  \*******************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "36547055965504e1d6167934381171c7.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "73d7aeeb6bdf583b875e0021222e9df1.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }
@@ -918,6 +890,18 @@ module.exports = require("path");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -973,11 +957,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Builder1D": () => (/* reexport safe */ _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__.Builder1D),
 /* harmony export */   "Matrix": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix),
 /* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
-/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer)
+/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer),
+/* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply)
 /* harmony export */ });
 /* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
+
 
 
 
