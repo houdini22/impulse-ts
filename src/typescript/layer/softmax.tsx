@@ -1,25 +1,10 @@
-import {
-  colwise,
-  elementWiseDivide,
-  forEach,
-  Matrix,
-  replicateRows,
-  subtract,
-  sum,
-} from "../math/matrix";
+import { Matrix, softmaxActivation, softmaxLoss } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
 
 class SoftmaxLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    const t = m.forEach((x) => Math.exp(x));
-    const divider = replicateRows(
-      colwise(t, (colVector) => {
-        return sum(colVector);
-      }),
-      t.rows
-    );
-    return elementWiseDivide(t, divider);
+    return softmaxActivation(m);
   }
 
   derivative(): Matrix {
@@ -31,11 +16,7 @@ class SoftmaxLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    const loss = subtract(
-      output,
-      forEach(predictions, (x) => Math.log(x))
-    );
-    return sum(loss);
+    return softmaxLoss(output, predictions);
   }
 
   error(m: number): number {

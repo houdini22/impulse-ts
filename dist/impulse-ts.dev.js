@@ -424,16 +424,12 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(LogisticLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(m, function (x) {
-        return 1.0 / (1.0 + Math.exp(-x));
-      });
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.logisticActivation)(m);
     }
   }, {
     key: "derivative",
     value: function derivative() {
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseMultiply)(this.A, (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(this.A, function (x) {
-        return 1.0 - x;
-      }));
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.logisticDerivative)(this.A);
     }
   }, {
     key: "getType",
@@ -443,14 +439,7 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "loss",
     value: function loss(output, predictions) {
-      var loss = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.add)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseMultiply)(output, (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(predictions, function (x) {
-        return Math.log(x);
-      })), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseMultiply)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(output, function (x) {
-        return 1.0 - x;
-      }), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(predictions, function (x) {
-        return Math.log(1.0 - x);
-      })));
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.sum)(loss);
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.logisticLoss)(output, predictions);
     }
   }, {
     key: "error",
@@ -520,13 +509,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(SoftmaxLayer, [{
     key: "activation",
     value: function activation(m) {
-      var t = m.forEach(function (x) {
-        return Math.exp(x);
-      });
-      var divider = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.replicateRows)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.colwise)(t, function (colVector) {
-        return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.sum)(colVector);
-      }), t.rows);
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseDivide)(t, divider);
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.softmaxActivation)(m);
     }
   }, {
     key: "derivative",
@@ -541,10 +524,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "loss",
     value: function loss(output, predictions) {
-      var loss = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.subtract)(output, (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.forEach)(predictions, function (x) {
-        return Math.log(x);
-      }));
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.sum)(loss);
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.softmaxLoss)(output, predictions);
     }
   }, {
     key: "error",
@@ -575,13 +555,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "subtract": () => (/* binding */ subtract),
 /* harmony export */   "resize": () => (/* binding */ resize),
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
-/* harmony export */   "forEach": () => (/* binding */ forEach),
 /* harmony export */   "elementWiseMultiply": () => (/* binding */ elementWiseMultiply),
 /* harmony export */   "sum": () => (/* binding */ sum),
 /* harmony export */   "cols": () => (/* binding */ cols),
-/* harmony export */   "colwise": () => (/* binding */ colwise),
 /* harmony export */   "elementWiseDivide": () => (/* binding */ elementWiseDivide),
-/* harmony export */   "replicateRows": () => (/* binding */ replicateRows)
+/* harmony export */   "softmaxActivation": () => (/* binding */ softmaxActivation),
+/* harmony export */   "softmaxLoss": () => (/* binding */ softmaxLoss),
+/* harmony export */   "logisticActivation": () => (/* binding */ logisticActivation),
+/* harmony export */   "logisticDerivative": () => (/* binding */ logisticDerivative),
+/* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss)
 /* harmony export */ });
 /* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! impulseTsToolkit */ "./build/Debug/impulseTsToolkit.node");
 /* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__);
@@ -616,16 +598,6 @@ var Matrix = /*#__PURE__*/function () {
       this.rows = rows;
       this.cols = cols;
       this.data = new Array(rows * cols);
-    }
-  }, {
-    key: "forEach",
-    value: function forEach(callback) {
-      for (var i = 0; i < this.rows * this.cols; i++) {
-        var newValue = callback(this.data[i]);
-        this.data[i] = newValue !== undefined ? newValue : this.data[i];
-      }
-
-      return this;
     }
   }]);
 
@@ -672,9 +644,6 @@ var resize = function resize(m1, rows, cols) {
 var fillRandom = function fillRandom(m1, i) {
   return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.data, m1.rows, m1.cols, i);
 };
-var forEach = function forEach(m1, callback) {
-  return m1.forEach(callback);
-};
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
@@ -694,21 +663,6 @@ var sum = function sum(m) {
 var cols = function cols(m) {
   return m.cols;
 };
-var colwise = function colwise(m, callback) {
-  var result = new Matrix(1, m.cols);
-
-  for (var col = 0; col < m.cols; col++) {
-    var rowMatrix = new Matrix(m.rows, 1);
-
-    for (var row = 0; row < m.rows; row++) {
-      rowMatrix.data[row] = m.data[row * m.cols + col];
-    }
-
-    result.data[col] = callback(rowMatrix);
-  }
-
-  return result;
-};
 var elementWiseDivide = function elementWiseDivide(m1, m2) {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
@@ -722,17 +676,30 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
   result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseDivide)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
-var replicateRows = function replicateRows(m, numRows) {
-  var result = new Matrix(numRows, m.cols);
-
-  for (var row = 0; row < result.rows; row++) {
-    for (var col = 0; col < result.cols; col++) {
-      var index = row * result.cols + col;
-      result.data[index] = m.data[col];
-    }
-  }
-
+var softmaxActivation = function softmaxActivation(m) {
+  var result = new Matrix(m.rows, m.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.SoftmaxActivation)(m.data, m.rows, m.cols);
   return result;
+};
+var softmaxLoss = function softmaxLoss(m1, m2) {
+  var result = new Matrix(m1.rows, m1.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.SoftmaxLoss)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(result, result.rows, result.cols);
+};
+var logisticActivation = function logisticActivation(m) {
+  var result = new Matrix(m.rows, m.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.LogisticActivation)(m.data, m.rows, m.cols);
+  return result;
+};
+var logisticDerivative = function logisticDerivative(m) {
+  var result = new Matrix(m.rows, m.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.LogisticDerivative)(m, m.rows, m.cols);
+  return result;
+};
+var logisticLoss = function logisticLoss(m1, m2) {
+  var result = new Matrix(m1.rows, m1.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.LogisticLoss)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(result, result.rows, result.cols);
 };
 
 /***/ }),
@@ -835,7 +802,7 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "930b6ec700b021a0f3b792de5ba180d5.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "abd0c8e0f9427ff2a50439a723a10afc.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }
