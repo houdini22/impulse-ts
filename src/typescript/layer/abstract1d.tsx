@@ -1,19 +1,22 @@
 import { AbstractLayer } from "./abstract";
-import { fillRandom, resize } from "../math/matrix";
+import { fillRandom, setZeros } from "../math/matrix";
 import { Dimension, Layers } from "../types";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth: number = 1;
 
   configure() {
-    resize(this.W, this.height, this.width);
+    this.W.resize(this.height, this.width);
     this.W = fillRandom(this.W, this.width);
 
-    resize(this.b, this.height, 1);
+    this.b.resize(this.height, 1);
     this.b = fillRandom(this.b, this.width);
 
-    resize(this.gW, this.height, this.width);
-    resize(this.gb, this.height, 1);
+    this.gW.resize(this.height, this.width);
+    this.gW = setZeros(this.gW);
+
+    this.gb.resize(this.height, 1);
+    this.gb = setZeros(this.gb);
   }
 
   is1D(): boolean {

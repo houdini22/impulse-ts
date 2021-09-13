@@ -1,1 +1,1 @@
-cmd_Debug/obj.target/impulseTsToolkit.node := g++ -o Debug/obj.target/impulseTsToolkit.node -shared -pthread -rdynamic -m64 -L/usr/local/lib  -Wl,-soname=impulseTsToolkit.node -Wl,--start-group Debug/obj.target/impulseTsToolkit/src/cpp/bindings.o -Wl,--end-group -lcuda -lcudart
+cmd_Debug/obj.target/impulseTsToolkit.node := g++ -o Debug/obj.target/impulseTsToolkit.node -shared -pthread -rdynamic -m64 -L/usr/local/lib  -Wl,-soname=impulseTsToolkit.node -Wl,--start-group Debug/obj.target/impulseTsToolkit/src/cpp/bindings.o -Wl,--end-group 

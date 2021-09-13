@@ -15,6 +15,9 @@ module.exports = {
       impulseTsToolkit: path.resolve(__dirname, '../build/Debug/impulseTsToolkit.node')
     }
   },
+  externals: {
+    'gpu.js': 'gpu.js'
+  },
   module: {
     rules: [
       {

@@ -27,7 +27,7 @@
   },
   "license": "Copyright Michał Baniowski",
   "dependencies": {
-    "gpu.js": "^2.11.4",
+    "gpu.js": "^2.10.6",
     "lodash": "^4.17.21",
     "node-gyp": "^8.2.0"
   },

@@ -14,8 +14,6 @@ const m2 = new Matrix(2, 2, [0.2, 0.2, 0.2, 0.2]);
 const m3 = new Matrix(2, 2);
 
 console.log(m1, m2);
-console.log(m1.toBuffer());
-console.log(m2.toBuffer());
 console.log(matrixMultiply(m1, m2));
 console.log(matrixSum(m1));
 console.log(matrixFillRandom(m3, 20));

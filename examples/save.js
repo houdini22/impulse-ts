@@ -2,7 +2,7 @@ const {
   Builder1D,
   SoftmaxLayer,
   LogisticLayer,
-} = require("../dist/impulse-ts");
+} = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
 
@@ -22,7 +22,7 @@ builder.createLayer(SoftmaxLayer, (layer) => {
 
 const network = builder.getNetwork();
 network.save(path.resolve(__dirname, "save.json")).then((content) => {
-  console.log(content);
+
 });
 
 const timeEnd = new Date().getTime();

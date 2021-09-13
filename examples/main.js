@@ -17,11 +17,10 @@ builder.createLayer(SoftmaxLayer, (layer) => {
 });
 
 const network = builder.getNetwork();
-const input = new Matrix(400, 1);
-input.data = new Float64Array("1"
+const input = new Matrix(400, 1, new Float64Array("1"
     .repeat(400)
     .split("")
-    .map((n) => Number(n)));
+    .map((n) => Number(n))));
 const result = network.forward(input);
 console.log(result);
 
