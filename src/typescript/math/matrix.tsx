@@ -95,9 +95,9 @@ export const resize = (m1: Matrix, rows: number, cols: number): void => {
   m1.resize(rows, cols);
 };
 
-export const fillRandom = (m1: Matrix, i: number): Matrix => {
+export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   const result = new Matrix(m1.rows, m1.cols);
-  result.data = MatrixFillRandom(m1.data, m1.rows, m1.cols, i);
+  result.data = MatrixFillRandom(result.data, result.rows, result.cols, parameter);
   return result;
 };
 
