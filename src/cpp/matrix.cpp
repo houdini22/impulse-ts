@@ -3,6 +3,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
+#include <cmath>
 
 double *matrixMultiply(double *m1, int m1Rows, int m1Cols, double *m2, int m2Rows, int m2Cols) {
     Eigen::Map <Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> _m1(m1, m1Rows, m1Cols);
@@ -51,8 +52,9 @@ double matrixSum(double *m1, int m1Rows, int m1Cols) {
 }
 
 double *matrixFillRandom(double *m1, int m1Rows, int m1Cols, double parameter) {
-    Eigen::Map <Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> _m1(m1, m1Rows, m1Cols);
-    Eigen::MatrixXd result = _m1;
+    Eigen::MatrixXd result;
+    result.resize(m1Rows, m1Cols);
+
     result.setRandom();
     result = result.unaryExpr([parameter](const double x) {
         return x * sqrt(2.0 / parameter);

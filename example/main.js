@@ -1,6 +1,10 @@
-const { Builder1D, Matrix, SoftmaxLayer, matrixMultiply, matrixSum } = require('../dist/impulse-ts.dev')
+const {
+  Builder1D,
+  Matrix,
+  SoftmaxLayer,
+} = require("../dist/impulse-ts.dev");
 
-/*const timeStart = new Date().getTime();
+const timeStart = new Date().getTime();
 
 const builder = new Builder1D([400]);
 
@@ -21,17 +25,13 @@ builder.createLayer(SoftmaxLayer, (layer) => {
 });
 
 const network = builder.getNetwork();
-const input = new Matrix(400, 1).forEach(() => 1);
+const input = new Matrix(400, 1);
+input.data = "1"
+  .repeat(400)
+  .split("")
+  .map((n) => Number(n));
 const result = network.forward(input);
 console.log(result);
 
 const timeEnd = new Date().getTime();
-console.log(`${timeEnd - timeStart} ms`);*/
-
-const m1 = new Matrix(2, 2);
-const m2 = new Matrix(2, 2);
-m1.data = [0.1, 0.1, 0.1, 0.1];
-m2.data = [0.2, 0.2, 0.2, 0.2];
-
-console.log(matrixMultiply(m1, m2));
-console.log(matrixSum(m1));
+console.log(`${timeEnd - timeStart} ms`);

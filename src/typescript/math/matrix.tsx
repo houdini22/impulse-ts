@@ -49,7 +49,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   return result;
 };
 
-export const add = (m1: Matrix, m2: Matrix): Matrix => {
+export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -70,7 +70,7 @@ export const add = (m1: Matrix, m2: Matrix): Matrix => {
   return result;
 };
 
-export const subtract = (m1: Matrix, m2: Matrix): Matrix => {
+export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -96,7 +96,9 @@ export const resize = (m1: Matrix, rows: number, cols: number): void => {
 };
 
 export const fillRandom = (m1: Matrix, i: number): Matrix => {
-  return MatrixFillRandom(m1.data, m1.rows, m1.cols, i);
+  const result = new Matrix(m1.rows, m1.cols);
+  result.data = MatrixFillRandom(m1.data, m1.rows, m1.cols, i);
+  return result;
 };
 
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {

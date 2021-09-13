@@ -1,5 +1,5 @@
 import { Dimension, Layers } from "./types";
-import { cols, Matrix, subtract } from "./math/matrix";
+import { cols, Matrix, elementWiseSubtract } from "./math/matrix";
 
 class Network {
   private dimensions: Dimension = null;
@@ -28,7 +28,7 @@ class Network {
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number) {
     const m = cols(X);
 
-    let delta = subtract(predictions, Y);
+    let delta = elementWiseSubtract(predictions, Y);
 
     this.layers.reverse().forEach((layer) => {
       // delta = layer.backpropagation.propagate(X, m, regularization, delta)

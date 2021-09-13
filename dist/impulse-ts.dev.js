@@ -180,7 +180,7 @@ var AbstractLayer = /*#__PURE__*/function () {
   _createClass(AbstractLayer, [{
     key: "forward",
     value: function forward(input) {
-      this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.add)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, input), this.b);
+      this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, input), this.b);
       this.A = this.activation(this.Z);
       return this.A;
     }
@@ -551,8 +551,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Matrix": () => (/* binding */ Matrix),
 /* harmony export */   "multiply": () => (/* binding */ multiply),
-/* harmony export */   "add": () => (/* binding */ add),
-/* harmony export */   "subtract": () => (/* binding */ subtract),
+/* harmony export */   "elementWiseAdd": () => (/* binding */ elementWiseAdd),
+/* harmony export */   "elementWiseSubtract": () => (/* binding */ elementWiseSubtract),
 /* harmony export */   "resize": () => (/* binding */ resize),
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
 /* harmony export */   "elementWiseMultiply": () => (/* binding */ elementWiseMultiply),
@@ -613,7 +613,7 @@ var multiply = function multiply(m1, m2) {
   result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixMultiply)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
-var add = function add(m1, m2) {
+var elementWiseAdd = function elementWiseAdd(m1, m2) {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -626,7 +626,7 @@ var add = function add(m1, m2) {
   result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseAdd)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
   return result;
 };
-var subtract = function subtract(m1, m2) {
+var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -643,7 +643,9 @@ var resize = function resize(m1, rows, cols) {
   m1.resize(rows, cols);
 };
 var fillRandom = function fillRandom(m1, i) {
-  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.data, m1.rows, m1.cols, i);
+  var result = new Matrix(m1.rows, m1.cols);
+  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.data, m1.rows, m1.cols, i);
+  return result;
 };
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -760,7 +762,7 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.cols)(X);
-      var delta = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.subtract)(predictions, Y);
+      var delta = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseSubtract)(predictions, Y);
       this.layers.reverse().forEach(function (layer) {// delta = layer.backpropagation.propagate(X, m, regularization, delta)
       });
     }
@@ -803,7 +805,7 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "44b2775f2c6905dc3a17759a757c2d43.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "4a5deb4aab95126b646d75e8ae2b6583.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }
@@ -921,7 +923,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
 /* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer),
 /* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply),
-/* harmony export */   "matrixSum": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.sum)
+/* harmony export */   "matrixSum": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.sum),
+/* harmony export */   "matrixFillRandom": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.fillRandom),
+/* harmony export */   "matrixElementWiseMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseMultiply),
+/* harmony export */   "matrixElementWiseDivide": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseDivide),
+/* harmony export */   "matrixElementWiseAdd": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseAdd),
+/* harmony export */   "matrixElementWiseSubtract": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseSubtract)
 /* harmony export */ });
 /* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");

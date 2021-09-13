@@ -54,8 +54,8 @@ void MatrixElementWiseAdd(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -78,8 +78,8 @@ void MatrixElementWiseSubtract(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -102,8 +102,8 @@ void MatrixElementWiseMultiply(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -126,8 +126,8 @@ void MatrixElementWiseDivide(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -161,7 +161,7 @@ void MatrixFillRandom(const FunctionCallbackInfo <Value> &args) {
     int m1Cols = Local<Number>::Cast(args[2])->Value();
     double parameter = Local<Number>::Cast(args[3])->Value();
 
-    double *m1Data;
+    double *m1Data = new double[m1Rows * m1Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
 
     double *result = matrixFillRandom(m1Data, m1Rows, m1Cols, parameter);
@@ -179,7 +179,7 @@ void SoftmaxActivation(const FunctionCallbackInfo <Value> &args) {
     int m1Rows = Local<Number>::Cast(args[1])->Value();
     int m1Cols = Local<Number>::Cast(args[2])->Value();
 
-    double *m1Data;
+    double *m1Data = new double[m1Rows * m1Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
 
     double *result = softmaxActivation(m1Data, m1Rows, m1Cols);
@@ -201,8 +201,8 @@ void SoftmaxLoss(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -217,7 +217,7 @@ void LogisticActivation(const FunctionCallbackInfo <Value> &args) {
     int m1Rows = Local<Number>::Cast(args[1])->Value();
     int m1Cols = Local<Number>::Cast(args[2])->Value();
 
-    double *m1Data;
+    double *m1Data = new double[m1Rows * m1Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
 
     double *result = logisticActivation(m1Data, m1Rows, m1Cols);
@@ -235,7 +235,7 @@ void LogisticDerivative(const FunctionCallbackInfo <Value> &args) {
     int m1Rows = Local<Number>::Cast(args[1])->Value();
     int m1Cols = Local<Number>::Cast(args[2])->Value();
 
-    double *m1Data;
+    double *m1Data = new double[m1Rows * m1Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
 
     double *result = logisticDerivative(m1Data, m1Rows, m1Cols);
@@ -257,8 +257,8 @@ void LogisticLoss(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 

@@ -1,4 +1,4 @@
-import { add, Matrix, multiply } from "../math/matrix";
+import { elementWiseAdd, Matrix, multiply } from "../math/matrix";
 import { Dimension, Layers } from "../types";
 
 abstract class AbstractLayer {
@@ -24,7 +24,7 @@ abstract class AbstractLayer {
   }
 
   forward(input: Matrix): Matrix {
-    this.Z = add(multiply(this.W, input), this.b);
+    this.Z = elementWiseAdd(multiply(this.W, input), this.b);
     this.A = this.activation(this.Z);
     return this.A;
   }
