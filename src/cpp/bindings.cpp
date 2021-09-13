@@ -29,8 +29,8 @@ void MatrixMultiply(const FunctionCallbackInfo <Value> &args) {
     int m2Rows = Local<Number>::Cast(args[4])->Value();
     int m2Cols = Local<Number>::Cast(args[5])->Value();
 
-    double *m1Data;
-    double *m2Data;
+    double *m1Data = new double[m1Rows * m1Cols];
+    double *m2Data = new double[m2Rows * m2Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
     m2->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m2Data);
 
@@ -191,7 +191,6 @@ void SoftmaxActivation(const FunctionCallbackInfo <Value> &args) {
     args.GetReturnValue().Set(resultData);
 }
 
-
 void SoftmaxLoss(const FunctionCallbackInfo <Value> &args) {
     Local <Array> m1 = Local<Array>::Cast(args[0]);
     int m1Rows = Local<Number>::Cast(args[1])->Value();
@@ -229,7 +228,6 @@ void LogisticActivation(const FunctionCallbackInfo <Value> &args) {
 
     args.GetReturnValue().Set(resultData);
 }
-
 
 void LogisticDerivative(const FunctionCallbackInfo <Value> &args) {
     Local <Array> m1 = Local<Array>::Cast(args[0]);

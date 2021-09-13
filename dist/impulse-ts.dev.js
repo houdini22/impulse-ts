@@ -598,6 +598,7 @@ var Matrix = /*#__PURE__*/function () {
       this.rows = rows;
       this.cols = cols;
       this.data = new Array(rows * cols);
+      return this;
     }
   }]);
 
@@ -802,7 +803,7 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "abd0c8e0f9427ff2a50439a723a10afc.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "3cbe64475c8673abb56699f556ba8da0.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }

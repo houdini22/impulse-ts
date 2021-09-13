@@ -9,6 +9,6 @@
 using namespace v8;
 using namespace node;
 
-void init(Local<Object>);
+void init(Local < Object > );
 
 #endif

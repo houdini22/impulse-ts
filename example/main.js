@@ -30,7 +30,7 @@ console.log(`${timeEnd - timeStart} ms`);*/
 
 const m1 = new Matrix(2, 2);
 const m2 = new Matrix(2, 2);
-m1.forEach(() => 3);
-m2.forEach(() => 2);
+m1.data = [2, 2, 2, 2];
+m2.data = [3, 3, 3, 3];
 
-console.log(matrixMultiply(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols));
+console.log(matrixMultiply(m1, m2));
