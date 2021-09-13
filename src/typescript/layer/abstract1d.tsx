@@ -7,10 +7,10 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
   configure() {
     resize(this.W, this.height, this.width);
-    fillRandom(this.W, this.width);
+    this.W = fillRandom(this.W, this.width);
 
     resize(this.b, this.height, 1);
-    fillRandom(this.b, this.width);
+    this.b = fillRandom(this.b, this.width);
 
     resize(this.gW, this.height, this.width);
     resize(this.gb, this.height, 1);

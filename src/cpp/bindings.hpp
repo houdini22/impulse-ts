@@ -3,6 +3,7 @@
 
 #include <v8.h>
 #include <node/node.h>
+#include <node/node_buffer.h>
 #include <cuda.h>
 #include <cuda_runtime.h>
 

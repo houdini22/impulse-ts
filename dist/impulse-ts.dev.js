@@ -580,6 +580,7 @@ var Matrix = /*#__PURE__*/function () {
   function Matrix() {
     var rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var cols = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Array(rows * cols);
 
     _classCallCheck(this, Matrix);
 
@@ -590,6 +591,7 @@ var Matrix = /*#__PURE__*/function () {
     _defineProperty(this, "data", null);
 
     this.resize(rows, cols);
+    this.generateData(data);
   }
 
   _createClass(Matrix, [{
@@ -597,8 +599,24 @@ var Matrix = /*#__PURE__*/function () {
     value: function resize(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.data = new Array(rows * cols);
       return this;
+    }
+  }, {
+    key: "generateData",
+    value: function generateData() {
+      var arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Array();
+      this.data = Float64Array.from(arr);
+      return this;
+    }
+  }, {
+    key: "toBuffer",
+    value: function toBuffer() {
+      var result = new ArrayBuffer(this.rows * this.cols * 64);
+      var view = new DataView(result, 0, this.rows * this.cols * 64);
+      this.data.forEach(function (num, i) {
+        view.setFloat64(i, num);
+      });
+      return result;
     }
   }]);
 
@@ -609,9 +627,7 @@ var multiply = function multiply(m1, m2) {
     throw new Error("DIMENSIONS error.");
   }
 
-  var result = new Matrix(m1.rows, m2.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixMultiply)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
-  return result;
+  return new Matrix(m1.rows, m2.cols, Array.from((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixMultiply)(m1.toBuffer(), m1.rows, m1.cols, m2.toBuffer(), m2.rows, m2.cols)));
 };
 var elementWiseAdd = function elementWiseAdd(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -622,8 +638,7 @@ var elementWiseAdd = function elementWiseAdd(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var result = new Matrix(m1.rows, m2.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseAdd)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  var result = new Matrix(m1.rows, m2.cols, Array.from((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseAdd)(m1.toBuffer(), m1.rows, m1.cols, m2.toBuffer(), m2.rows, m2.cols)));
   return result;
 };
 var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
@@ -635,16 +650,15 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var result = new Matrix(m1.rows, m2.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseSubtract)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  var data = new Uint8Array((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseSubtract)(m1.toBuffer(), m1.rows, m1.cols, m2.toBuffer(), m2.rows, m2.cols), 0, m1.rows * m1.cols);
+  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
 var resize = function resize(m1, rows, cols) {
   m1.resize(rows, cols);
 };
-var fillRandom = function fillRandom(m1, i) {
-  var result = new Matrix(m1.rows, m1.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.data, m1.rows, m1.cols, i);
+var fillRandom = function fillRandom(m1, parameter) {
+  var result = new Matrix(m1.rows, m1.cols, Array.from((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.rows, m1.cols, parameter)));
   return result;
 };
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
@@ -656,12 +670,12 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var result = new Matrix(m1.rows, m1.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseMultiply)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  var data = new Uint8Array((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseMultiply)(m1.toBuffer(), m1.rows, m1.cols, m2.toBuffer(), m2.rows, m2.cols), 0, m1.rows * m1.cols);
+  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
 var sum = function sum(m) {
-  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(m.data, m.rows, m.cols);
+  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(m.toBuffer(), m.rows, m.cols);
 };
 var cols = function cols(m) {
   return m.cols;
@@ -675,8 +689,8 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var result = new Matrix(m1.rows, m1.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseDivide)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
+  var data = new Uint8Array((0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixElementWiseDivide)(m1.toBuffer(), m1.rows, m1.cols, m2.toBuffer(), m2.rows, m2.cols), 0, m1.rows * m1.cols);
+  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
 var softmaxActivation = function softmaxActivation(m) {
@@ -720,6 +734,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -727,6 +743,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -766,6 +783,35 @@ var Network = /*#__PURE__*/function () {
       this.layers.reverse().forEach(function (layer) {// delta = layer.backpropagation.propagate(X, m, regularization, delta)
       });
     }
+  }, {
+    key: "save",
+    value: function save(path) {
+      var resultJSON = {
+        dimensions: this.dimensions,
+        layers: []
+      };
+      this.layers.forEach(function (layer) {
+        resultJSON.layers.push({
+          type: layer.getType(),
+          dimensions: [layer.getOutputHeight(), layer.getOutputWidth(), layer.getOutputDepth()],
+          weights: {
+            W: layer.W.data,
+            b: layer.b.data
+          }
+        });
+      });
+      var result = JSON.stringify(resultJSON);
+      return new Promise(function (resolve, reject) {
+        fs__WEBPACK_IMPORTED_MODULE_1__.writeFile(path, result, function (err) {
+          if (err) {
+            console.error(err);
+            reject();
+          }
+
+          resolve(result);
+        });
+      });
+    }
   }]);
 
   return Network;
@@ -790,8 +836,8 @@ __webpack_require__.r(__webpack_exports__);
 var LayerType;
 
 (function (LayerType) {
-  LayerType[LayerType["logistic"] = 0] = "logistic";
-  LayerType[LayerType["softmax"] = 1] = "softmax";
+  LayerType["logistic"] = "logistic";
+  LayerType["softmax"] = "softmax";
 })(LayerType || (LayerType = {}));
 
 /***/ }),
@@ -805,11 +851,22 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "4a5deb4aab95126b646d75e8ae2b6583.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "94433ce4ed96aed2b359e8825ae71e40.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }
 
+
+/***/ }),
+
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs");
 
 /***/ }),
 

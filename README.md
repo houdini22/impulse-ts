@@ -1,42 +1,31 @@
-```typescript
-import { Builder1D } from "../src/builder/builder1d";
-import { LayerType } from "../src/types";
-import { Matrix } from "../src/math/matrix";
+```javascript
+const { Builder1D, Matrix, SoftmaxLayer, LogisticLayer } = require("../dist/impulse-ts.dev");
 
 const timeStart = new Date().getTime();
 
 const builder = new Builder1D([400]);
-
-builder.createLayer(LayerType.logistic, (layer) => {
-  layer.setSize([10000]);
+builder.createLayer(LogisticLayer, (layer) => {
+    layer.setSize([1000]);
 });
-
-builder.createLayer(LayerType.logistic, (layer) => {
-  layer.setSize([10000]);
+builder.createLayer(LogisticLayer, (layer) => {
+    layer.setSize([500]);
 });
-
-builder.createLayer(LayerType.logistic, (layer) => {
-  layer.setSize([5000]);
+builder.createLayer(LogisticLayer, (layer) => {
+    layer.setSize([200]);
 });
-
-builder.createLayer(LayerType.logistic, (layer) => {
-  layer.setSize([1000]);
-});
-
-builder.createLayer(LayerType.softmax, (layer) => {
-  layer.setSize([10]);
+builder.createLayer(SoftmaxLayer, (layer) => {
+    layer.setSize([10]);
 });
 
 const network = builder.getNetwork();
-
-const input = new Matrix(400, 1).forEach(() => 1);
-
+const input = new Matrix(400, 1);
+input.data = new Float64Array("1"
+    .repeat(400)
+    .split("")
+    .map((n) => Number(n)));
 const result = network.forward(input);
-
 console.log(result);
 
 const timeEnd = new Date().getTime();
-
 console.log(`${timeEnd - timeStart} ms`);
-
 ```

@@ -28,6 +28,8 @@ CFLAGS_Debug := \
 	-Wextra \
 	-Wno-unused-parameter \
 	-m64 \
+	-msse \
+	-msse2 \
 	-g \
 	-O0
 
@@ -38,7 +40,9 @@ CFLAGS_C_Debug :=
 CFLAGS_CC_Debug := \
 	-fno-rtti \
 	-fno-exceptions \
-	-std=gnu++14
+	-std=gnu++14 \
+	-msse \
+	-msse2
 
 INCS_Debug := \
 	-I/home/anonymous/.cache/node-gyp/16.9.0/include/node \
@@ -74,6 +78,8 @@ CFLAGS_Release := \
 	-Wextra \
 	-Wno-unused-parameter \
 	-m64 \
+	-msse \
+	-msse2 \
 	-O3 \
 	-fno-omit-frame-pointer
 
@@ -84,7 +90,9 @@ CFLAGS_C_Release :=
 CFLAGS_CC_Release := \
 	-fno-rtti \
 	-fno-exceptions \
-	-std=gnu++14
+	-std=gnu++14 \
+	-msse \
+	-msse2
 
 INCS_Release := \
 	-I/home/anonymous/.cache/node-gyp/16.9.0/include/node \

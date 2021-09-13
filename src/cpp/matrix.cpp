@@ -51,7 +51,7 @@ double matrixSum(double *m1, int m1Rows, int m1Cols) {
     return result.sum();
 }
 
-double *matrixFillRandom(double *m1, int m1Rows, int m1Cols, double parameter) {
+double *matrixFillRandom(int m1Rows, int m1Cols, double parameter) {
     Eigen::MatrixXd result;
     result.resize(m1Rows, m1Cols);
 

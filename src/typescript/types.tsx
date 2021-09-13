@@ -3,8 +3,8 @@ import { SoftmaxLayer, LogisticLayer } from "./layer";
 export type Dimension = [number] | [number, number, number];
 
 export enum LayerType {
-  logistic,
-  softmax,
+  logistic = "logistic",
+  softmax = "softmax",
 }
 
 export type Layers = LogisticLayer | SoftmaxLayer;
