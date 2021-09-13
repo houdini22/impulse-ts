@@ -9,8 +9,8 @@ const {
   matrixElementWiseSubtract,
 } = require("../dist/impulse-ts.dev");
 
-const m1 = new Matrix(2, 2, [0.1, 0.1, 0.1, 0.1]);
-const m2 = new Matrix(2, 2, [0.2, 0.2, 0.2, 0.2]);
+const m1 = new Matrix(2, 2, [[0.1, 0.1], [0.1, 0.1]]);
+const m2 = new Matrix(2, 2, [[0.2, 0.2], [0.2, 0.2]]);
 const m3 = new Matrix(2, 2);
 
 console.log(m1, m2);

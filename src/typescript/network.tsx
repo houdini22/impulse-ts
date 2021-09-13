@@ -1,6 +1,7 @@
 import { Dimension, Layers } from "./types";
 import { cols, Matrix, elementWiseSubtract } from "./math/matrix";
 import * as fs from "fs";
+import {Dataset} from "./dataset/Dataset";
 
 class Network {
   private dimensions: Dimension = null;
@@ -34,6 +35,10 @@ class Network {
     this.layers.reverse().forEach((layer) => {
       // delta = layer.backpropagation.propagate(X, m, regularization, delta)
     });
+  }
+
+  loss(output: Matrix, predictions: Matrix) {
+    return this.layers[this.layers.length - 1].loss(output, predictions);
   }
 
   save(path: string): Promise<string> {

@@ -24,7 +24,7 @@ abstract class AbstractLayer {
   }
 
   forward(input: Matrix): Matrix {
-    this.Z = elementWiseAdd(multiply(this.W, input), this.b);
+    this.Z = elementWiseAdd(multiply(this.W, input), this.b.replicate(1, input.cols));
     this.A = this.activation(this.Z);
     return this.A;
   }

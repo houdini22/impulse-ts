@@ -1,4 +1,5 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/typescript/builder/abstract.tsx":
@@ -7,7 +8,6 @@
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractBuilder": () => (/* binding */ AbstractBuilder),
@@ -78,7 +78,6 @@ var AbstractBuilder = /*#__PURE__*/function () {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Builder1D": () => (/* binding */ Builder1D),
@@ -135,13 +134,121 @@ var Builder1D = /*#__PURE__*/function (_AbstractBuilder) {
 
 /***/ }),
 
+/***/ "./src/typescript/dataset/Dataset.tsx":
+/*!********************************************!*\
+  !*** ./src/typescript/dataset/Dataset.tsx ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Dataset": () => (/* binding */ Dataset)
+/* harmony export */ });
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+var Dataset = /*#__PURE__*/function () {
+  function Dataset(exampleSize, numberOfExamples, arr) {
+    _classCallCheck(this, Dataset);
+
+    _defineProperty(this, "exampleSize", 0);
+
+    _defineProperty(this, "numberOfExamples", 0);
+
+    _defineProperty(this, "data", null);
+
+    this.exampleSize = exampleSize;
+    this.numberOfExamples = numberOfExamples;
+    var data = [];
+
+    for (var example = 0; example < numberOfExamples; example += 1) {
+      for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
+        data.push(arr[example][dataIndex] || 0);
+      }
+    }
+
+    this.data = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, this.numberOfExamples, data);
+  }
+
+  _createClass(Dataset, [{
+    key: "exampleAt",
+    value: function exampleAt(index) {
+      var data = [[]];
+
+      for (var dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
+        data[0][dataIndex] = this.data[dataIndex * index];
+      }
+
+      return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, data);
+    }
+  }]);
+
+  return Dataset;
+}();
+
+/***/ }),
+
+/***/ "./src/typescript/dataset/DatasetBuilder.tsx":
+/*!***************************************************!*\
+  !*** ./src/typescript/dataset/DatasetBuilder.tsx ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetBuilder": () => (/* binding */ DatasetBuilder)
+/* harmony export */ });
+/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! csvtojson */ "csvtojson");
+/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.tsx");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var DatasetBuilder = /*#__PURE__*/function () {
+  function DatasetBuilder() {
+    _classCallCheck(this, DatasetBuilder);
+  }
+
+  _createClass(DatasetBuilder, null, [{
+    key: "fromCSV",
+    value: function fromCSV(csvPath) {
+      return new Promise(function (resolve) {
+        csvtojson__WEBPACK_IMPORTED_MODULE_0__({
+          noheader: true,
+          output: "csv"
+        }).fromFile(csvPath).then(function (arr) {
+          var numberOfExamples = arr.length;
+          var exampleSize = arr[0].length;
+          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, arr);
+          resolve(dataset);
+        });
+      });
+    }
+  }]);
+
+  return DatasetBuilder;
+}();
+
+/***/ }),
+
 /***/ "./src/typescript/layer/abstract.tsx":
 /*!*******************************************!*\
   !*** ./src/typescript/layer/abstract.tsx ***!
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer": () => (/* binding */ AbstractLayer)
@@ -180,7 +287,7 @@ var AbstractLayer = /*#__PURE__*/function () {
   _createClass(AbstractLayer, [{
     key: "forward",
     value: function forward(input) {
-      this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, input), this.b);
+      this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, input), this.b.replicate(1, input.cols));
       this.A = this.activation(this.Z);
       return this.A;
     }
@@ -229,7 +336,6 @@ var AbstractLayer = /*#__PURE__*/function () {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer1D": () => (/* binding */ AbstractLayer1D)
@@ -355,7 +461,6 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer": () => (/* reexport safe */ _abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractLayer),
@@ -378,7 +483,6 @@ __webpack_require__.r(__webpack_exports__);
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LogisticLayer": () => (/* binding */ LogisticLayer)
@@ -463,7 +567,6 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SoftmaxLayer": () => (/* binding */ SoftmaxLayer)
@@ -548,9 +651,9 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "gpu": () => (/* binding */ gpu),
 /* harmony export */   "Matrix": () => (/* binding */ Matrix),
 /* harmony export */   "multiply": () => (/* binding */ multiply),
 /* harmony export */   "elementWiseAdd": () => (/* binding */ elementWiseAdd),
@@ -567,10 +670,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "logisticDerivative": () => (/* binding */ logisticDerivative),
 /* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss)
 /* harmony export */ });
-/* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! impulseTsToolkit */ "./build/Debug/impulseTsToolkit.node");
-/* harmony import */ var impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! gpu.js */ "gpu.js");
-/* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gpu.js */ "gpu.js");
+/* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_0__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -580,12 +681,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-
+var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU({
+  mode: "gpu"
+});
 var Matrix = /*#__PURE__*/function () {
   function Matrix() {
     var rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var cols = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Array(rows * cols);
+    var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     _classCallCheck(this, Matrix);
 
@@ -596,7 +699,10 @@ var Matrix = /*#__PURE__*/function () {
     _defineProperty(this, "data", null);
 
     this.resize(rows, cols);
-    this.generateData(data);
+
+    if (data) {
+      this.generateData(data);
+    }
   }
 
   _createClass(Matrix, [{
@@ -604,14 +710,23 @@ var Matrix = /*#__PURE__*/function () {
     value: function resize(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.data = Float64Array.from(new Array(rows * cols));
+      this.data = Float64Array.from(new Array(rows));
+
+      for (var row = 0; row < this.rows; row += 1) {
+        this.data[row] = Float64Array.from(new Array(cols));
+      }
+
       return this;
     }
   }, {
     key: "generateData",
-    value: function generateData() {
-      var arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Array();
-      this.data = Float64Array.from(arr);
+    value: function generateData(arr) {
+      this.data = Float64Array.from(new Array(arr.length));
+
+      for (var row = 0; row < arr.length; row += 1) {
+        this.data[row] = Float64Array.from(new Array(arr[0].length));
+      }
+
       return this;
     }
   }, {
@@ -628,9 +743,13 @@ var Matrix = /*#__PURE__*/function () {
     key: "sum",
     value: function sum() {
       var sum = 0.0;
-      this.data.forEach(function (num) {
-        sum += num;
-      });
+
+      for (var row = 0; row < this.rows; row += 1) {
+        for (var col = 0; col < this.cols; col += 1) {
+          sum += this.data[row][col];
+        }
+      }
+
       return sum;
     }
   }, {
@@ -642,7 +761,7 @@ var Matrix = /*#__PURE__*/function () {
         var _sum = 0.0;
 
         for (var col = 0; col < this.cols; col += 1) {
-          _sum += this.data[row * col];
+          _sum += this.data[row][col];
         }
 
         data[row] = _sum;
@@ -653,6 +772,8 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "replicate",
     value: function replicate(rows, cols) {
+      for (var row = 0; row < this.rows; row += 1) {}
+
       return this;
     }
   }]);
@@ -664,7 +785,7 @@ var multiply = function multiply(m1, m2) {
     throw new Error("DIMENSIONS error.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
+  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     var sum = 0;
 
@@ -673,10 +794,10 @@ var multiply = function multiply(m1, m2) {
     }
 
     return sum;
-  }).setOutput([m1.rows * m2.cols]).setConstants({
+  }).setOutput([m1.rows, m2.cols]).setConstants({
     cols: m1.rows
   });
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]), (0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m2.data, [m2.rows, m2.cols]));
+  var data = kernel(m1.data, m2.data);
   return new Matrix(m1.rows, m2.cols, Array.from(data));
 };
 var elementWiseAdd = function elementWiseAdd(m1, m2) {
@@ -688,11 +809,11 @@ var elementWiseAdd = function elementWiseAdd(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
+  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
-  }).setOutput([m1.rows * m2.cols]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]), (0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m2.data, [m2.rows, m2.cols]));
+  }).setOutput([m1.rows, m2.cols]);
+  var data = kernel(m1.data, m2.data);
   var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
@@ -705,31 +826,29 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
+  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
-  }).setOutput([m1.cols * m1.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]), (0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m2.data, [m2.rows, m2.cols]));
+  }).setOutput([m1.rows, m2.cols]);
+  var data = kernel(m1.data, m2.data);
   var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
 var fillRandom = function fillRandom(m1, parameter) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
-  var kernel = gpu.createKernel(function (a) {
+  var kernel = gpu.createKernel(function () {
     return Math.random() * Math.sqrt(2.0 / this.constants.parameter);
-  }).setOutput([m1.cols * m1.rows]).setConstants({
+  }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
   });
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]));
+  var data = kernel();
   var result = new Matrix(m1.rows, m1.cols, Array.from(data));
   return result;
 };
 var setZeros = function setZeros(m1) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
-  var kernel = gpu.createKernel(function (a) {
+  var kernel = gpu.createKernel(function () {
     return 0.0;
-  }).setOutput([m1.cols * m1.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]));
+  }).setOutput([m1.rows, m1.cols]);
+  var data = kernel();
   var result = new Matrix(m1.rows, m1.cols, Array.from(data));
   return result;
 };
@@ -742,11 +861,10 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
-  }).setOutput([m1.cols * m1.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]), (0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m2.data, [m2.rows, m2.cols]));
+  }).setOutput([m1.rows, m2.cols]);
+  var data = kernel(m1.data, m2.data);
   var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
@@ -765,54 +883,62 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
-  }).setOutput([m1.cols * m1.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m1.data, [m1.rows, m1.cols]), (0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m2.data, [m2.rows, m2.cols]));
+  }).setOutput([m1.rows, m2.cols]);
+  var data = kernel(m1.data, m2.data);
   var result = new Matrix(m1.rows, m2.cols, Array.from(data));
   return result;
 };
 var softmaxActivation = function softmaxActivation(m) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a) {
     return Math.exp(a[this.thread.x][this.thread.y]);
-  }).setOutput([m.cols * m.rows]);
-  var data = new Matrix(m.rows, m.cols, Array.from(kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m.data, [m.rows, m.cols]))));
+  }).setOutput([m.rows, m.cols]);
+  var data = new Matrix(m.rows, m.cols, Array.from(kernel(m.data)));
   var divider = new Matrix(m.rows, 1, data.colwiseSum().data).replicate(m.rows, 1);
   var result = new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
   return result;
 };
-var softmaxLoss = function softmaxLoss(m1, m2) {
-  var result = new Matrix(m1.rows, m1.cols);
-  result.data = (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.SoftmaxLoss)(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
-  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(result, result.rows, result.cols);
+var softmaxLoss = function softmaxLoss(output, predictions) {
+  var kernel = gpu.createKernel(function (a) {
+    return Math.log(a[this.thread.x][this.thread.y]);
+  }).setOutput([predictions.rows, predictions.cols]);
+  var data = kernel(predictions.data);
+  var result = new Matrix(output.rows, output.cols, elementWiseMultiply(output, data).data);
+  return result.sum();
 };
 var logisticActivation = function logisticActivation(m) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a) {
     return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
-  }).setOutput([m.cols * m.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m.data, [m.rows, m.cols]));
+  }).setOutput([m.rows, m.cols]);
+  var data = kernel(m.data);
   var result = new Matrix(m.rows, m.cols, Array.from(data));
   return result;
 };
 var logisticDerivative = function logisticDerivative(m) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a) {
     return a[this.thread.x][this.thread.y] * (1.0 - a[this.thread.x][this.thread.y]);
-  }).setOutput([m.cols * m.rows]);
-  var data = kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(m.data, [m.rows, m.cols]));
+  }).setOutput([m.rows, m.cols]);
+  var data = kernel(m.data);
   var result = new Matrix(m.rows, m.cols, Array.from(data));
   return result;
 };
 var logisticLoss = function logisticLoss(output, predictions) {
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_1__.GPU();
   var kernel = gpu.createKernel(function (a) {
     return Math.log(a[this.thread.x][this.thread.y]);
-  }).setOutput([output.cols * output.rows]);
-  var output2 = new Matrix(output.rows, output.cols, kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_1__.input)(output.data, [output.rows, output.cols])));
-  return elementWiseSubtract(output2, predictions).sum();
+  }).setOutput([output.rows, output.cols]);
+  var predictionsLog = new Matrix(output.rows, output.cols, kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_0__.input)(output.data, [output.rows, output.cols])));
+  var kernel2 = gpu.createKernel(function (a) {
+    return 1.0 - a[this.thread.x][this.thread.y];
+  }).setOutput([output.rows, output.cols]);
+  var outputOne = new Matrix(output.rows, output.cols, kernel2(output.data));
+  var kernel4 = gpu.createKernel(function (a) {
+    return Math.log(1.0 - a[this.thread.x][this.thread.y]);
+  }).setOutput([predictions.rows, predictions.cols]);
+  var predictionsMinusLog = new Matrix(predictions.rows, predictions.cols, kernel4(predictions.data));
+  var toAdd = elementWiseMultiply(output, predictionsLog);
+  var toAdd2 = elementWiseMultiply(outputOne, predictionsMinusLog);
+  return elementWiseAdd(toAdd, toAdd2).sum();
 };
 
 /***/ }),
@@ -823,7 +949,6 @@ var logisticLoss = function logisticLoss(output, predictions) {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Network": () => (/* binding */ Network),
@@ -880,6 +1005,11 @@ var Network = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "loss",
+    value: function loss(output, predictions) {
+      return this.layers[this.layers.length - 1].loss(output, predictions);
+    }
+  }, {
     key: "save",
     value: function save(path) {
       var resultJSON = {
@@ -924,7 +1054,6 @@ var Network = /*#__PURE__*/function () {
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LayerType": () => (/* binding */ LayerType)
@@ -938,20 +1067,13 @@ var LayerType;
 
 /***/ }),
 
-/***/ "./build/Debug/impulseTsToolkit.node":
-/*!*******************************************!*\
-  !*** ./build/Debug/impulseTsToolkit.node ***!
-  \*******************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ "csvtojson":
+/*!****************************!*\
+  !*** external "csvtojson" ***!
+  \****************************/
+/***/ ((module) => {
 
-/* module decorator */ module = __webpack_require__.nmd(module);
-
-try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "202c32a4ae9e32b7853b0812ae623972.node");
-} catch (error) {
-  throw new Error('node-loader:\n' + error);
-}
-
+module.exports = require("csvtojson");
 
 /***/ }),
 
@@ -961,7 +1083,6 @@ try {
   \*********************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("fs");
 
 /***/ }),
@@ -972,19 +1093,7 @@ module.exports = require("fs");
   \*************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("gpu.js");
-
-/***/ }),
-
-/***/ "path":
-/*!***********************!*\
-  !*** external "path" ***!
-  \***********************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("path");
 
 /***/ })
 
@@ -1002,16 +1111,13 @@ module.exports = require("path");
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -1058,25 +1164,10 @@ module.exports = require("path");
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/node module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nmd = (module) => {
-/******/ 			module.paths = [];
-/******/ 			if (!module.children) module.children = [];
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/publicPath */
-/******/ 	(() => {
-/******/ 		__webpack_require__.p = "";
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 /*!*********************************!*\
   !*** ./src/typescript/main.tsx ***!
   \*********************************/
@@ -1092,11 +1183,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "matrixElementWiseMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseMultiply),
 /* harmony export */   "matrixElementWiseDivide": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseDivide),
 /* harmony export */   "matrixElementWiseAdd": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseAdd),
-/* harmony export */   "matrixElementWiseSubtract": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseSubtract)
+/* harmony export */   "matrixElementWiseSubtract": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseSubtract),
+/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__.DatasetBuilder)
 /* harmony export */ });
 /* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dataset/DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.tsx");
+
 
 
 

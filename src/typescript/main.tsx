@@ -10,6 +10,7 @@ import {
   elementWiseAdd as matrixElementWiseAdd,
   elementWiseSubtract as matrixElementWiseSubtract,
 } from "./math/matrix";
+import { DatasetBuilder } from "./dataset/DatasetBuilder";
 
 export {
   Builder1D,
@@ -23,4 +24,5 @@ export {
   matrixElementWiseDivide,
   matrixElementWiseAdd,
   matrixElementWiseSubtract,
+  DatasetBuilder
 };

@@ -16,7 +16,8 @@ module.exports = {
     }
   },
   externals: {
-    'gpu.js': 'gpu.js'
+    'gpu.js': 'gpu.js',
+    'csvtojson': 'csvtojson'
   },
   module: {
     rules: [
