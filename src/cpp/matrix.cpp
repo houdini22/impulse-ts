@@ -38,3 +38,19 @@ double *matrixElementWiseDivide(double *m1, int m1Rows, int m1Cols, double *m2, 
     Eigen::MatrixXd result = _m1.array() / _m2.array();
     return result.data();
 }
+
+double matrixSum(double *m1, int m1Rows, int m1Cols) {
+    Eigen::Map <Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> _m1(m1, m1Rows, m1Cols);
+    Eigen::MatrixXd result = _m1;
+    return result.sum();
+}
+
+double *matrixFillRandom(double *m1, int m1Rows, int m1Cols, double parameter) {
+    Eigen::Map <Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> _m1(m1, m1Rows, m1Cols);
+    Eigen::MatrixXd result = _m1;
+    result.setRandom();
+    result = result.unaryExpr([parameter](const double x) {
+        return x * sqrt(2.0 / parameter);
+    });
+    return result.data();
+}

@@ -140,6 +140,39 @@ void MatrixElementWiseDivide(const FunctionCallbackInfo <Value> &args) {
     args.GetReturnValue().Set(resultData);
 }
 
+void MatrixSum(const FunctionCallbackInfo <Value> &args) {
+    Local <Array> m1 = Local<Array>::Cast(args[0]);
+    int m1Rows = Local<Number>::Cast(args[1])->Value();
+    int m1Cols = Local<Number>::Cast(args[2])->Value();
+
+    double *m1Data;
+    m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
+
+    double result = matrixSum(m1Data, m1Rows, m1Cols);
+    Local <Number> resultData = Number::New(args.GetIsolate(), result);
+
+    args.GetReturnValue().Set(resultData);
+}
+
+void MatrixFillRandom(const FunctionCallbackInfo <Value> &args) {
+    Local <Array> m1 = Local<Array>::Cast(args[0]);
+    int m1Rows = Local<Number>::Cast(args[1])->Value();
+    int m1Cols = Local<Number>::Cast(args[2])->Value();
+    double parameter = Local<Number>::Cast(args[3])->Value();
+
+    double *m1Data;
+    m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
+
+    double *result = matrixFillRandom(m1Data, m1Rows, m1Cols, parameter);
+    Local <Array> resultData = Array::New(args.GetIsolate(), m1Rows * m1Cols);
+    for (int i = 0; i < m1Rows * m1Cols; i += 1) {
+        Local <Number> value = Number::New(args.GetIsolate(), result[i]);
+        resultData->Set(args.GetIsolate()->GetCurrentContext(), (uint32_t) i, value);
+    }
+
+    args.GetReturnValue().Set(resultData);
+}
+
 extern "C" NODE_MODULE_EXPORT void
 NODE_MODULE_INITIALIZER(Local <Object> exports,
                         Local <Value> module,
@@ -158,5 +191,11 @@ NODE_MODULE_INITIALIZER(Local <Object> exports,
                          context).ToLocalChecked()).FromJust();
     exports->Set(context, String::NewFromUtf8(isolate, "MatrixElementWiseDivide").ToLocalChecked(),
                  FunctionTemplate::New(isolate, MatrixElementWiseDivide)->GetFunction(
+                         context).ToLocalChecked()).FromJust();
+    exports->Set(context, String::NewFromUtf8(isolate, "MatrixSum").ToLocalChecked(),
+                 FunctionTemplate::New(isolate, MatrixSum)->GetFunction(
+                         context).ToLocalChecked()).FromJust();
+    exports->Set(context, String::NewFromUtf8(isolate, "MatrixFillRandom").ToLocalChecked(),
+                 FunctionTemplate::New(isolate, MatrixFillRandom)->GetFunction(
                          context).ToLocalChecked()).FromJust();
 }

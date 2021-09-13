@@ -670,9 +670,7 @@ var resize = function resize(m1, rows, cols) {
   m1.resize(rows, cols);
 };
 var fillRandom = function fillRandom(m1, i) {
-  m1.forEach(function () {
-    return Math.random() * Math.sqrt(2.0 / i);
-  });
+  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixFillRandom)(m1.data, m1.rows, m1.cols, i);
 };
 var forEach = function forEach(m1, callback) {
   return m1.forEach(callback);
@@ -691,11 +689,7 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   return result;
 };
 var sum = function sum(m) {
-  var sum = 0.0;
-  m.forEach(function (x) {
-    sum += x;
-  });
-  return sum;
+  return (0,impulseTsToolkit__WEBPACK_IMPORTED_MODULE_0__.MatrixSum)(m.data, m.rows, m.cols);
 };
 var cols = function cols(m) {
   return m.cols;
@@ -841,7 +835,7 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "73d7aeeb6bdf583b875e0021222e9df1.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "930b6ec700b021a0f3b792de5ba180d5.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }

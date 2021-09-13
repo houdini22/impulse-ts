@@ -4,6 +4,8 @@ import {
   MatrixElementWiseSubtract,
   MatrixElementWiseMultiply,
   MatrixElementWiseDivide,
+  MatrixSum,
+  MatrixFillRandom,
 } from "impulseTsToolkit";
 
 export class Matrix {
@@ -95,7 +97,7 @@ export const resize = (m1: Matrix, rows: number, cols: number): void => {
 };
 
 export const fillRandom = (m1: Matrix, i: number): void => {
-  m1.forEach(() => Math.random() * Math.sqrt(2.0 / i));
+  return MatrixFillRandom(m1.data, m1.rows, m1.cols, i);
 };
 
 export const forEach = (
@@ -127,13 +129,7 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
 };
 
 export const sum = (m: Matrix): number => {
-  let sum = 0.0;
-
-  m.forEach((x) => {
-    sum += x;
-  });
-
-  return sum;
+  return MatrixSum(m.data, m.rows, m.cols);
 };
 
 export const cols = (m: Matrix): number => {
