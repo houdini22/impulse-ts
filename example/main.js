@@ -1,4 +1,4 @@
-const { Builder1D, Matrix, SoftmaxLayer, matrixMultiply } = require('../dist/impulse-ts.dev')
+const { Builder1D, Matrix, SoftmaxLayer, matrixMultiply, matrixSum } = require('../dist/impulse-ts.dev')
 
 /*const timeStart = new Date().getTime();
 
@@ -30,7 +30,8 @@ console.log(`${timeEnd - timeStart} ms`);*/
 
 const m1 = new Matrix(2, 2);
 const m2 = new Matrix(2, 2);
-m1.data = [2, 2, 2, 2];
-m2.data = [3, 3, 3, 3];
+m1.data = [0.1, 0.1, 0.1, 0.1];
+m2.data = [0.2, 0.2, 0.2, 0.2];
 
 console.log(matrixMultiply(m1, m2));
+console.log(matrixSum(m1));

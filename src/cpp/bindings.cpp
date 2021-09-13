@@ -1,5 +1,6 @@
 #include "bindings.hpp"
 #include "matrix.cpp"
+#include <string>
 
 using namespace v8;
 using namespace node;
@@ -142,10 +143,10 @@ void MatrixElementWiseDivide(const FunctionCallbackInfo <Value> &args) {
 
 void MatrixSum(const FunctionCallbackInfo <Value> &args) {
     Local <Array> m1 = Local<Array>::Cast(args[0]);
-    int m1Rows = Local<Number>::Cast(args[1])->Value();
-    int m1Cols = Local<Number>::Cast(args[2])->Value();
+    int m1Rows = (int) Local<Number>::Cast(args[1])->Value();
+    int m1Cols = (int) Local<Number>::Cast(args[2])->Value();
 
-    double *m1Data;
+    double *m1Data = new double[m1Rows * m1Cols];
     m1->NumberValue(args.GetIsolate()->GetCurrentContext()).To(m1Data);
 
     double result = matrixSum(m1Data, m1Rows, m1Cols);

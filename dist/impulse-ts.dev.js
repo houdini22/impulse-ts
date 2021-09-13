@@ -803,7 +803,7 @@ var LayerType;
 /* module decorator */ module = __webpack_require__.nmd(module);
 
 try {
-  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "3cbe64475c8673abb56699f556ba8da0.node");
+  process.dlopen(module, __dirname + __webpack_require__(/*! path */ "path").sep + __webpack_require__.p + "44b2775f2c6905dc3a17759a757c2d43.node");
 } catch (error) {
   throw new Error('node-loader:\n' + error);
 }
@@ -920,7 +920,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Matrix": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix),
 /* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
 /* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer),
-/* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply)
+/* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply),
+/* harmony export */   "matrixSum": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.sum)
 /* harmony export */ });
 /* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
