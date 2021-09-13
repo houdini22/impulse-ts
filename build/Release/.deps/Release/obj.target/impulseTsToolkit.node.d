@@ -1,0 +1,1 @@
+cmd_Release/obj.target/impulseTsToolkit.node := g++ -o Release/obj.target/impulseTsToolkit.node -shared -pthread -rdynamic -m64 -L/usr/local/lib  -Wl,-soname=impulseTsToolkit.node -Wl,--start-group Release/obj.target/impulseTsToolkit/src/cpp/bindings.o -Wl,--end-group -lcuda -lcudart

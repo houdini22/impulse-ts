@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   mode: "development",
   devtool: "source-map",
-  entry: ["./src/main.tsx"],
+  entry: ["./src/typescript/main.tsx"],
   output: {
     path: path.resolve("./dist"),
     filename: "impulse-ts.dev.js",
@@ -11,6 +11,9 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx"],
+    alias: {
+      impulseTsToolkit: path.resolve(__dirname, '../build/Release/impulseTsToolkit.node')
+    }
   },
   module: {
     rules: [
@@ -19,6 +22,11 @@ module.exports = {
         exclude: /node_modules/,
         loader: "babel-loader",
       },
+      {
+        test: /\.node$/,
+        loader: "node-loader",
+      }
     ],
-  }
+  },
+  target: "node"
 };

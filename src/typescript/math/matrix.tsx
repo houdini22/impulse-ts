@@ -1,3 +1,5 @@
+const { MatrixMultiplication } = require('impulseTsToolkit');
+
 export class Matrix {
   public rows = 0;
   public cols = 0;
@@ -28,17 +30,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   }
 
   const result = new Matrix(m1.rows, m2.cols);
-
-  for (let row = 0; row < m1.rows; row++) {
-    for (let col = 0; col < m2.cols; col++) {
-      const index = row * m2.cols + col;
-      result.data[index] = 0;
-      for (let k = 0; k < m1.cols; k++) {
-        result.data[index] +=
-          m1.data[row * m1.cols + k] * m2.data[k * m2.cols + col];
-      }
-    }
-  }
+  result.data = MatrixMultiplication(m1.data, m1.rows, m1.cols, m2.data, m2.rows, m2.cols);
 
   return result;
 };
@@ -92,8 +84,8 @@ export const fillRandom = (m1: Matrix, i: number): void => {
 };
 
 export const forEach = (
-  m1: Matrix,
-  callback: (x: number) => number
+    m1: Matrix,
+    callback: (x: number) => number
 ): Matrix => {
   return m1.forEach(callback);
 };
@@ -133,8 +125,8 @@ export const cols = (m: Matrix): number => {
 };
 
 export const colwise = (
-  m: Matrix,
-  callback: (colVector: Matrix) => number
+    m: Matrix,
+    callback: (colVector: Matrix) => number
 ): Matrix => {
   const result = new Matrix(1, m.cols);
   for (let col = 0; col < m.cols; col++) {

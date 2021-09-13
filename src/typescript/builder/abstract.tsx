@@ -1,6 +1,4 @@
-import { isFunction } from "lodash";
-import { Dimension, LayerType, Layers } from "../types";
-import { factory as layerFactory } from "../layer/utils";
+import { Dimension, Layers } from "../types";
 import Network from "../network";
 
 abstract class AbstractBuilder {
@@ -13,10 +11,10 @@ abstract class AbstractBuilder {
     this.network = new Network(dimension);
   }
 
-  createLayer(type: LayerType, callback: Function) {
-    const layer = layerFactory(type);
+  createLayer(type: Layers, callback: Function) {
+    const layer = new type()
 
-    if (isFunction(callback)) {
+    if (typeof callback === "function") {
       callback(layer);
     }
 

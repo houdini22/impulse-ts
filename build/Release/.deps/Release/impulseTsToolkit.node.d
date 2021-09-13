@@ -1,0 +1,1 @@
+cmd_Release/impulseTsToolkit.node := ln -f "Release/obj.target/impulseTsToolkit.node" "Release/impulseTsToolkit.node" 2>/dev/null || (rm -rf "Release/impulseTsToolkit.node" && cp -af "Release/obj.target/impulseTsToolkit.node" "Release/impulseTsToolkit.node")
