@@ -1,7 +1,6 @@
 const {
-  Builder1D,
-  SoftmaxLayer,
-  LogisticLayer,
+  Builders: { Builder1D },
+  Layers: { SoftmaxLayer, LogisticLayer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();

@@ -1,4 +1,4 @@
-import { elementWiseAdd, Matrix, multiply } from "../math/matrix";
+import { elementWiseAdd, Matrix, multiply, penalty } from "../math/matrix";
 import { Dimension, Layers } from "../types";
 import { AbstractBackPropagation } from "./backpropagation/abstract";
 
@@ -9,6 +9,10 @@ abstract class AbstractLayer {
   public Z: Matrix;
   public gW: Matrix;
   public gb: Matrix;
+  public vW: Matrix;
+  public cW: Matrix;
+  public vB: Matrix;
+  public cB: Matrix;
 
   protected width: number = 0;
   protected height: number = 0;
@@ -23,6 +27,10 @@ abstract class AbstractLayer {
     this.Z = new Matrix();
     this.gW = new Matrix();
     this.gb = new Matrix();
+    this.vW = new Matrix();
+    this.cW = new Matrix();
+    this.vB = new Matrix();
+    this.cB = new Matrix();
   }
 
   getBackPropagation(): AbstractBackPropagation {
@@ -91,6 +99,10 @@ abstract class AbstractLayer {
   abstract loss(output: Matrix, predictions: Matrix): number;
 
   abstract error(m: number): number;
+
+  penalty(): number {
+    return penalty(this.W);
+  }
 }
 
 export { AbstractLayer };

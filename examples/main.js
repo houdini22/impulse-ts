@@ -1,8 +1,7 @@
 const {
-  Builder1D,
-  SoftmaxLayer,
-  LogisticLayer,
-  DatasetBuilder,
+  Builders: { Builder1D },
+  Dataset: { DatasetBuilder },
+  Layers: { SoftmaxLayer, LogisticLayer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

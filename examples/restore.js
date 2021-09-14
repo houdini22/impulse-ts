@@ -1,4 +1,6 @@
-const { Builder1D } = require("../dist/impulse-ts.dev");
+const {
+  Builders: { Builder1D },
+} = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
 

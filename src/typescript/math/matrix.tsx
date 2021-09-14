@@ -19,9 +19,7 @@ export class Matrix {
     this.cols = cols;
     this.data = [];
     for (let row = 0; row < this.rows; row += 1) {
-      this.data[row] = new Array(this.cols).map(() => {
-        return 0;
-      });
+      this.data[row] = new Array(this.cols);
     }
 
     return this;
@@ -30,9 +28,7 @@ export class Matrix {
   generateData(arr: number[][]): Matrix {
     this.data = [];
     for (let row = 0; row < this.rows; row += 1) {
-      this.data[row] = new Array(this.cols).map(() => {
-        return 0;
-      });
+      this.data[row] = new Array(this.cols);
     }
     for (let col = 0; col < this.cols; col += 1) {
       for (let row = 0; row < this.rows; row += 1) {
@@ -120,27 +116,53 @@ export class Matrix {
   }
 
   transpose(): Matrix {
-    const oldData = this.data;
     const kernel = gpu
       .createKernel(function (a) {
         return a[this.thread.y][this.thread.x];
       })
       .setOutput([this.cols, this.rows]);
 
-    this.resize(this.cols, this.rows);
-    this.generateData(kernel(oldData) as number[][]);
-
-    return this;
+    return new Matrix(this.cols, this.rows, kernel(this.data));
   }
 
   conjugate(): Matrix {
     return this;
   }
+
+  colwiseMaxCoeffIndex(): number {
+    return 0; // todo
+  }
+
+  block(
+    startRow: number,
+    startCol: number,
+    blockRows: number,
+    blockCols: number
+  ): Matrix {
+    const data = [];
+
+    for (
+      let row = startRow;
+      row < this.rows && row < startRow + blockRows;
+      row += 1
+    ) {
+      data[row] = new Array(blockCols);
+      for (
+        let col = startCol;
+        col < this.cols && col < startCol + blockCols;
+        col += 1
+      ) {
+        data[row][col] = this.data[row][col];
+      }
+    }
+
+    return new Matrix(blockRows, blockCols, data);
+  }
 }
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
-    throw new Error("DIMENSIONS error.");
+    throw new Error(`DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`);
   }
 
   const kernel = gpu
@@ -432,6 +454,24 @@ export const softplusDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       return 1 / (1 + Math.exp(-a[this.thread.x][this.thread.y]));
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+
+export const penalty = (m: Matrix): number => {
+  const kernel = gpu
+    .createKernel(function (a) {
+      return Math.pow(a[this.thread.x][this.thread.y], 2);
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data)).sum();
+};
+
+export const sqrt = (m: Matrix): Matrix => {
+  const kernel = gpu
+    .createKernel(function (a) {
+      return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data));

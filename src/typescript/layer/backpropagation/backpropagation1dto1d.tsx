@@ -19,7 +19,7 @@ export class Backpropagation1Dto1D extends AbstractBackPropagation {
       this.previousLayer !== null ? this.previousLayer.A : input;
     const delta = multiply(sigma, previousActivations.transpose().conjugate());
     this.layer.gW = elementWiseAdd(
-      elementWiseDivideNumber(delta.rowwiseSum(), numberOfExamples),
+      elementWiseDivideNumber(delta, numberOfExamples),
       elementWiseMultiplyNumber(this.layer.W, regularization / numberOfExamples)
     );
     this.layer.gb = elementWiseDivideNumber(

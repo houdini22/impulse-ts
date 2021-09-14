@@ -45,6 +45,10 @@ class Network {
     return this.layers[this.layers.length - 1].loss(output, predictions);
   }
 
+  error(m: number) {
+    return this.layers[this.layers.length - 1].error(m);
+  }
+
   save(path: string): Promise<string> {
     const resultJSON = {
       dimensions: this.dimensions,

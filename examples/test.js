@@ -1,12 +1,14 @@
 const {
-  Matrix,
-  matrixMultiply,
-  matrixSum,
-  matrixFillRandom,
-  matrixElementWiseMultiply,
-  matrixElementWiseDivide,
-  matrixElementWiseAdd,
-  matrixElementWiseSubtract,
+  Math: {
+    Matrix,
+    matrixMultiply,
+    matrixSum,
+    matrixFillRandom,
+    matrixElementWiseMultiply,
+    matrixElementWiseDivide,
+    matrixElementWiseAdd,
+    matrixElementWiseSubtract,
+  },
 } = require("../dist/impulse-ts.dev");
 
 const m1 = new Matrix(2, 2, [[0.1], [0.1]]);

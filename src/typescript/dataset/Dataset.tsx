@@ -29,4 +29,12 @@ export class Dataset {
 
     return new Matrix(this.exampleSize, 1, data);
   }
+
+  getNumberOfExamples(): number {
+    return this.numberOfExamples;
+  }
+
+  getBatch(offset: number, batchSize: number): Matrix {
+    return this.data.block(0, offset, this.data.rows, batchSize);
+  }
 }

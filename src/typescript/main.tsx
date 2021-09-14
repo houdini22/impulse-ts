@@ -17,12 +17,13 @@ import {
   elementWiseSubtract as matrixElementWiseSubtract,
 } from "./math/matrix";
 import { DatasetBuilder } from "./dataset/DatasetBuilder";
+import { OptimizerAdam } from "./trainer/optimizer/adam";
+import { OptimizerGradientDescent } from "./trainer/optimizer/gradientdescent";
+import { MiniBatchTrainer } from "./trainer/minibatch";
 
-export {
-  Builder1D,
+const Builders = { Builder1D };
+const Math = {
   Matrix,
-  SoftmaxLayer,
-  LogisticLayer,
   matrixMultiply,
   matrixSum,
   matrixFillRandom,
@@ -30,8 +31,23 @@ export {
   matrixElementWiseDivide,
   matrixElementWiseAdd,
   matrixElementWiseSubtract,
-  DatasetBuilder,
+};
+const Layers = {
+  SoftmaxLayer,
+  LogisticLayer,
   ReluLayer,
   SoftplusLayer,
   TanhLayer,
 };
+const Dataset = {
+  DatasetBuilder,
+};
+const Optimizers = {
+  OptimizerAdam,
+  OptimizerGradientDescent
+};
+const Trainers = {
+  MiniBatchTrainer,
+};
+
+export { Builders, Math, Layers, Dataset, Optimizers, Trainers };

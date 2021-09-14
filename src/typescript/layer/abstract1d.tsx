@@ -19,6 +19,18 @@ abstract class AbstractLayer1D extends AbstractLayer {
     this.gb.resize(this.height, 1);
     this.gb = setZeros(this.gb);
 
+    this.cW.resize(this.height, this.width);
+    this.cW = setZeros(this.cW);
+
+    this.cB.resize(this.height, 1);
+    this.cB = setZeros(this.cB);
+
+    this.vW.resize(this.height, this.width);
+    this.vW = setZeros(this.vW);
+
+    this.vB.resize(this.height, 1);
+    this.vB = setZeros(this.cB);
+
     this.backPropagation = new Backpropagation1Dto1D(this, this.previousLayer);
   }
 
