@@ -7,7 +7,7 @@ class SoftmaxLayer extends AbstractLayer1D {
     return softmaxActivation(m);
   }
 
-  derivative(): Matrix {
+  derivative(m: Matrix): Matrix {
     throw new Error("Unsupported usage.");
   }
 

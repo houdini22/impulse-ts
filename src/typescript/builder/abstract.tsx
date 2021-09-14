@@ -3,7 +3,7 @@ import Network from "../network";
 
 abstract class AbstractBuilder {
   protected dimensions: Dimension = null;
-  protected previousLayer: Layers = null;
+  protected lastLayer: Layers = null;
   protected network: Network = null;
 
   constructor(dimension: Dimension) {
@@ -18,16 +18,16 @@ abstract class AbstractBuilder {
       callback(layer);
     }
 
-    if (this.previousLayer === null) {
+    if (this.lastLayer === null) {
       this.firstLayerTransition(layer);
     } else {
-      layer.transition(this.previousLayer);
+      layer.transition(this.lastLayer);
     }
 
     layer.configure();
 
     this.network.addLayer(layer);
-    this.previousLayer = layer;
+    this.lastLayer = layer;
   }
 
   getNetwork(): Network {

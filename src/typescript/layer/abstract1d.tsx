@@ -1,6 +1,7 @@
 import { AbstractLayer } from "./abstract";
 import { fillRandom, setZeros } from "../math/matrix";
 import { Dimension, Layers } from "../types";
+import { Backpropagation1Dto1D } from "./backpropagation/backpropagation1dto1d";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth: number = 1;
@@ -17,6 +18,8 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
     this.gb.resize(this.height, 1);
     this.gb = setZeros(this.gb);
+
+    this.backPropagation = new Backpropagation1Dto1D(this, this.previousLayer);
   }
 
   is1D(): boolean {
@@ -37,6 +40,8 @@ abstract class AbstractLayer1D extends AbstractLayer {
           previousLayer.getOutputDepth()
       );
     }
+
+    super.transition(previousLayer);
   }
 
   setSize(value: Dimension) {

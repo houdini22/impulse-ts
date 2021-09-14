@@ -21,9 +21,7 @@ builder.createLayer(SoftmaxLayer, (layer) => {
 });
 
 const network = builder.getNetwork();
-network.save(path.resolve(__dirname, "save.json")).then((content) => {
-
-});
+network.save(path.resolve(__dirname, "save.json")).then((content) => {});
 
 const timeEnd = new Date().getTime();
 console.log(`${timeEnd - timeStart} ms.`);

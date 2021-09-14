@@ -30,7 +30,7 @@ var AbstractBuilder = /*#__PURE__*/function () {
 
     _defineProperty(this, "dimensions", null);
 
-    _defineProperty(this, "previousLayer", null);
+    _defineProperty(this, "lastLayer", null);
 
     _defineProperty(this, "network", null);
 
@@ -47,15 +47,15 @@ var AbstractBuilder = /*#__PURE__*/function () {
         callback(layer);
       }
 
-      if (this.previousLayer === null) {
+      if (this.lastLayer === null) {
         this.firstLayerTransition(layer);
       } else {
-        layer.transition(this.previousLayer);
+        layer.transition(this.lastLayer);
       }
 
       layer.configure();
       this.network.addLayer(layer);
-      this.previousLayer = layer;
+      this.lastLayer = layer;
     }
   }, {
     key: "getNetwork",
@@ -84,6 +84,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/builder/abstract.tsx");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main */ "./src/typescript/main.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -108,6 +111,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
+
 var Builder1D = /*#__PURE__*/function (_AbstractBuilder) {
   _inherits(Builder1D, _AbstractBuilder);
 
@@ -123,6 +128,46 @@ var Builder1D = /*#__PURE__*/function (_AbstractBuilder) {
     key: "firstLayerTransition",
     value: function firstLayerTransition(layer) {
       layer.setWidth(this.dimensions[0]);
+    }
+  }], [{
+    key: "fromJSON",
+    value: function fromJSON(jsonPath) {
+      return new Promise(function (resolve, reject) {
+        fs__WEBPACK_IMPORTED_MODULE_1__.readFile(jsonPath, function (err, data) {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          var json = JSON.parse(data.toString());
+          var builder = new Builder1D(json["dimensions"]);
+          json["layers"].forEach(function (layerData) {
+            var layerClass = null;
+
+            if (layerData["type"] === "logistic") {
+              layerClass = _main__WEBPACK_IMPORTED_MODULE_2__.LogisticLayer;
+            } else if (layerData["type"] === "softmax") {
+              layerClass = _main__WEBPACK_IMPORTED_MODULE_2__.SoftmaxLayer;
+            } else if (layerData["type"] === "relu") {
+              layerClass = _main__WEBPACK_IMPORTED_MODULE_2__.ReluLayer;
+            } else if (layerData["type"] === "softplus") {
+              layerClass = _main__WEBPACK_IMPORTED_MODULE_2__.SoftplusLayer;
+            } else if (layerData["type"] === "tanh") {
+              layerClass = _main__WEBPACK_IMPORTED_MODULE_2__.TanhLayer;
+            }
+
+            builder.createLayer(layerClass, function (layer) {
+              layer.setSize(layerData["dimensions"]);
+            });
+          });
+          var network = builder.getNetwork();
+          network.getLayers().forEach(function (layer, i) {
+            layer.W = json["layers"]["W"];
+            layer.b = json["layers"]["b"];
+          });
+          resolve(network);
+        });
+      });
     }
   }]);
 
@@ -172,7 +217,7 @@ var Dataset = /*#__PURE__*/function () {
       data[example] = [];
 
       for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        data[example][dataIndex] = arr[example][dataIndex] || 0;
+        data[example][dataIndex] = Number(arr[example][dataIndex] || 0);
       }
     }
 
@@ -279,6 +324,8 @@ var AbstractLayer = /*#__PURE__*/function () {
 
     _defineProperty(this, "previousLayer", null);
 
+    _defineProperty(this, "backPropagation", null);
+
     this.W = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.b = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.A = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
@@ -288,6 +335,11 @@ var AbstractLayer = /*#__PURE__*/function () {
   }
 
   _createClass(AbstractLayer, [{
+    key: "getBackPropagation",
+    value: function getBackPropagation() {
+      return this.backPropagation;
+    }
+  }, {
     key: "forward",
     value: function forward(input) {
       this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, input), this.b.replicate(1, input.cols));
@@ -324,6 +376,11 @@ var AbstractLayer = /*#__PURE__*/function () {
     value: function getDepth() {
       return this.depth;
     }
+  }, {
+    key: "transition",
+    value: function transition(previousLayer) {
+      this.previousLayer = previousLayer;
+    }
   }]);
 
   return AbstractLayer;
@@ -345,6 +402,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/abstract.tsx");
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _backpropagation_backpropagation1dto1d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./backpropagation/backpropagation1dto1d */ "./src/typescript/layer/backpropagation/backpropagation1dto1d.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -352,6 +410,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -368,6 +430,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -404,6 +467,7 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       this.gW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.gW);
       this.gb.resize(this.height, 1);
       this.gb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.gb);
+      this.backPropagation = new _backpropagation_backpropagation1dto1d__WEBPACK_IMPORTED_MODULE_2__.Backpropagation1Dto1D(this, this.previousLayer);
     }
   }, {
     key: "is1D",
@@ -423,6 +487,8 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       } else if (previousLayer.is3D()) {
         this.setWidth(previousLayer.getOutputWidth() * previousLayer.getOutputHeight() * previousLayer.getOutputDepth());
       }
+
+      _get(_getPrototypeOf(AbstractLayer1D.prototype), "transition", this).call(this, previousLayer);
     }
   }, {
     key: "setSize",
@@ -458,6 +524,102 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
 
 /***/ }),
 
+/***/ "./src/typescript/layer/backpropagation/abstract.tsx":
+/*!***********************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/abstract.tsx ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractBackPropagation": () => (/* binding */ AbstractBackPropagation)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AbstractBackPropagation = function AbstractBackPropagation(layer, previousLayer) {
+  _classCallCheck(this, AbstractBackPropagation);
+
+  _defineProperty(this, "layer", null);
+
+  _defineProperty(this, "previousLayer", null);
+
+  this.layer = layer;
+  this.previousLayer = previousLayer;
+};
+
+/***/ }),
+
+/***/ "./src/typescript/layer/backpropagation/backpropagation1dto1d.tsx":
+/*!************************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/backpropagation1dto1d.tsx ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Backpropagation1Dto1D": () => (/* binding */ Backpropagation1Dto1D)
+/* harmony export */ });
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/matrix */ "./src/typescript/math/matrix.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
+  _inherits(Backpropagation1Dto1D, _AbstractBackPropagat);
+
+  var _super = _createSuper(Backpropagation1Dto1D);
+
+  function Backpropagation1Dto1D() {
+    _classCallCheck(this, Backpropagation1Dto1D);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Backpropagation1Dto1D, [{
+    key: "propagate",
+    value: function propagate(input, numberOfExamples, regularization, sigma) {
+      var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
+      var delta = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.multiply)(sigma, previousActivations.transpose().conjugate());
+      this.layer.gW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(delta.rowwiseSum(), numberOfExamples), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(this.layer.W, regularization / numberOfExamples));
+      this.layer.gb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(sigma.rowwiseSum(), numberOfExamples);
+
+      if (this.previousLayer !== null) {
+        return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiply)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.multiply)(this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
+      }
+
+      return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    }
+  }]);
+
+  return Backpropagation1Dto1D;
+}(_abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
+
+/***/ }),
+
 /***/ "./src/typescript/layer/index.tsx":
 /*!****************************************!*\
   !*** ./src/typescript/layer/index.tsx ***!
@@ -468,11 +630,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer": () => (/* reexport safe */ _abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractLayer),
 /* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _softmax__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
-/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _logistic__WEBPACK_IMPORTED_MODULE_2__.LogisticLayer)
+/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _logistic__WEBPACK_IMPORTED_MODULE_2__.LogisticLayer),
+/* harmony export */   "TanhLayer": () => (/* reexport safe */ _tanh__WEBPACK_IMPORTED_MODULE_3__.TanhLayer),
+/* harmony export */   "ReluLayer": () => (/* reexport safe */ _relu__WEBPACK_IMPORTED_MODULE_4__.ReluLayer),
+/* harmony export */   "SoftplusLayer": () => (/* reexport safe */ _softplus__WEBPACK_IMPORTED_MODULE_5__.SoftplusLayer)
 /* harmony export */ });
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/abstract.tsx");
 /* harmony import */ var _softmax__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./softmax */ "./src/typescript/layer/softmax.tsx");
 /* harmony import */ var _logistic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logistic */ "./src/typescript/layer/logistic.tsx");
+/* harmony import */ var _tanh__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./tanh */ "./src/typescript/layer/tanh.tsx");
+/* harmony import */ var _relu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./relu */ "./src/typescript/layer/relu.tsx");
+/* harmony import */ var _softplus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./softplus */ "./src/typescript/layer/softplus.tsx");
+
+
+
 
 
 
@@ -537,8 +708,8 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     }
   }, {
     key: "derivative",
-    value: function derivative() {
-      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.logisticDerivative)(this.A);
+    value: function derivative(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.logisticDerivative)(m);
     }
   }, {
     key: "getType",
@@ -558,6 +729,90 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }]);
 
   return LogisticLayer;
+}(_abstract1d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer1D);
+
+
+
+/***/ }),
+
+/***/ "./src/typescript/layer/relu.tsx":
+/*!***************************************!*\
+  !*** ./src/typescript/layer/relu.tsx ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ReluLayer": () => (/* binding */ ReluLayer)
+/* harmony export */ });
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
+/* harmony import */ var _abstract1d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abstract1d */ "./src/typescript/layer/abstract1d.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
+  _inherits(ReluLayer, _AbstractLayer1D);
+
+  var _super = _createSuper(ReluLayer);
+
+  function ReluLayer() {
+    _classCallCheck(this, ReluLayer);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(ReluLayer, [{
+    key: "activation",
+    value: function activation(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.reluActivation)(m);
+    }
+  }, {
+    key: "derivative",
+    value: function derivative(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.reluDerivative)(m);
+    }
+  }, {
+    key: "getType",
+    value: function getType() {
+      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.relu;
+    }
+  }, {
+    key: "loss",
+    value: function loss(output, predictions) {
+      return 0.0; // todo
+    }
+  }, {
+    key: "error",
+    value: function error(m) {
+      return 0.0; // todo
+    }
+  }]);
+
+  return ReluLayer;
 }(_abstract1d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer1D);
 
 
@@ -621,7 +876,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     }
   }, {
     key: "derivative",
-    value: function derivative() {
+    value: function derivative(m) {
       throw new Error("Unsupported usage.");
     }
   }, {
@@ -648,6 +903,211 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
+/***/ "./src/typescript/layer/softplus.tsx":
+/*!*******************************************!*\
+  !*** ./src/typescript/layer/softplus.tsx ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SoftplusLayer": () => (/* binding */ SoftplusLayer)
+/* harmony export */ });
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
+/* harmony import */ var _abstract1d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abstract1d */ "./src/typescript/layer/abstract1d.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+var SoftplusLayer = /*#__PURE__*/function (_AbstractLayer1D) {
+  _inherits(SoftplusLayer, _AbstractLayer1D);
+
+  var _super = _createSuper(SoftplusLayer);
+
+  function SoftplusLayer() {
+    _classCallCheck(this, SoftplusLayer);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(SoftplusLayer, [{
+    key: "activation",
+    value: function activation(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.softplusActivation)(m);
+    }
+  }, {
+    key: "derivative",
+    value: function derivative(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.softplusDerivative)(m);
+    }
+  }, {
+    key: "getType",
+    value: function getType() {
+      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.softplus;
+    }
+  }, {
+    key: "loss",
+    value: function loss(output, predictions) {
+      return 0.0; // todo
+    }
+  }, {
+    key: "error",
+    value: function error(m) {
+      return 0.0; // todo
+    }
+  }]);
+
+  return SoftplusLayer;
+}(_abstract1d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer1D);
+
+
+
+/***/ }),
+
+/***/ "./src/typescript/layer/tanh.tsx":
+/*!***************************************!*\
+  !*** ./src/typescript/layer/tanh.tsx ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TanhLayer": () => (/* binding */ TanhLayer)
+/* harmony export */ });
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
+/* harmony import */ var _abstract1d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abstract1d */ "./src/typescript/layer/abstract1d.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
+  _inherits(TanhLayer, _AbstractLayer1D);
+
+  var _super = _createSuper(TanhLayer);
+
+  function TanhLayer() {
+    _classCallCheck(this, TanhLayer);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(TanhLayer, [{
+    key: "activation",
+    value: function activation(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.tanhActivation)(m);
+    }
+  }, {
+    key: "derivative",
+    value: function derivative(m) {
+      return (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.tanhDerivative)(m);
+    }
+  }, {
+    key: "getType",
+    value: function getType() {
+      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.tanh;
+    }
+  }, {
+    key: "loss",
+    value: function loss(output, predictions) {
+      return 0.0; // todo
+    }
+  }, {
+    key: "error",
+    value: function error(m) {
+      return 0.0; // todo
+    }
+  }]);
+
+  return TanhLayer;
+}(_abstract1d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer1D);
+
+
+
+/***/ }),
+
+/***/ "./src/typescript/main.tsx":
+/*!*********************************!*\
+  !*** ./src/typescript/main.tsx ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Builder1D": () => (/* reexport safe */ _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__.Builder1D),
+/* harmony export */   "Matrix": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix),
+/* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
+/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer),
+/* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply),
+/* harmony export */   "matrixSum": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.sum),
+/* harmony export */   "matrixFillRandom": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.fillRandom),
+/* harmony export */   "matrixElementWiseMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseMultiply),
+/* harmony export */   "matrixElementWiseDivide": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseDivide),
+/* harmony export */   "matrixElementWiseAdd": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseAdd),
+/* harmony export */   "matrixElementWiseSubtract": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseSubtract),
+/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__.DatasetBuilder),
+/* harmony export */   "ReluLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.ReluLayer),
+/* harmony export */   "SoftplusLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftplusLayer),
+/* harmony export */   "TanhLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.TanhLayer)
+/* harmony export */ });
+/* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
+/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
+/* harmony import */ var _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dataset/DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.tsx");
+
+
+
+
+
+
+
+/***/ }),
+
 /***/ "./src/typescript/math/matrix.tsx":
 /*!****************************************!*\
   !*** ./src/typescript/math/matrix.tsx ***!
@@ -664,14 +1124,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
 /* harmony export */   "setZeros": () => (/* binding */ setZeros),
 /* harmony export */   "elementWiseMultiply": () => (/* binding */ elementWiseMultiply),
+/* harmony export */   "elementWiseMultiplyNumber": () => (/* binding */ elementWiseMultiplyNumber),
 /* harmony export */   "sum": () => (/* binding */ sum),
 /* harmony export */   "cols": () => (/* binding */ cols),
 /* harmony export */   "elementWiseDivide": () => (/* binding */ elementWiseDivide),
+/* harmony export */   "elementWiseDivideNumber": () => (/* binding */ elementWiseDivideNumber),
 /* harmony export */   "softmaxActivation": () => (/* binding */ softmaxActivation),
 /* harmony export */   "softmaxLoss": () => (/* binding */ softmaxLoss),
 /* harmony export */   "logisticActivation": () => (/* binding */ logisticActivation),
 /* harmony export */   "logisticDerivative": () => (/* binding */ logisticDerivative),
-/* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss)
+/* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss),
+/* harmony export */   "tanhActivation": () => (/* binding */ tanhActivation),
+/* harmony export */   "tanhDerivative": () => (/* binding */ tanhDerivative),
+/* harmony export */   "reluActivation": () => (/* binding */ reluActivation),
+/* harmony export */   "reluDerivative": () => (/* binding */ reluDerivative),
+/* harmony export */   "softplusActivation": () => (/* binding */ softplusActivation),
+/* harmony export */   "softplusDerivative": () => (/* binding */ softplusDerivative)
 /* harmony export */ });
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gpu.js */ "gpu.js");
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -713,10 +1181,12 @@ var Matrix = /*#__PURE__*/function () {
     value: function resize(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.data = new Array();
+      this.data = [];
 
       for (var row = 0; row < this.rows; row += 1) {
-        this.data[row] = [];
+        this.data[row] = new Array(this.cols).map(function () {
+          return 0;
+        });
       }
 
       return this;
@@ -724,10 +1194,24 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "generateData",
     value: function generateData(arr) {
-      this.data = new Array();
+      this.data = [];
 
-      for (var row = 0; row < arr.length; row += 1) {
-        this.data[row] = arr[row];
+      for (var row = 0; row < this.rows; row += 1) {
+        this.data[row] = new Array(this.cols).map(function () {
+          return 0;
+        });
+      }
+
+      for (var col = 0; col < this.cols; col += 1) {
+        for (var _row = 0; _row < this.rows; _row += 1) {
+          if (typeof arr[col] === "number") {
+            this.data[_row][col] = arr[col];
+          } else if (arr[col] instanceof Float32Array) {
+            this.data[_row][col] = arr[col][_row];
+          } else {
+            this.data[_row][col] = 0;
+          }
+        }
       }
 
       return this;
@@ -760,14 +1244,31 @@ var Matrix = /*#__PURE__*/function () {
     value: function colwiseSum() {
       var data = [];
 
-      for (var row = 0; row < this.rows; row += 1) {
+      for (var col = 0; col < this.cols; col += 1) {
         var _sum = 0.0;
 
-        for (var col = 0; col < this.cols; col += 1) {
+        for (var row = 0; row < this.rows; row += 1) {
           _sum += this.data[row][col];
         }
 
-        data[row] = [_sum];
+        data[col] = [_sum];
+      }
+
+      return new Matrix(1, this.cols, data);
+    }
+  }, {
+    key: "rowwiseSum",
+    value: function rowwiseSum() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        var _sum2 = 0.0;
+
+        for (var col = 0; col < this.rows; col += 1) {
+          _sum2 += this.data[row][col];
+        }
+
+        data[row] = [_sum2];
       }
 
       return new Matrix(this.rows, 1, data);
@@ -776,23 +1277,34 @@ var Matrix = /*#__PURE__*/function () {
     key: "replicate",
     value: function replicate(rows, cols) {
       var oldData = this.data;
+      var newData = [];
+      var result = null;
 
       if (rows === 1 && this.cols === 1 && cols > 1) {
-        this.resize(this.rows, cols);
+        result = new Matrix(this.rows, cols);
 
         for (var row = 0; row < this.rows; row += 1) {
+          newData[row] = [];
+
           for (var col = 0; col < cols; col += 1) {
-            this.data[row][col] = oldData[row][0];
+            newData[row][col] = oldData[row][0];
           }
         }
       } else if (cols === 1 && this.rows === 1 && rows > 1) {
-        this.resize(rows, this.cols);
+        result = new Matrix(rows, this.cols);
 
-        for (var _row = 0; _row < rows; _row += 1) {
+        for (var _row2 = 0; _row2 < rows; _row2 += 1) {
+          newData[_row2] = [];
+
           for (var _col = 0; _col < this.cols; _col += 1) {
-            this.data[_row][_col] = oldData[0][_col];
+            newData[_row2][_col] = oldData[0][_col];
           }
         }
+      }
+
+      if (result) {
+        result.generateData(newData);
+        return result;
       }
 
       return this;
@@ -806,6 +1318,11 @@ var Matrix = /*#__PURE__*/function () {
       }).setOutput([this.cols, this.rows]);
       this.resize(this.cols, this.rows);
       this.generateData(kernel(oldData));
+      return this;
+    }
+  }, {
+    key: "conjugate",
+    value: function conjugate() {
       return this;
     }
   }]);
@@ -860,7 +1377,7 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
 };
 var fillRandom = function fillRandom(m1, parameter) {
   var kernel = gpu.createKernel(function () {
-    return Math.random() * Math.sqrt(2.0 / this.constants.parameter);
+    return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
   }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
   });
@@ -886,6 +1403,14 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   }).setOutput([m1.rows, m2.cols]);
   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
+var elementWiseMultiplyNumber = function elementWiseMultiplyNumber(m1, num) {
+  var kernel = gpu.createKernel(function (a) {
+    return a[this.thread.x][this.thread.y] * this.constants.number;
+  }).setOutput([m1.rows, m1.cols]).setConstants({
+    number: num
+  });
+  return new Matrix(m1.rows, m1.cols, kernel(m1.data));
+};
 var sum = function sum(m) {
   return m.sum();
 };
@@ -906,12 +1431,20 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
   }).setOutput([m1.rows, m2.cols]);
   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
+var elementWiseDivideNumber = function elementWiseDivideNumber(m1, num) {
+  var kernel = gpu.createKernel(function (a) {
+    return a[this.thread.x][this.thread.y] / this.constants.number;
+  }).setOutput([m1.rows, m1.cols]).setConstants({
+    number: num
+  });
+  return new Matrix(m1.rows, m1.cols, kernel(m1.data));
+};
 var softmaxActivation = function softmaxActivation(m) {
   var kernel = gpu.createKernel(function (a) {
     return Math.exp(a[this.thread.x][this.thread.y]);
   }).setOutput([m.rows, m.cols]);
   var data = new Matrix(m.rows, m.cols, kernel(m.data));
-  var divider = new Matrix(m.rows, 1, data.colwiseSum().data).transpose().replicate(m.rows, 1);
+  var divider = new Matrix(1, m.cols, data.colwiseSum().data).replicate(m.rows, 1);
   var result = new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
   return result;
 };
@@ -919,8 +1452,7 @@ var softmaxLoss = function softmaxLoss(output, predictions) {
   var kernel = gpu.createKernel(function (a) {
     return Math.log(a[this.thread.x][this.thread.y]);
   }).setOutput([predictions.rows, predictions.cols]);
-  var data = kernel(predictions.data);
-  return new Matrix(output.rows, output.cols, elementWiseMultiply(output, data).data).sum();
+  return new Matrix(output.rows, output.cols, elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(predictions.data))).data).sum();
 };
 var logisticActivation = function logisticActivation(m) {
   var kernel = gpu.createKernel(function (a) {
@@ -941,10 +1473,50 @@ var logisticLoss = function logisticLoss(output, predictions) {
   var kernel2 = gpu.createKernel(function (a) {
     return 1.0 - a[this.thread.x][this.thread.y];
   }).setOutput([output.rows, output.cols]);
-  var kernel4 = gpu.createKernel(function (a) {
+  var kernel3 = gpu.createKernel(function (a) {
     return Math.log(1.0 - a[this.thread.x][this.thread.y]);
   }).setOutput([predictions.rows, predictions.cols]);
-  return elementWiseAdd(elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data))), elementWiseMultiply(new Matrix(output.rows, output.cols, kernel2(output.data)), new Matrix(predictions.rows, predictions.cols, kernel4(predictions.data)))).sum();
+  return elementWiseAdd(elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data))), elementWiseMultiply(new Matrix(output.rows, output.cols, kernel2(output.data)), new Matrix(predictions.rows, predictions.cols, kernel3(predictions.data)))).sum();
+};
+var tanhActivation = function tanhActivation(m) {
+  var kernel = gpu.createKernel(function (a) {
+    return 2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0;
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var tanhDerivative = function tanhDerivative(m) {
+  var kernel = gpu.createKernel(function (a) {
+    return 1.0 - Math.pow(2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0, 2.0);
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var reluActivation = function reluActivation(m) {
+  var kernel = gpu.createKernel(function (a) {
+    return Math.max(0.0, a[this.thread.x][this.thread.y]);
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var reluDerivative = function reluDerivative(m) {
+  var kernel = gpu.createKernel(function (a) {
+    if (a[this.thread.x][this.thread.y] > 0) {
+      return 1;
+    }
+
+    return 0;
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var softplusActivation = function softplusActivation(m) {
+  var kernel = gpu.createKernel(function (a) {
+    return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var softplusDerivative = function softplusDerivative(m) {
+  var kernel = gpu.createKernel(function (a) {
+    return 1 / (1 + Math.exp(-a[this.thread.x][this.thread.y]));
+  }).setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data));
 };
 
 /***/ }),
@@ -994,6 +1566,11 @@ var Network = /*#__PURE__*/function () {
       this.layers.push(layer);
     }
   }, {
+    key: "getLayers",
+    value: function getLayers() {
+      return this.layers;
+    }
+  }, {
     key: "forward",
     value: function forward(input) {
       var output = input;
@@ -1007,7 +1584,8 @@ var Network = /*#__PURE__*/function () {
     value: function backward(X, Y, predictions, regularization) {
       var m = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.cols)(X);
       var delta = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseSubtract)(predictions, Y);
-      this.layers.reverse().forEach(function (layer) {// delta = layer.backpropagation.propagate(X, m, regularization, delta)
+      this.layers.reverse().forEach(function (layer) {
+        delta = layer.getBackPropagation().propagate(X, m, regularization, delta);
       });
     }
   }, {
@@ -1069,6 +1647,9 @@ var LayerType;
 (function (LayerType) {
   LayerType["logistic"] = "logistic";
   LayerType["softmax"] = "softmax";
+  LayerType["tanh"] = "tanh";
+  LayerType["relu"] = "relu";
+  LayerType["softplus"] = "softplus";
 })(LayerType || (LayerType = {}));
 
 /***/ }),
@@ -1171,40 +1752,13 @@ module.exports = require("gpu.js");
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-/*!*********************************!*\
-  !*** ./src/typescript/main.tsx ***!
-  \*********************************/
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Builder1D": () => (/* reexport safe */ _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__.Builder1D),
-/* harmony export */   "Matrix": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix),
-/* harmony export */   "SoftmaxLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.SoftmaxLayer),
-/* harmony export */   "LogisticLayer": () => (/* reexport safe */ _layer__WEBPACK_IMPORTED_MODULE_1__.LogisticLayer),
-/* harmony export */   "matrixMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.multiply),
-/* harmony export */   "matrixSum": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.sum),
-/* harmony export */   "matrixFillRandom": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.fillRandom),
-/* harmony export */   "matrixElementWiseMultiply": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseMultiply),
-/* harmony export */   "matrixElementWiseDivide": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseDivide),
-/* harmony export */   "matrixElementWiseAdd": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseAdd),
-/* harmony export */   "matrixElementWiseSubtract": () => (/* reexport safe */ _math_matrix__WEBPACK_IMPORTED_MODULE_2__.elementWiseSubtract),
-/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__.DatasetBuilder)
-/* harmony export */ });
-/* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
-/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
-/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
-/* harmony import */ var _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dataset/DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.tsx");
-
-
-
-
-
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/typescript/main.tsx");
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=impulse-ts.dev.js.map

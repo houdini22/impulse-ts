@@ -1,5 +1,11 @@
 import { Builder1D } from "./builder/builder1d";
-import { SoftmaxLayer, LogisticLayer } from "./layer";
+import {
+  SoftmaxLayer,
+  LogisticLayer,
+  ReluLayer,
+  SoftplusLayer,
+  TanhLayer,
+} from "./layer";
 import { Matrix } from "./math/matrix";
 import {
   multiply as matrixMultiply,
@@ -24,5 +30,8 @@ export {
   matrixElementWiseDivide,
   matrixElementWiseAdd,
   matrixElementWiseSubtract,
-  DatasetBuilder
+  DatasetBuilder,
+  ReluLayer,
+  SoftplusLayer,
+  TanhLayer,
 };

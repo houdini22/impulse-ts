@@ -22,6 +22,8 @@ abstract class AbstractLayer3D extends AbstractLayer {
         previousLayer.getOutputDepth(),
       ]);
     }
+
+    super.transition(previousLayer);
   }
 
   setSize(dimension: Dimension) {

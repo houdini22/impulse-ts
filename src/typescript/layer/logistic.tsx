@@ -12,8 +12,8 @@ class LogisticLayer extends AbstractLayer1D {
     return logisticActivation(m);
   }
 
-  derivative(): Matrix {
-    return logisticDerivative(this.A);
+  derivative(m: Matrix): Matrix {
+    return logisticDerivative(m);
   }
 
   getType(): LayerType {

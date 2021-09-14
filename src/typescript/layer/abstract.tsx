@@ -1,5 +1,6 @@
 import { elementWiseAdd, Matrix, multiply } from "../math/matrix";
 import { Dimension, Layers } from "../types";
+import { AbstractBackPropagation } from "./backpropagation/abstract";
 
 abstract class AbstractLayer {
   public W: Matrix;
@@ -13,6 +14,7 @@ abstract class AbstractLayer {
   protected height: number = 0;
   protected depth: number = 0;
   protected previousLayer: Layers = null;
+  protected backPropagation: AbstractBackPropagation = null;
 
   constructor() {
     this.W = new Matrix();
@@ -23,8 +25,15 @@ abstract class AbstractLayer {
     this.gb = new Matrix();
   }
 
+  getBackPropagation(): AbstractBackPropagation {
+    return this.backPropagation;
+  }
+
   forward(input: Matrix): Matrix {
-    this.Z = elementWiseAdd(multiply(this.W, input), this.b.replicate(1, input.cols));
+    this.Z = elementWiseAdd(
+      multiply(this.W, input),
+      this.b.replicate(1, input.cols)
+    );
     this.A = this.activation(this.Z);
     return this.A;
   }
@@ -65,7 +74,9 @@ abstract class AbstractLayer {
 
   abstract is3D(): boolean;
 
-  abstract transition(previousLayer: Layers);
+  transition(previousLayer: Layers): void {
+    this.previousLayer = previousLayer;
+  }
 
   abstract setSize(dimension: Dimension);
 
