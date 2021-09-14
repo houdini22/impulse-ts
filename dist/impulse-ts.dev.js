@@ -1132,7 +1132,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "softplusActivation": () => (/* binding */ softplusActivation),
 /* harmony export */   "softplusDerivative": () => (/* binding */ softplusDerivative),
 /* harmony export */   "penalty": () => (/* binding */ penalty),
-/* harmony export */   "sqrt": () => (/* binding */ sqrt)
+/* harmony export */   "sqrt": () => (/* binding */ sqrt),
+/* harmony export */   "im2col": () => (/* binding */ im2col),
+/* harmony export */   "maxpool": () => (/* binding */ maxpool)
 /* harmony export */ });
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gpu.js */ "gpu.js");
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -1192,13 +1194,13 @@ var Matrix = /*#__PURE__*/function () {
       }
 
       for (var col = 0; col < this.cols; col += 1) {
-        for (var _row = 0; _row < this.rows; _row += 1) {
+        for (var _row2 = 0; _row2 < this.rows; _row2 += 1) {
           if (typeof arr[col] === "number") {
-            this.data[_row][col] = arr[col];
+            this.data[_row2][col] = arr[col];
           } else if (arr[col] instanceof Float32Array) {
-            this.data[_row][col] = arr[col][_row];
+            this.data[_row2][col] = arr[col][_row2];
           } else {
-            this.data[_row][col] = 0;
+            this.data[_row2][col] = 0;
           }
         }
       }
@@ -1282,11 +1284,11 @@ var Matrix = /*#__PURE__*/function () {
       } else if (cols === 1 && this.rows === 1 && rows > 1) {
         result = new Matrix(rows, this.cols);
 
-        for (var _row2 = 0; _row2 < rows; _row2 += 1) {
-          newData[_row2] = [];
+        for (var _row3 = 0; _row3 < rows; _row3 += 1) {
+          newData[_row3] = [];
 
-          for (var _col = 0; _col < this.cols; _col += 1) {
-            newData[_row2][_col] = oldData[0][_col];
+          for (var _col2 = 0; _col2 < this.cols; _col2 += 1) {
+            newData[_row3][_col2] = oldData[0][_col2];
           }
         }
       }
@@ -1312,9 +1314,19 @@ var Matrix = /*#__PURE__*/function () {
       return this;
     }
   }, {
-    key: "colwiseMaxCoeffIndex",
-    value: function colwiseMaxCoeffIndex() {
-      return 0; // todo
+    key: "colMaxCoeffIndex",
+    value: function colMaxCoeffIndex(col) {
+      var maxIndex = -1;
+      var max = -Infinity;
+
+      for (var row = 0; row < this.rows; row += 1) {
+        if (this.data[row][col] > max) {
+          max = this.data[row][col];
+          maxIndex = row;
+        }
+      }
+
+      return maxIndex;
     }
   }, {
     key: "block",
@@ -1330,6 +1342,42 @@ var Matrix = /*#__PURE__*/function () {
       }
 
       return new Matrix(blockRows, blockCols, data);
+    }
+  }, {
+    key: "col",
+    value: function col(_col) {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [this.data[row][_col]];
+      }
+
+      return new Matrix(this.rows, 1, data);
+    }
+  }, {
+    key: "setCol",
+    value: function setCol(col, tmp) {
+      for (var row = 0; row < this.rows; row += 1) {
+        this.data[row][col] = tmp.data[row][0];
+      }
+
+      return this;
+    }
+  }, {
+    key: "rollToColMatrix",
+    value: function rollToColMatrix() {
+      var data = [];
+      var _row = 0;
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[_row++][0] = this.data[row][col];
+        }
+      }
+
+      return new Matrix(this.rows * this.cols, 1, data);
     }
   }]);
 
@@ -1539,6 +1587,12 @@ var sqrt = function sqrt(m) {
   }).setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data));
 };
+var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
+  return new Matrix();
+};
+var maxpool = function maxpool(input, channels, height, width, kernel_h, kernel_w, stride_h, stride_w) {
+  return new Matrix();
+};
 
 /***/ }),
 
@@ -1692,7 +1746,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
     _defineProperty(this, "verbose", true);
 
-    _defineProperty(this, "verboseStep", 10);
+    _defineProperty(this, "verboseStep", 1);
 
     _defineProperty(this, "stepCallback", function () {
       return null;
@@ -1760,8 +1814,8 @@ var AbstractTrainer = /*#__PURE__*/function () {
         cost += (error * loss + this.regularization * penalty / (2.0 * miniBatchSize)) / (numBatches * (miniBatchSize / batchSize));
 
         for (var col = 0; col < predictedOutput.cols; col += 1) {
-          var index1 = predictedOutput.colwiseMaxCoeffIndex();
-          var index2 = predictedOutput.colwiseMaxCoeffIndex();
+          var index1 = predictedOutput.colMaxCoeffIndex(col);
+          var index2 = predictedOutput.colMaxCoeffIndex(col);
 
           if (index1 === index2) {
             accuracy++;
@@ -1859,7 +1913,6 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
 
         for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
           var input = inputDataset.getBatch(offset, this.batchSize);
-          console.log(input.rows, input.cols);
           var output = outputDataset.getBatch(offset, this.batchSize);
           var forward = this.network.forward(input);
           this.network.backward(input, output, forward, this.regularization);
@@ -2110,6 +2163,8 @@ var LayerType;
   LayerType["tanh"] = "tanh";
   LayerType["relu"] = "relu";
   LayerType["softplus"] = "softplus";
+  LayerType["conv"] = "conv";
+  LayerType["maxpool"] = "maxpool";
 })(LayerType || (LayerType = {}));
 
 /***/ }),

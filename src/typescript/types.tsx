@@ -6,6 +6,8 @@ import {
   SoftplusLayer,
   AbstractLayer,
 } from "./layer";
+import { ConvLayer } from "./layer/conv";
+import { MaxPoolLayer } from "./layer/maxpool";
 
 export type Dimension = [number] | [number, number, number];
 
@@ -15,6 +17,8 @@ export enum LayerType {
   tanh = "tanh",
   relu = "relu",
   softplus = "softplus",
+  conv = "conv",
+  maxpool = "maxpool",
 }
 
 export type Layers =
@@ -31,4 +35,4 @@ export type Layers1D =
   | ReluLayer
   | SoftplusLayer
   | AbstractLayer;
-export type Layers3D = null;
+export type Layers3D = ConvLayer | MaxPoolLayer;

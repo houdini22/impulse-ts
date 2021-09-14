@@ -42,7 +42,7 @@ abstract class AbstractLayer1D extends AbstractLayer {
     return false;
   }
 
-  transition(previousLayer: Layers) {
+  transition(previousLayer: Layers): AbstractLayer1D {
     if (previousLayer.is1D()) {
       this.setWidth(previousLayer.getSize());
     } else if (previousLayer.is3D()) {
@@ -54,6 +54,8 @@ abstract class AbstractLayer1D extends AbstractLayer {
     }
 
     super.transition(previousLayer);
+
+    return this;
   }
 
   setSize(value: Dimension) {

@@ -3,7 +3,7 @@ import { Dimension } from "../types";
 
 abstract class AbstractLayer3D extends AbstractLayer {
   configure() {
-    // empty
+    // do nothing
   }
 
   is1D(): boolean {
@@ -14,7 +14,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
     return true;
   }
 
-  transition(previousLayer: AbstractLayer) {
+  transition(previousLayer: AbstractLayer): AbstractLayer3D {
     if (previousLayer.is3D()) {
       this.setSize([
         previousLayer.getOutputWidth(),
@@ -24,12 +24,22 @@ abstract class AbstractLayer3D extends AbstractLayer {
     }
 
     super.transition(previousLayer);
+
+    return this;
   }
 
   setSize(dimension: Dimension) {
     this.setWidth(dimension[0]);
     this.setHeight(dimension[1]);
     this.setDepth(dimension[2]);
+  }
+
+  getSize(): Dimension {
+    return [
+      this.getOutputWidth(),
+      this.getOutputHeight(),
+      this.getOutputDepth(),
+    ];
   }
 }
 

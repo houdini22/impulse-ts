@@ -82,8 +82,9 @@ abstract class AbstractLayer {
 
   abstract is3D(): boolean;
 
-  transition(previousLayer: Layers): void {
+  transition(previousLayer: Layers): AbstractLayer {
     this.previousLayer = previousLayer;
+    return this;
   }
 
   abstract setSize(dimension: Dimension);

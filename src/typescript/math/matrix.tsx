@@ -168,6 +168,35 @@ export class Matrix {
 
     return new Matrix(blockRows, blockCols, data);
   }
+
+  col(col: number): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [this.data[row][col]];
+    }
+    return new Matrix(this.rows, 1, data);
+  }
+
+  setCol(col: number, tmp: Matrix): Matrix {
+    for (let row = 0; row < this.rows; row += 1) {
+      this.data[row][col] = tmp.data[row][0];
+    }
+    return this;
+  }
+
+  rollToColMatrix(): Matrix {
+    const data = [];
+
+    let _row = 0;
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[_row++][0] = this.data[row][col];
+      }
+    }
+
+    return new Matrix(this.rows * this.cols, 1, data);
+  }
 }
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
@@ -350,7 +379,11 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
     output.cols,
     elementWiseMultiply(
       output,
-      new Matrix(output.rows, output.cols, kernel(predictions.data) as number[][])
+      new Matrix(
+        output.rows,
+        output.cols,
+        kernel(predictions.data) as number[][]
+      )
     ).data
   ).sum();
 };
@@ -490,4 +523,32 @@ export const sqrt = (m: Matrix): Matrix => {
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
+};
+
+export const im2col = (
+  input: Matrix,
+  channels: number,
+  height: number,
+  width: number,
+  kernel_h: number,
+  kernel_w: number,
+  pad_h: number,
+  pad_w: number,
+  stride_h: number,
+  stride_w: number
+): Matrix => {
+  return new Matrix();
+};
+
+export const maxpool = (
+  input: Matrix,
+  channels: number,
+  height: number,
+  width: number,
+  kernel_h: number,
+  kernel_w: number,
+  stride_h: number,
+  stride_w: number
+): Matrix => {
+  return new Matrix();
 };
