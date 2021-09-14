@@ -11,8 +11,9 @@ export class Dataset {
         const data = [];
 
         for (let example = 0; example < numberOfExamples; example += 1) {
+            data[example] = [];
             for (let dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-                data.push(arr[example][dataIndex] || 0);
+                data[example][dataIndex] = arr[example][dataIndex] || 0;
             }
         }
 
@@ -20,9 +21,10 @@ export class Dataset {
     }
 
     exampleAt(index: number): Matrix {
-        const data = [[]];
+        const data = [];
         for (let dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
-            data[0][dataIndex] = this.data[dataIndex * index];
+            data[dataIndex] = [];
+            data[dataIndex][0] = this.data[dataIndex * index];
         }
 
         return new Matrix(this.exampleSize, 1, data);

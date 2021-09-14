@@ -169,8 +169,10 @@ var Dataset = /*#__PURE__*/function () {
     var data = [];
 
     for (var example = 0; example < numberOfExamples; example += 1) {
+      data[example] = [];
+
       for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        data.push(arr[example][dataIndex] || 0);
+        data[example][dataIndex] = arr[example][dataIndex] || 0;
       }
     }
 
@@ -180,10 +182,11 @@ var Dataset = /*#__PURE__*/function () {
   _createClass(Dataset, [{
     key: "exampleAt",
     value: function exampleAt(index) {
-      var data = [[]];
+      var data = [];
 
       for (var dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
-        data[0][dataIndex] = this.data[dataIndex * index];
+        data[dataIndex] = [];
+        data[dataIndex][0] = this.data[dataIndex * index];
       }
 
       return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, data);
@@ -710,10 +713,10 @@ var Matrix = /*#__PURE__*/function () {
     value: function resize(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.data = Float64Array.from(new Array(rows));
+      this.data = new Array(rows);
 
       for (var row = 0; row < this.rows; row += 1) {
-        this.data[row] = Float64Array.from(new Array(cols));
+        this.data[row] = new Array(cols);
       }
 
       return this;
@@ -721,10 +724,10 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "generateData",
     value: function generateData(arr) {
-      this.data = Float64Array.from(new Array(arr.length));
+      this.data = new Array(arr.length);
 
       for (var row = 0; row < arr.length; row += 1) {
-        this.data[row] = Float64Array.from(new Array(arr[0].length));
+        this.data[row] = Array.from(arr[row]);
       }
 
       return this;
@@ -764,7 +767,7 @@ var Matrix = /*#__PURE__*/function () {
           _sum += this.data[row][col];
         }
 
-        data[row] = _sum;
+        data[row] = [_sum];
       }
 
       return new Matrix(this.rows, 1, data);
@@ -772,8 +775,38 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "replicate",
     value: function replicate(rows, cols) {
-      for (var row = 0; row < this.rows; row += 1) {}
+      var oldData = this.data;
 
+      if (rows === 1 && this.cols === 1 && cols > 1) {
+        this.resize(this.rows, cols);
+
+        for (var row = 0; row < this.rows; row += 1) {
+          for (var col = 0; col < cols; col += 1) {
+            this.data[row][col] = oldData[row][0];
+          }
+        }
+      } else if (cols === 1 && this.rows === 1 && rows > 1) {
+        this.resize(rows, this.cols);
+
+        for (var _row = 0; _row < rows; _row += 1) {
+          for (var _col = 0; _col < this.cols; _col += 1) {
+            this.data[_row][_col] = oldData[0][_col];
+          }
+        }
+      }
+
+      return this;
+    }
+  }, {
+    key: "transpose",
+    value: function transpose() {
+      var oldData = this.data;
+      var kernel = gpu.createKernel(function (a) {
+        return a[this.thread.y][this.thread.x];
+      }).setOutput([this.cols, this.rows]);
+      var data = kernel(oldData);
+      this.resize(this.cols, this.rows);
+      this.generateData(data);
       return this;
     }
   }]);
@@ -785,7 +818,6 @@ var multiply = function multiply(m1, m2) {
     throw new Error("DIMENSIONS error.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     var sum = 0;
 
@@ -797,8 +829,7 @@ var multiply = function multiply(m1, m2) {
   }).setOutput([m1.rows, m2.cols]).setConstants({
     cols: m1.rows
   });
-  var data = kernel(m1.data, m2.data);
-  return new Matrix(m1.rows, m2.cols, Array.from(data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
 var elementWiseAdd = function elementWiseAdd(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -813,8 +844,7 @@ var elementWiseAdd = function elementWiseAdd(m1, m2) {
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
-  var data = kernel(m1.data, m2.data);
-  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
   return result;
 };
 var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
@@ -830,8 +860,7 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
-  var data = kernel(m1.data, m2.data);
-  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
   return result;
 };
 var fillRandom = function fillRandom(m1, parameter) {
@@ -840,16 +869,14 @@ var fillRandom = function fillRandom(m1, parameter) {
   }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
   });
-  var data = kernel();
-  var result = new Matrix(m1.rows, m1.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m1.cols, kernel());
   return result;
 };
 var setZeros = function setZeros(m1) {
   var kernel = gpu.createKernel(function () {
     return 0.0;
   }).setOutput([m1.rows, m1.cols]);
-  var data = kernel();
-  var result = new Matrix(m1.rows, m1.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m1.cols, kernel());
   return result;
 };
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
@@ -864,8 +891,7 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
-  var data = kernel(m1.data, m2.data);
-  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
   return result;
 };
 var sum = function sum(m) {
@@ -886,16 +912,15 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
-  var data = kernel(m1.data, m2.data);
-  var result = new Matrix(m1.rows, m2.cols, Array.from(data));
+  var result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
   return result;
 };
 var softmaxActivation = function softmaxActivation(m) {
   var kernel = gpu.createKernel(function (a) {
     return Math.exp(a[this.thread.x][this.thread.y]);
   }).setOutput([m.rows, m.cols]);
-  var data = new Matrix(m.rows, m.cols, Array.from(kernel(m.data)));
-  var divider = new Matrix(m.rows, 1, data.colwiseSum().data).replicate(m.rows, 1);
+  var data = new Matrix(m.rows, m.cols, kernel(m.data));
+  var divider = new Matrix(m.rows, 1, data.colwiseSum().data).transpose().replicate(m.rows, 1);
   var result = new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
   return result;
 };
@@ -911,23 +936,21 @@ var logisticActivation = function logisticActivation(m) {
   var kernel = gpu.createKernel(function (a) {
     return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
   }).setOutput([m.rows, m.cols]);
-  var data = kernel(m.data);
-  var result = new Matrix(m.rows, m.cols, Array.from(data));
+  var result = new Matrix(m.rows, m.cols, kernel(m.data));
   return result;
 };
 var logisticDerivative = function logisticDerivative(m) {
   var kernel = gpu.createKernel(function (a) {
     return a[this.thread.x][this.thread.y] * (1.0 - a[this.thread.x][this.thread.y]);
   }).setOutput([m.rows, m.cols]);
-  var data = kernel(m.data);
-  var result = new Matrix(m.rows, m.cols, Array.from(data));
+  var result = new Matrix(m.rows, m.cols, kernel(m.data));
   return result;
 };
 var logisticLoss = function logisticLoss(output, predictions) {
   var kernel = gpu.createKernel(function (a) {
     return Math.log(a[this.thread.x][this.thread.y]);
   }).setOutput([output.rows, output.cols]);
-  var predictionsLog = new Matrix(output.rows, output.cols, kernel((0,gpu_js__WEBPACK_IMPORTED_MODULE_0__.input)(output.data, [output.rows, output.cols])));
+  var predictionsLog = new Matrix(output.rows, output.cols, kernel(output.data));
   var kernel2 = gpu.createKernel(function (a) {
     return 1.0 - a[this.thread.x][this.thread.y];
   }).setOutput([output.rows, output.cols]);
