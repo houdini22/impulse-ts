@@ -358,7 +358,7 @@ var Dataset = /*#__PURE__*/function () {
       data[example] = [];
 
       for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        data[example][dataIndex] = Number(arr[example][dataIndex] || 0);
+        data[example][dataIndex] = arr[example][dataIndex].length ? Number(arr[example][dataIndex]) : NaN;
       }
     }
 
@@ -368,7 +368,7 @@ var Dataset = /*#__PURE__*/function () {
   _createClass(Dataset, [{
     key: "exampleAt",
     value: function exampleAt(index) {
-      return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, this.data.data.col(index));
+      return this.data.col(index);
     }
   }, {
     key: "getNumberOfExamples",
@@ -468,6 +468,8 @@ var AbstractDatasetModifier = /*#__PURE__*/function () {
       for (var _example = 0; _example < this.dataset.getNumberOfExamples(); _example += 1) {
         this.applyToExample(_example);
       }
+
+      return this.dataset;
     }
   }]);
 
@@ -528,8 +530,8 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "callback", function (number) {
-      return number;
+    _defineProperty(_assertThisInitialized(_this), "callback", function (example) {
+      return example;
     });
 
     return _this;
@@ -537,7 +539,15 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
 
   _createClass(CallbackDatabaseModifier, [{
     key: "applyToExample",
-    value: function applyToExample(example) {}
+    value: function applyToExample(example) {
+      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
+        var _example = this.callback(this.dataset.exampleAt(exampleIndex));
+
+        for (var row = 0; row < this.dataset.data.data.rows; row += 1) {
+          this.dataset.data.data[row][exampleIndex] = _example.data.data[row][0];
+        }
+      }
+    }
   }, {
     key: "setCallback",
     value: function setCallback(callback) {
@@ -620,7 +630,7 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
         min: min,
         max: max
       });
-      this.dataset.data = kernel(this.dataset.data.data);
+      this.dataset.data.data = kernel(this.dataset.data.data);
     }
   }]);
 
@@ -662,6 +672,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
   _inherits(MissingDataScalingDatabaseModifier, _AbstractDatasetModif);
@@ -669,14 +681,63 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
   var _super = _createSuper(MissingDataScalingDatabaseModifier);
 
   function MissingDataScalingDatabaseModifier() {
+    var _this;
+
     _classCallCheck(this, MissingDataScalingDatabaseModifier);
 
-    return _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "modificationType", "mean");
+
+    return _this;
   }
 
   _createClass(MissingDataScalingDatabaseModifier, [{
     key: "applyToExample",
-    value: function applyToExample(example) {}
+    value: function applyToExample(example) {
+      var _this2 = this;
+
+      var rowsToFill = [];
+      var correctExamplesCount = 0;
+      var sum = 0;
+      var valueToFill = 0;
+
+      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
+        var _example = this.dataset.exampleAt(exampleIndex);
+
+        for (var row = 0; row < _example.data.rows; row += 1) {
+          if (isNaN(_example[row][0])) {
+            rowsToFill.push({
+              row: row,
+              col: _example
+            });
+          } else {
+            sum += _example[row][0];
+            correctExamplesCount++;
+          }
+        }
+      }
+
+      if (this.modificationType === "mean") {
+        valueToFill = sum / correctExamplesCount;
+      }
+
+      rowsToFill.forEach(function (_ref) {
+        var row = _ref.row,
+            col = _ref.col;
+        _this2.dataset.data.data[row][col] = valueToFill;
+      });
+    }
+  }, {
+    key: "setModificationType",
+    value: function setModificationType(type) {
+      this.modificationType = type;
+      return this;
+    }
   }]);
 
   return MissingDataScalingDatabaseModifier;
@@ -1025,7 +1086,7 @@ var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
   }, {
     key: "getSize",
     value: function getSize() {
-      return [this.getOutputWidth(), this.getOutputHeight(), this.getOutputDepth()];
+      return [this.getWidth(), this.getHeight(), this.getDepth()];
     }
   }]);
 
@@ -1143,7 +1204,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Backpropagation3Dto1D": () => (/* binding */ Backpropagation3Dto1D)
 /* harmony export */ });
 /* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
-/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/matrix */ "./src/typescript/math/matrix.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1167,7 +1227,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
 var Backpropagation3Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
   _inherits(Backpropagation3Dto1D, _AbstractBackPropagat);
 
@@ -1182,7 +1241,7 @@ var Backpropagation3Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
   _createClass(Backpropagation3Dto1D, [{
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
-      return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+      return sigma;
     }
   }]);
 
@@ -1225,6 +1284,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
@@ -1233,15 +1294,92 @@ var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
   var _super = _createSuper(BackpropagationToConv);
 
   function BackpropagationToConv() {
+    var _this;
+
     _classCallCheck(this, BackpropagationToConv);
 
-    return _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
+
+    return _this;
   }
 
   _createClass(BackpropagationToConv, [{
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
-      return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+      var previousLayer = this.previousLayer;
+      var padding = previousLayer.getPadding();
+      var stride = previousLayer.getStride();
+      var filterSize = previousLayer.getFilterSize();
+      var outputWidth = previousLayer.getOutputWidth();
+      var outputHeight = previousLayer.getOutputHeight();
+      var outputDepth = previousLayer.getOutputDepth();
+      var inputWidth = previousLayer.getWidth();
+      var inputHeight = previousLayer.getHeight();
+      var inputDepth = previousLayer.getDepth();
+      var tmpResult = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix((inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth, numberOfExamples));
+      var result = new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(inputWidth * inputHeight * inputDepth, numberOfExamples);
+      var aPrev = previousLayer.derivative(previousLayer.A);
+      previousLayer.gW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(previousLayer.gW);
+      previousLayer.gb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(previousLayer.gb);
+
+      for (var m = 0; m < numberOfExamples; m++) {
+        for (var c = 0; c < outputDepth; c++) {
+          for (var h = 0; h < outputHeight; h++) {
+            for (var w = 0; w < outputWidth; w++) {
+              var vertStart = stride * h;
+              var vertEnd = vertStart + filterSize;
+              var horizStart = stride * w;
+              var horizEnd = horizStart + filterSize; // filter loop
+
+              for (var d = 0; d < inputDepth; d++) {
+                for (var y = 0, vertical = vertStart, verticalPad = -padding; y < filterSize; y++, vertical++, verticalPad++) {
+                  for (var x = 0, horizontal = horizStart, horizontalPad = -padding; x < filterSize; x++, horizontal++, horizontalPad++) {
+                    tmpResult[d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + vertical * (inputWidth + 2 * padding) + horizontal][m] += previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] * sigma[c * outputWidth * outputHeight + h * outputWidth + w][m];
+                    var z = 0;
+
+                    if (padding == 0) {
+                      z = previousLayer.Z.data[d * inputWidth * inputHeight + vertical * inputWidth + horizontal][m];
+                    } else {
+                      if (verticalPad >= 0 && horizontalPad >= 0 && verticalPad < inputHeight && horizontalPad < inputWidth) {
+                        z = previousLayer.Z.data[d * inputWidth * inputHeight + verticalPad * inputWidth + horizontalPad][m];
+                      }
+                    }
+
+                    previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] += z * sigma[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+                  }
+                }
+              }
+
+              previousLayer.gb.data[c][0] += sigma[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+            }
+          }
+        }
+
+        if (padding > 0) {
+          // unpad
+          for (var _c = 0; _c < inputDepth; _c++) {
+            for (var _h = -padding, _y = 0; _h < inputHeight + padding; _h++, _y++) {
+              for (var _w = -padding, _x = 0; _w < inputWidth + padding; _w++, _x++) {
+                if (_w >= 0 && _h >= 0 && _w < inputWidth && _h < inputHeight) {
+                  result[_c * inputWidth * inputHeight + _h * inputWidth + _w][m] = tmpResult[_c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + _y * (inputWidth + 2 * padding) + _x][m];
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (padding > 0) {
+        return result;
+      }
+
+      return tmpResult;
     }
   }]);
 
@@ -1284,6 +1422,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
@@ -1292,15 +1432,68 @@ var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
   var _super = _createSuper(BackpropagationToMaxPool);
 
   function BackpropagationToMaxPool() {
+    var _this;
+
     _classCallCheck(this, BackpropagationToMaxPool);
 
-    return _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
+
+    return _this;
   }
 
   _createClass(BackpropagationToMaxPool, [{
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
-      return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+      var prevLayer = this.previousLayer;
+      var result = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(prevLayer.Z.rows, prevLayer.Z.cols));
+      var filterSize = prevLayer.getFilterSize();
+      var stride = prevLayer.getStride();
+      var inputWidth = prevLayer.getWidth();
+      var inputHeight = prevLayer.getHeight();
+      var inputDepth = prevLayer.getDepth();
+      var outputWidth = prevLayer.getOutputWidth();
+      var outputHeight = prevLayer.getOutputHeight();
+      var outputDepth = prevLayer.getOutputDepth();
+
+      for (var m = 0; m < numberOfExamples; m++) {
+        for (var c = 0; c < outputDepth; c++) {
+          for (var h = 0; h < outputHeight; h++) {
+            for (var w = 0; w < outputWidth; w++) {
+              var vertStart = stride * h;
+              var vertEnd = vertStart + filterSize;
+              var horizStart = stride * w;
+              var horizEnd = horizStart + filterSize;
+
+              var _max = -Infinity;
+
+              var inputOffset = inputHeight * inputWidth * c;
+              var outputOffset = outputHeight * outputWidth * c;
+              var maxX = 0;
+              var maxY = 0;
+
+              for (var y = 0, vStart = vertStart; y < filterSize; y++, vStart++) {
+                for (var x = 0, hStart = horizStart; x < filterSize; x++, hStart++) {
+                  if (_max < prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m]) {
+                    _max = prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m];
+                    maxX = hStart;
+                    maxY = vStart;
+                  }
+                }
+              }
+
+              result.data[inputOffset + maxY * inputWidth + maxX][m] = sigma[outputOffset + h * outputWidth + w][m];
+            }
+          }
+        }
+      }
+
+      return result;
     }
   }]);
 
@@ -2303,6 +2496,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "elementWiseSubtract": () => (/* binding */ elementWiseSubtract),
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
 /* harmony export */   "setZeros": () => (/* binding */ setZeros),
+/* harmony export */   "setOnes": () => (/* binding */ setOnes),
 /* harmony export */   "elementWiseMultiply": () => (/* binding */ elementWiseMultiply),
 /* harmony export */   "elementWiseMultiplyNumber": () => (/* binding */ elementWiseMultiplyNumber),
 /* harmony export */   "sum": () => (/* binding */ sum),
@@ -2322,6 +2516,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "softplusDerivative": () => (/* binding */ softplusDerivative),
 /* harmony export */   "penalty": () => (/* binding */ penalty),
 /* harmony export */   "sqrt": () => (/* binding */ sqrt),
+/* harmony export */   "purelinLoss": () => (/* binding */ purelinLoss),
 /* harmony export */   "im2col": () => (/* binding */ im2col),
 /* harmony export */   "maxpool": () => (/* binding */ maxpool)
 /* harmony export */ });
@@ -2633,6 +2828,12 @@ var setZeros = function setZeros(m1) {
   }).setOutput([m1.rows, m1.cols]);
   return new Matrix(m1.rows, m1.cols, kernel());
 };
+var setOnes = function setOnes(m1) {
+  var kernel = gpu.createKernel(function () {
+    return 1.0;
+  }).setOutput([m1.rows, m1.cols]);
+  return new Matrix(m1.rows, m1.cols, kernel());
+};
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
@@ -2775,6 +2976,12 @@ var sqrt = function sqrt(m) {
     return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
   }).setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data));
+};
+var purelinLoss = function purelinLoss(output, predictions) {
+  var kernel = gpu.createKernel(function (a, b) {
+    return b[this.thread.x][this.thread.y] - Math.pow(a[this.thread.x][this.thread.y], 2);
+  }).setOutput([output.rows, output.cols]);
+  return new Matrix(output.rows, output.cols, kernel(output.data)).sum();
 };
 var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
   var rows = kernel_w * kernel_h * channels;
@@ -2926,7 +3133,7 @@ var Network = /*#__PURE__*/function () {
       this.layers.forEach(function (layer) {
         resultJSON.layers.push({
           type: layer.getType(),
-          dimensions: [layer.getOutputHeight(), layer.getOutputWidth(), layer.getOutputDepth()],
+          size: layer.getSize(),
           weights: {
             W: layer.W.data,
             b: layer.b.data
@@ -3150,6 +3357,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
       var numberOfExamples = inputDataset.getNumberOfExamples();
       var startTime = new Date().getTime();
       var t = 0;
+      this.optimizer.setBatchSize(this.batchSize);
 
       for (var i = 0; i < this.iterations; i += 1) {
         var startIterationTime = new Date().getTime();
@@ -3409,6 +3617,7 @@ var LayerType;
   LayerType["conv"] = "conv";
   LayerType["maxpool"] = "maxpool";
   LayerType["fullyconnected"] = "fullyconnected";
+  LayerType["purelin"] = "purelin";
 })(LayerType || (LayerType = {}));
 
 /***/ }),

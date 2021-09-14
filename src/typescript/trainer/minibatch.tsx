@@ -15,6 +15,8 @@ export class MiniBatchTrainer extends AbstractTrainer {
 
     let t = 0;
 
+    this.optimizer.setBatchSize(this.batchSize);
+
     for (let i = 0; i < this.iterations; i += 1) {
       const startIterationTime = new Date().getTime();
 

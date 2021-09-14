@@ -8,6 +8,6 @@ export class Backpropagation3Dto1D extends AbstractBackPropagation {
     regularization: number,
     sigma: Matrix
   ): Matrix {
-    return new Matrix();
+    return sigma;
   }
 }

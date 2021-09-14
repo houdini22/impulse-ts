@@ -23,7 +23,7 @@ export class Dataset {
   }
 
   exampleAt(index: number): Matrix {
-    return new Matrix(this.exampleSize, 1, this.data.data.col(index));
+    return this.data.col(index);
   }
 
   getNumberOfExamples(): number {

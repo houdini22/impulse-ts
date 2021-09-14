@@ -58,11 +58,7 @@ class Network {
     this.layers.forEach((layer: Layers) => {
       resultJSON.layers.push({
         type: layer.getType(),
-        dimensions: [
-          layer.getOutputHeight(),
-          layer.getOutputWidth(),
-          layer.getOutputDepth(),
-        ],
+        size: layer.getSize(),
         weights: {
           W: layer.W.data,
           b: layer.b.data,

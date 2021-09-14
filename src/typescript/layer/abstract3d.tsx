@@ -35,11 +35,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
   }
 
   getSize(): Dimension {
-    return [
-      this.getOutputWidth(),
-      this.getOutputHeight(),
-      this.getOutputDepth(),
-    ];
+    return [this.getWidth(), this.getHeight(), this.getDepth()];
   }
 }
 
