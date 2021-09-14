@@ -42,8 +42,8 @@ class ConvLayer extends AbstractLayer3D {
     );
     this.cW = setZeros(this.gb);
 
-    this.cB.resize(this.numFilters, 1);
-    this.cB = setZeros(this.cB);
+    this.cb.resize(this.numFilters, 1);
+    this.cb = setZeros(this.cb);
 
     this.vW.resize(
       this.numFilters,
@@ -51,8 +51,8 @@ class ConvLayer extends AbstractLayer3D {
     );
     this.vW = setZeros(this.vW);
 
-    this.vB.resize(this.numFilters, 1);
-    this.vB = setZeros(this.vB);
+    this.vb.resize(this.numFilters, 1);
+    this.vb = setZeros(this.vb);
   }
 
   getOutputHeight(): number {

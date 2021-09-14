@@ -6,9 +6,10 @@ import {
   SoftplusLayer,
   AbstractLayer,
 } from "./layer";
-import { ConvLayer } from "./layer/conv";
-import { MaxPoolLayer } from "./layer/maxpool";
-import { FullyConnectedLayer } from "./layer/fullyconnected";
+import { ConvLayer } from "./layer/";
+import { MaxPoolLayer } from "./layer/";
+import { FullyConnectedLayer } from "./layer/";
+import { PurelinLayer } from "./layer/purelin";
 
 export type Dimension = [number] | [number, number, number];
 
@@ -21,6 +22,7 @@ export enum LayerType {
   conv = "conv",
   maxpool = "maxpool",
   fullyconnected = "fullyconnected",
+  purelin = "purelin",
 }
 
 export type Layers =
@@ -32,12 +34,14 @@ export type Layers =
   | AbstractLayer
   | ConvLayer
   | MaxPoolLayer
-  | FullyConnectedLayer;
+  | FullyConnectedLayer
+  | PurelinLayer;
 export type Layers1D =
   | LogisticLayer
   | SoftmaxLayer
   | TanhLayer
   | ReluLayer
   | SoftplusLayer
+  | PurelinLayer
   | AbstractLayer;
 export type Layers3D = ConvLayer | MaxPoolLayer | FullyConnectedLayer;

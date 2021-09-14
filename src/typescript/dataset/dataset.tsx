@@ -5,7 +5,7 @@ export class Dataset {
   public numberOfExamples: number = 0;
   public data: Matrix = null;
 
-  constructor(exampleSize: number, numberOfExamples: number, arr: number[][]) {
+  constructor(exampleSize: number, numberOfExamples: number, arr: string[][]) {
     this.exampleSize = exampleSize;
     this.numberOfExamples = numberOfExamples;
     const data = [];
@@ -13,7 +13,9 @@ export class Dataset {
     for (let example = 0; example < numberOfExamples; example += 1) {
       data[example] = [];
       for (let dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        data[example][dataIndex] = Number(arr[example][dataIndex] || 0);
+        data[example][dataIndex] = arr[example][dataIndex].length
+          ? Number(arr[example][dataIndex])
+          : NaN;
       }
     }
 
@@ -21,13 +23,7 @@ export class Dataset {
   }
 
   exampleAt(index: number): Matrix {
-    const data = [];
-    for (let dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
-      data[dataIndex] = [];
-      data[dataIndex][0] = this.data.data[index][dataIndex];
-    }
-
-    return new Matrix(this.exampleSize, 1, data);
+    return new Matrix(this.exampleSize, 1, this.data.data.col(index));
   }
 
   getNumberOfExamples(): number {

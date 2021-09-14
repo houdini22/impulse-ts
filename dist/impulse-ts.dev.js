@@ -320,9 +320,9 @@ var Builder3D = /*#__PURE__*/function (_AbstractBuilder) {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/Dataset.tsx":
+/***/ "./src/typescript/dataset/dataset.tsx":
 /*!********************************************!*\
-  !*** ./src/typescript/dataset/Dataset.tsx ***!
+  !*** ./src/typescript/dataset/dataset.tsx ***!
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -368,14 +368,7 @@ var Dataset = /*#__PURE__*/function () {
   _createClass(Dataset, [{
     key: "exampleAt",
     value: function exampleAt(index) {
-      var data = [];
-
-      for (var dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
-        data[dataIndex] = [];
-        data[dataIndex][0] = this.data.data[index][dataIndex];
-      }
-
-      return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, data);
+      return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, this.data.data.col(index));
     }
   }, {
     key: "getNumberOfExamples",
@@ -394,9 +387,9 @@ var Dataset = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/DatasetBuilder.tsx":
+/***/ "./src/typescript/dataset/datasetbuilder.tsx":
 /*!***************************************************!*\
-  !*** ./src/typescript/dataset/DatasetBuilder.tsx ***!
+  !*** ./src/typescript/dataset/datasetbuilder.tsx ***!
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -406,7 +399,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! csvtojson */ "csvtojson");
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.tsx");
+/* harmony import */ var _dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dataset */ "./src/typescript/dataset/dataset.tsx");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -430,7 +423,7 @@ var DatasetBuilder = /*#__PURE__*/function () {
         }).fromFile(csvPath).then(function (arr) {
           var numberOfExamples = arr.length;
           var exampleSize = arr[0].length;
-          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, arr);
+          var dataset = new _dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, arr);
           resolve(dataset);
         });
       });
@@ -439,6 +432,255 @@ var DatasetBuilder = /*#__PURE__*/function () {
 
   return DatasetBuilder;
 }();
+
+/***/ }),
+
+/***/ "./src/typescript/dataset/datasetmodifier/abstract.tsx":
+/*!*************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/abstract.tsx ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractDatasetModifier": () => (/* binding */ AbstractDatasetModifier)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AbstractDatasetModifier = /*#__PURE__*/function () {
+  function AbstractDatasetModifier(dataset) {
+    _classCallCheck(this, AbstractDatasetModifier);
+
+    _defineProperty(this, "dataset", null);
+
+    this.dataset = dataset;
+  }
+
+  _createClass(AbstractDatasetModifier, [{
+    key: "apply",
+    value: function apply() {
+      for (var _example = 0; _example < this.dataset.getNumberOfExamples(); _example += 1) {
+        this.applyToExample(_example);
+      }
+    }
+  }]);
+
+  return AbstractDatasetModifier;
+}();
+
+/***/ }),
+
+/***/ "./src/typescript/dataset/datasetmodifier/callback.tsx":
+/*!*************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/callback.tsx ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CallbackDatabaseModifier": () => (/* binding */ CallbackDatabaseModifier)
+/* harmony export */ });
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/dataset/datasetmodifier/abstract.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(CallbackDatabaseModifier, _AbstractDatasetModif);
+
+  var _super = _createSuper(CallbackDatabaseModifier);
+
+  function CallbackDatabaseModifier() {
+    var _this;
+
+    _classCallCheck(this, CallbackDatabaseModifier);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "callback", function (number) {
+      return number;
+    });
+
+    return _this;
+  }
+
+  _createClass(CallbackDatabaseModifier, [{
+    key: "applyToExample",
+    value: function applyToExample(example) {}
+  }, {
+    key: "setCallback",
+    value: function setCallback(callback) {
+      this.callback = callback;
+      return this;
+    }
+  }]);
+
+  return CallbackDatabaseModifier;
+}(_abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
+
+/***/ }),
+
+/***/ "./src/typescript/dataset/datasetmodifier/minmaxscaling.tsx":
+/*!******************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/minmaxscaling.tsx ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* binding */ MinMaxScalingDatabaseModifier)
+/* harmony export */ });
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/dataset/datasetmodifier/abstract.tsx");
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/matrix */ "./src/typescript/math/matrix.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(MinMaxScalingDatabaseModifier, _AbstractDatasetModif);
+
+  var _super = _createSuper(MinMaxScalingDatabaseModifier);
+
+  function MinMaxScalingDatabaseModifier() {
+    _classCallCheck(this, MinMaxScalingDatabaseModifier);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(MinMaxScalingDatabaseModifier, [{
+    key: "applyToExample",
+    value: function applyToExample(example) {
+      var min = Infinity;
+      var max = -Infinity;
+
+      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
+        var _example = this.dataset.exampleAt(exampleIndex);
+
+        for (var row = 0; row < _example.rows; row += 1) {
+          min = Math.min(_example.data[row][0]);
+          max = Math.max(_example.data[row][0]);
+        }
+      }
+
+      var kernel = _math_matrix__WEBPACK_IMPORTED_MODULE_1__.gpu.createKernel(function (a) {
+        // @ts-ignore
+        return (a[this.thread.x][this.thread.y] - this.constants.min) / (this.constants.max - this.constants.min);
+      }).setOutput([this.dataset.data.data.rows, this.dataset.data.data.cols]).setConstants({
+        min: min,
+        max: max
+      });
+      this.dataset.data = kernel(this.dataset.data.data);
+    }
+  }]);
+
+  return MinMaxScalingDatabaseModifier;
+}(_abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
+
+/***/ }),
+
+/***/ "./src/typescript/dataset/datasetmodifier/missingdata.tsx":
+/*!****************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/missingdata.tsx ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* binding */ MissingDataScalingDatabaseModifier)
+/* harmony export */ });
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/dataset/datasetmodifier/abstract.tsx");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(MissingDataScalingDatabaseModifier, _AbstractDatasetModif);
+
+  var _super = _createSuper(MissingDataScalingDatabaseModifier);
+
+  function MissingDataScalingDatabaseModifier() {
+    _classCallCheck(this, MissingDataScalingDatabaseModifier);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(MissingDataScalingDatabaseModifier, [{
+    key: "applyToExample",
+    value: function applyToExample(example) {}
+  }]);
+
+  return MissingDataScalingDatabaseModifier;
+}(_abstract__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
 
 /***/ }),
 
@@ -485,8 +727,8 @@ var AbstractLayer = /*#__PURE__*/function () {
     this.gb = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.vW = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.cW = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.vB = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.cB = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.vb = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.cb = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
   }
 
   _createClass(AbstractLayer, [{
@@ -634,12 +876,12 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       this.gb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.gb);
       this.cW.resize(this.height, this.width);
       this.cW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.cW);
-      this.cB.resize(this.height, 1);
-      this.cB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.cB);
+      this.cb.resize(this.height, 1);
+      this.cb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.cb);
       this.vW.resize(this.height, this.width);
       this.vW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.vW);
-      this.vB.resize(this.height, 1);
-      this.vB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.cB);
+      this.vb.resize(this.height, 1);
+      this.vb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.setZeros)(this.cb);
     }
   }, {
     key: "is1D",
@@ -1207,12 +1449,12 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       this.gb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.gb);
       this.cW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
       this.cW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.gb);
-      this.cB.resize(this.numFilters, 1);
-      this.cB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.cB);
+      this.cb.resize(this.numFilters, 1);
+      this.cb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.cb);
       this.vW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
       this.vW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.vW);
-      this.vB.resize(this.numFilters, 1);
-      this.vB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.vB);
+      this.vb.resize(this.numFilters, 1);
+      this.vb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(this.vb);
     }
   }, {
     key: "getOutputHeight",
@@ -3068,10 +3310,10 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
       layer.cW = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.cW, beta1), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.gW, 1 - beta1));
       var sCorrected = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.sqrt)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.cW, 1 - Math.pow(beta2, t)));
       layer.W = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseSubtract)(layer.W, (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiply)(wCorrected, sCorrected), learningRate));
-      layer.vB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.vB, beta1), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.gb, 1 - beta1));
-      var wCorrected2 = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(layer.vB, 1 - Math.pow(beta1, t));
-      layer.cB = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.cB, beta2), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiply)(layer.gb, layer.gb), 1 - beta2));
-      var sCorrected2 = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.sqrt)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(layer.cB, 1 - Math.pow(beta2, t)));
+      layer.vb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.vb, beta1), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.gb, 1 - beta1));
+      var wCorrected2 = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(layer.vb, 1 - Math.pow(beta1, t));
+      layer.cb = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)(layer.cb, beta2), (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiply)(layer.gb, layer.gb), 1 - beta2));
+      var sCorrected2 = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.sqrt)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivideNumber)(layer.cb, 1 - Math.pow(beta2, t)));
       layer.b = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseSubtract)(layer.b, (0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseMultiplyNumber)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_1__.elementWiseDivide)(wCorrected2, sCorrected2), learningRate));
     }
   }]);
@@ -3282,16 +3524,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Layers": () => (/* binding */ Layers),
 /* harmony export */   "Dataset": () => (/* binding */ Dataset),
 /* harmony export */   "Optimizers": () => (/* binding */ Optimizers),
-/* harmony export */   "Trainers": () => (/* binding */ Trainers)
+/* harmony export */   "Trainers": () => (/* binding */ Trainers),
+/* harmony export */   "DatasetModifiers": () => (/* binding */ DatasetModifiers)
 /* harmony export */ });
 /* harmony import */ var _builder_builder1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./builder/builder1d */ "./src/typescript/builder/builder1d.tsx");
 /* harmony import */ var _builder_builder3d__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./builder/builder3d */ "./src/typescript/builder/builder3d.tsx");
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./math/matrix */ "./src/typescript/math/matrix.tsx");
-/* harmony import */ var _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dataset/DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.tsx");
+/* harmony import */ var _dataset_datasetbuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dataset/datasetbuilder */ "./src/typescript/dataset/datasetbuilder.tsx");
 /* harmony import */ var _trainer_optimizer_adam__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./trainer/optimizer/adam */ "./src/typescript/trainer/optimizer/adam.tsx");
 /* harmony import */ var _trainer_optimizer_gradientdescent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./trainer/optimizer/gradientdescent */ "./src/typescript/trainer/optimizer/gradientdescent.tsx");
 /* harmony import */ var _trainer_minibatch__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./trainer/minibatch */ "./src/typescript/trainer/minibatch.tsx");
+/* harmony import */ var _dataset_datasetmodifier_callback__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./dataset/datasetmodifier/callback */ "./src/typescript/dataset/datasetmodifier/callback.tsx");
+/* harmony import */ var _dataset_datasetmodifier_minmaxscaling__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./dataset/datasetmodifier/minmaxscaling */ "./src/typescript/dataset/datasetmodifier/minmaxscaling.tsx");
+/* harmony import */ var _dataset_datasetmodifier_missingdata__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./dataset/datasetmodifier/missingdata */ "./src/typescript/dataset/datasetmodifier/missingdata.tsx");
+
+
+
 
 
 
@@ -3326,7 +3575,7 @@ var Layers = {
   FullyConnectedLayer: _layer__WEBPACK_IMPORTED_MODULE_2__.FullyConnectedLayer
 };
 var Dataset = {
-  DatasetBuilder: _dataset_DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder
+  DatasetBuilder: _dataset_datasetbuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder
 };
 var Optimizers = {
   OptimizerAdam: _trainer_optimizer_adam__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
@@ -3334,6 +3583,11 @@ var Optimizers = {
 };
 var Trainers = {
   MiniBatchTrainer: _trainer_minibatch__WEBPACK_IMPORTED_MODULE_7__.MiniBatchTrainer
+};
+var DatasetModifiers = {
+  CallbackDatabaseModifier: _dataset_datasetmodifier_callback__WEBPACK_IMPORTED_MODULE_8__.CallbackDatabaseModifier,
+  MinMaxScalingDatabaseModifier: _dataset_datasetmodifier_minmaxscaling__WEBPACK_IMPORTED_MODULE_9__.MinMaxScalingDatabaseModifier,
+  MissingDataScalingDatabaseModifier: _dataset_datasetmodifier_missingdata__WEBPACK_IMPORTED_MODULE_10__.MissingDataScalingDatabaseModifier
 };
 
 })();

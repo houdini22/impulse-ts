@@ -1,7 +1,7 @@
 import { Dimension, Layers } from "./types";
 import { cols, Matrix, elementWiseSubtract } from "./math/matrix";
 import * as fs from "fs";
-import { Dataset } from "./dataset/Dataset";
+import { Dataset } from "./dataset/dataset";
 
 class Network {
   private dimensions: Dimension = null;

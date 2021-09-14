@@ -1,5 +1,5 @@
 import { AbstractTrainer } from "./abstract";
-import { Dataset } from "../dataset/Dataset";
+import { Dataset } from "../dataset/dataset";
 
 export class MiniBatchTrainer extends AbstractTrainer {
   batchSize: number = 100;

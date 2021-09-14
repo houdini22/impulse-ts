@@ -45,23 +45,23 @@ export class OptimizerAdam extends AbstractOptimizer {
       )
     );
 
-    layer.vB = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.vB, beta1),
+    layer.vb = elementWiseAdd(
+      elementWiseMultiplyNumber(layer.vb, beta1),
       elementWiseMultiplyNumber(layer.gb, 1 - beta1)
     );
     const wCorrected2 = elementWiseDivideNumber(
-      layer.vB,
+      layer.vb,
       1 - Math.pow(beta1, t)
     );
-    layer.cB = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.cB, beta2),
+    layer.cb = elementWiseAdd(
+      elementWiseMultiplyNumber(layer.cb, beta2),
       elementWiseMultiplyNumber(
         elementWiseMultiply(layer.gb, layer.gb),
         1 - beta2
       )
     );
     const sCorrected2 = sqrt(
-      elementWiseDivideNumber(layer.cB, 1 - Math.pow(beta2, t))
+      elementWiseDivideNumber(layer.cb, 1 - Math.pow(beta2, t))
     );
 
     layer.b = elementWiseSubtract(

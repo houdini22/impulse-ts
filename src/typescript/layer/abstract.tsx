@@ -11,8 +11,8 @@ abstract class AbstractLayer {
   public gb: Matrix;
   public vW: Matrix;
   public cW: Matrix;
-  public vB: Matrix;
-  public cB: Matrix;
+  public vb: Matrix;
+  public cb: Matrix;
 
   protected width: number = 0;
   protected height: number = 0;
@@ -29,8 +29,8 @@ abstract class AbstractLayer {
     this.gb = new Matrix();
     this.vW = new Matrix();
     this.cW = new Matrix();
-    this.vB = new Matrix();
-    this.cB = new Matrix();
+    this.vb = new Matrix();
+    this.cb = new Matrix();
   }
 
   setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {

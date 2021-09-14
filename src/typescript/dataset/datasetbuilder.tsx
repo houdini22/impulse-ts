@@ -1,5 +1,5 @@
 import * as csvtojson from "csvtojson";
-import { Dataset } from "./Dataset";
+import { Dataset } from "./dataset";
 
 export class DatasetBuilder {
   static fromCSV(csvPath: string): Promise<Dataset> {

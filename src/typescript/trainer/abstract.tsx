@@ -1,6 +1,6 @@
 import Network from "../network";
 import { AbstractOptimizer } from "./optimizer/abstract";
-import { Dataset } from "../dataset/Dataset";
+import { Dataset } from "../dataset/dataset";
 
 export abstract class AbstractTrainer {
   network: Network = null;

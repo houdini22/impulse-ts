@@ -21,14 +21,14 @@ abstract class AbstractLayer1D extends AbstractLayer {
     this.cW.resize(this.height, this.width);
     this.cW = setZeros(this.cW);
 
-    this.cB.resize(this.height, 1);
-    this.cB = setZeros(this.cB);
+    this.cb.resize(this.height, 1);
+    this.cb = setZeros(this.cb);
 
     this.vW.resize(this.height, this.width);
     this.vW = setZeros(this.vW);
 
-    this.vB.resize(this.height, 1);
-    this.vB = setZeros(this.cB);
+    this.vb.resize(this.height, 1);
+    this.vb = setZeros(this.cb);
   }
 
   is1D(): boolean {

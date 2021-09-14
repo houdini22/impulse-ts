@@ -279,6 +279,15 @@ export const setZeros = (m1: Matrix): Matrix => {
   return new Matrix(m1.rows, m1.cols, kernel() as number[][]);
 };
 
+export const setOnes = (m1: Matrix): Matrix => {
+  const kernel = gpu
+    .createKernel(function () {
+      return 1.0;
+    })
+    .setOutput([m1.rows, m1.cols]);
+  return new Matrix(m1.rows, m1.cols, kernel() as number[][]);
+};
+
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
@@ -523,6 +532,22 @@ export const sqrt = (m: Matrix): Matrix => {
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
+};
+
+export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
+  const kernel = gpu
+    .createKernel(function (a, b) {
+      return (
+        b[this.thread.x][this.thread.y] -
+        Math.pow(a[this.thread.x][this.thread.y], 2)
+      );
+    })
+    .setOutput([output.rows, output.cols]);
+  return new Matrix(
+    output.rows,
+    output.cols,
+    kernel(output.data) as number[][]
+  ).sum();
 };
 
 export const im2col = (
