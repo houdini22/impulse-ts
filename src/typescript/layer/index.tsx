@@ -4,6 +4,9 @@ import { LogisticLayer } from "./logistic";
 import { TanhLayer } from "./tanh";
 import { ReluLayer } from "./relu";
 import { SoftplusLayer } from "./softplus";
+import { ConvLayer } from "./conv";
+import { FullyConnectedLayer } from "./fullyconnected";
+import { MaxPoolLayer } from "./maxpool";
 
 export {
   AbstractLayer,
@@ -12,4 +15,7 @@ export {
   TanhLayer,
   ReluLayer,
   SoftplusLayer,
+  ConvLayer,
+  FullyConnectedLayer,
+  MaxPoolLayer,
 };

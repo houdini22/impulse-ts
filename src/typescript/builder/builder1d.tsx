@@ -8,7 +8,7 @@ import {
   SoftmaxLayer,
   SoftplusLayer,
   TanhLayer,
-} from "../layer/index";
+} from "../layer/";
 
 class Builder1D extends AbstractBuilder {
   firstLayerTransition(layer: Layers) {
@@ -60,4 +60,3 @@ class Builder1D extends AbstractBuilder {
 }
 
 export { Builder1D };
-export default Builder1D;

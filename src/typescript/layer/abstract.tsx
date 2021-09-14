@@ -33,6 +33,11 @@ abstract class AbstractLayer {
     this.cB = new Matrix();
   }
 
+  setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {
+    this.backPropagation = backPropagation;
+    return this;
+  }
+
   getBackPropagation(): AbstractBackPropagation {
     return this.backPropagation;
   }

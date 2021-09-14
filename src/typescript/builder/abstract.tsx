@@ -1,5 +1,6 @@
 import { Dimension, Layers } from "../types";
 import Network from "../network";
+import { BackpropagationFactory } from "../layer/backpropagation/factory";
 
 abstract class AbstractBuilder {
   protected dimensions: Dimension = null;
@@ -26,6 +27,9 @@ abstract class AbstractBuilder {
     }
 
     layer.configure();
+    layer.setBackPropagation(
+      BackpropagationFactory.create(this.lastLayer, layer)
+    );
 
     this.network.addLayer(layer);
     this.lastLayer = layer;

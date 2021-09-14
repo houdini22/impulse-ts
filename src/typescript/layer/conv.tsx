@@ -10,13 +10,12 @@ import {
 } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./abstract3d";
-import { BackpropagationToConv } from "./backpropagation/backpropagationtoconv";
 
 class ConvLayer extends AbstractLayer3D {
-  numFilters: number;
-  filterSize: number;
-  padding: number;
-  stride: number;
+  protected numFilters: number = 32;
+  protected filterSize: number = 4;
+  protected padding: number = 1;
+  protected stride: number = 1;
 
   configure() {
     this.W.resize(
@@ -54,8 +53,6 @@ class ConvLayer extends AbstractLayer3D {
 
     this.vB.resize(this.numFilters, 1);
     this.vB = setZeros(this.vB);
-
-    this.backPropagation = new BackpropagationToConv(this, this.previousLayer);
   }
 
   getOutputHeight(): number {
@@ -77,6 +74,15 @@ class ConvLayer extends AbstractLayer3D {
 
   getFilterSize(): number {
     return this.filterSize;
+  }
+
+  setNumFilters(numFilters: number): ConvLayer {
+    this.numFilters = numFilters;
+    return this;
+  }
+
+  getNumFilters(): number {
+    return this.numFilters;
   }
 
   setPadding(padding: number): ConvLayer {

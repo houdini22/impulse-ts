@@ -1,10 +1,9 @@
-import { LayerType } from "../types";
+import { Dimension, LayerType } from "../types";
 import { ConvLayer } from "./conv";
-import { Backpropagation3Dto1D } from "./backpropagation/backpropagationto3dto1d";
 
 class FullyConnectedLayer extends ConvLayer {
   configure() {
-    this.backPropagation = new Backpropagation3Dto1D(this, this.previousLayer);
+    // do nothing
   }
 
   transition(previousLayer: FullyConnectedLayer): FullyConnectedLayer {
@@ -34,11 +33,11 @@ class FullyConnectedLayer extends ConvLayer {
     return this;
   }
 
-  setSize(): FullyConnectedLayer {
+  setSize(dimension: Dimension): FullyConnectedLayer {
     throw new Error("Unsupported");
   }
 
-  setFilterSize(): FullyConnectedLayer {
+  setFilterSize(filterSize: number): FullyConnectedLayer {
     throw new Error("Unsupported");
   }
 
