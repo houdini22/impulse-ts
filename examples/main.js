@@ -1,4 +1,4 @@
-const {Builder1D, Matrix, SoftmaxLayer, LogisticLayer, DatasetBuilder} = require("../dist/impulse-ts.dev");
+const {Builder1D, Matrix, SoftmaxLayer, LogisticLayer, DatasetBuilder} = require("../dist/impulse-ts");
 const path = require('path');
 
 const builder = new Builder1D([400]);

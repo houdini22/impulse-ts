@@ -24,7 +24,7 @@ export class Dataset {
         const data = [];
         for (let dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
             data[dataIndex] = [];
-            data[dataIndex][0] = this.data[dataIndex * index];
+            data[dataIndex][0] = this.data.data[index][dataIndex];
         }
 
         return new Matrix(this.exampleSize, 1, data);

@@ -28,7 +28,7 @@ export class Matrix {
     generateData(arr: number[][]): Matrix {
         this.data = new Array(arr.length);
         for (let row = 0; row < arr.length; row += 1) {
-            this.data[row] = Array.from(arr[row]);
+            this.data[row] = arr[row];
         }
         return this;
     }
@@ -124,7 +124,6 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
         throw new Error("COLS number not equal.");
     }
 
-    const gpu = new GPU();
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])
@@ -141,7 +140,6 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
         throw new Error("COLS number not equal.");
     }
 
-    const gpu = new GPU();
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])

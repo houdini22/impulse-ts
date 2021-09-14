@@ -186,7 +186,7 @@ var Dataset = /*#__PURE__*/function () {
 
       for (var dataIndex = 0; dataIndex < this.exampleSize; dataIndex += 1) {
         data[dataIndex] = [];
-        data[dataIndex][0] = this.data[dataIndex * index];
+        data[dataIndex][0] = this.data.data[index][dataIndex];
       }
 
       return new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, 1, data);
@@ -727,7 +727,7 @@ var Matrix = /*#__PURE__*/function () {
       this.data = new Array(arr.length);
 
       for (var row = 0; row < arr.length; row += 1) {
-        this.data[row] = Array.from(arr[row]);
+        this.data[row] = arr[row];
       }
 
       return this;
@@ -840,7 +840,6 @@ var elementWiseAdd = function elementWiseAdd(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
@@ -856,7 +855,6 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
     throw new Error("COLS number not equal.");
   }
 
-  var gpu = new gpu_js__WEBPACK_IMPORTED_MODULE_0__.GPU();
   var kernel = gpu.createKernel(function (a, b) {
     return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
   }).setOutput([m1.rows, m2.cols]);
