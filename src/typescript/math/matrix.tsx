@@ -17,16 +17,16 @@ export class Matrix {
     resize(rows, cols): Matrix {
         this.rows = rows;
         this.cols = cols;
-        this.data = new Array(rows);
+        this.data = new Array();
         for (let row = 0; row < this.rows; row += 1) {
-            this.data[row] = new Array(cols);
+            this.data[row] = [];
         }
 
         return this;
     }
 
     generateData(arr: number[][]): Matrix {
-        this.data = new Array(arr.length);
+        this.data = new Array();
         for (let row = 0; row < arr.length; row += 1) {
             this.data[row] = arr[row];
         }
@@ -53,7 +53,7 @@ export class Matrix {
     }
 
     colwiseSum(): Matrix {
-        const data = new Array(this.rows);
+        const data = [];
         for (let row = 0; row < this.rows; row += 1) {
             let sum = 0.0;
             for (let col = 0; col < this.cols; col += 1) {
@@ -89,10 +89,9 @@ export class Matrix {
         const kernel = gpu.createKernel(function (a) {
             return a[this.thread.y][this.thread.x];
         }).setOutput([this.cols, this.rows]);
-        const data = kernel(oldData) as number[][];
 
         this.resize(this.cols, this.rows);
-        this.generateData(data);
+        this.generateData(kernel(oldData) as number[][]);
 
         return this;
     }
@@ -127,9 +126,8 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])
-    const result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 
-    return result;
+    return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
 
 export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
@@ -143,9 +141,8 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])
-    const result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 
-    return result;
+    return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
 
 export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
@@ -154,18 +151,15 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
     }).setOutput([m1.rows, m1.cols]).setConstants({
         parameter
     })
-    const result = new Matrix(m1.rows, m1.cols, kernel());
 
-    return result;
+    return new Matrix(m1.rows, m1.cols, kernel());
 };
 
 export const setZeros = (m1: Matrix): Matrix => {
     const kernel = gpu.createKernel(function () {
         return 0.0;
     }).setOutput([m1.rows, m1.cols])
-    const result = new Matrix(m1.rows, m1.cols, kernel());
-
-    return result;
+    return new Matrix(m1.rows, m1.cols, kernel());
 };
 
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
@@ -179,9 +173,8 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])
-    const result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 
-    return result;
+    return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
 
 export const sum = (m: Matrix): number => {
@@ -203,9 +196,8 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a, b) {
         return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
     }).setOutput([m1.rows, m2.cols])
-    const result = new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 
-    return result;
+    return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
 };
 
 export const softmaxActivation = (m: Matrix): Matrix => {
@@ -223,43 +215,38 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
         return Math.log(a[this.thread.x][this.thread.y]);
     }).setOutput([predictions.rows, predictions.cols]);
     const data = kernel(predictions.data);
-    const result = new Matrix(output.rows, output.cols, elementWiseMultiply(output, data).data);
-    return result.sum();
+    return new Matrix(output.rows, output.cols, elementWiseMultiply(output, data).data).sum();
 };
 
 export const logisticActivation = (m: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a) {
         return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
     }).setOutput([m.rows, m.cols]);
-    const result = new Matrix(m.rows, m.cols, kernel(m.data));
-    return result;
+    return new Matrix(m.rows, m.cols, kernel(m.data));
 };
 
 export const logisticDerivative = (m: Matrix): Matrix => {
     const kernel = gpu.createKernel(function (a) {
         return a[this.thread.x][this.thread.y] * (1.0 - a[this.thread.x][this.thread.y]);
     }).setOutput([m.rows, m.cols]);
-    const result = new Matrix(m.rows, m.cols, kernel(m.data));
-    return result;
+    return new Matrix(m.rows, m.cols, kernel(m.data));
 };
 
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
     const kernel = gpu.createKernel(function (a) {
         return Math.log(a[this.thread.x][this.thread.y]);
     }).setOutput([output.rows, output.cols]);
-    const predictionsLog = new Matrix(output.rows, output.cols, kernel(output.data) as number[]);
-
     const kernel2 = gpu.createKernel(function (a) {
         return 1.0 - a[this.thread.x][this.thread.y];
     }).setOutput([output.rows, output.cols]);
-    const outputOne = new Matrix(output.rows, output.cols, kernel2(output.data) as number[]);
-
     const kernel4 = gpu.createKernel(function (a) {
         return Math.log(1.0 - a[this.thread.x][this.thread.y]);
     }).setOutput([predictions.rows, predictions.cols]);
-    const predictionsMinusLog = new Matrix(predictions.rows, predictions.cols, kernel4(predictions.data) as number[]);
 
-    const toAdd = elementWiseMultiply(output, predictionsLog);
-    const toAdd2 = elementWiseMultiply(outputOne, predictionsMinusLog);
-    return elementWiseAdd(toAdd, toAdd2).sum()
+    return elementWiseAdd(
+        elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data) as number[])),
+        elementWiseMultiply(
+            new Matrix(output.rows, output.cols, kernel2(output.data) as number[]),
+            new Matrix(predictions.rows, predictions.cols, kernel4(predictions.data) as number[])))
+        .sum()
 };
