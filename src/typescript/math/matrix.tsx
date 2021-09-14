@@ -162,7 +162,9 @@ export class Matrix {
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
-    throw new Error(`DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`);
+    throw new Error(
+      `DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`
+    );
   }
 
   const kernel = gpu

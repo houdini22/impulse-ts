@@ -11,7 +11,13 @@ export class OptimizerGradientDescent extends AbstractOptimizer {
   }
 
   gradientDescent(layer: Layers, learningRate: number) {
-    layer.W = elementWiseSubtract(layer.W, elementWiseMultiplyNumber(layer.gW, learningRate));
-    layer.b = (elementWiseSubtract(layer.b, elementWiseMultiplyNumber(layer.gb, learningRate)));
+    layer.W = elementWiseSubtract(
+      layer.W,
+      elementWiseMultiplyNumber(layer.gW, learningRate)
+    );
+    layer.b = elementWiseSubtract(
+      layer.b,
+      elementWiseMultiplyNumber(layer.gb, learningRate)
+    );
   }
 }

@@ -24,5 +24,11 @@ export type Layers =
   | ReluLayer
   | SoftplusLayer
   | AbstractLayer;
-export type Layers1D = LogisticLayer | SoftmaxLayer | TanhLayer;
+export type Layers1D =
+  | LogisticLayer
+  | SoftmaxLayer
+  | TanhLayer
+  | ReluLayer
+  | SoftplusLayer
+  | AbstractLayer;
 export type Layers3D = null;

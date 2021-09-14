@@ -29,7 +29,10 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
     DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(
       (outputDataset) => {
         console.log("Loaded mnist_y.csv");
-        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+        const trainer = new MiniBatchTrainer(
+          network,
+          new OptimizerGradientDescent()
+        );
         trainer.train(inputDataset, outputDataset);
       }
     );

@@ -44,7 +44,7 @@ const Dataset = {
 };
 const Optimizers = {
   OptimizerAdam,
-  OptimizerGradientDescent
+  OptimizerGradientDescent,
 };
 const Trainers = {
   MiniBatchTrainer,
