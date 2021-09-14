@@ -1,8 +1,8 @@
 const {
   Builders: { Builder1D },
   Dataset: { DatasetBuilder },
-  Layers: { SoftmaxLayer, LogisticLayer },
-  Optimizers: { OptimizerAdam, OptimizerGradientDescent },
+  Layers: { LogisticLayer },
+  Optimizers: { OptimizerGradientDescent },
   Trainers: { MiniBatchTrainer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
