@@ -1,5 +1,4 @@
 import { AbstractTrainer } from "./abstract";
-import { AbstractOptimizer } from "./optimizer/abstract";
 import { Dataset } from "../dataset/Dataset";
 
 export class MiniBatchTrainer extends AbstractTrainer {
@@ -22,7 +21,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
       for (
         let batch = 0, offset = 0;
         batch < numberOfExamples;
-        batch += this.batchSize, offset += 1
+        batch += this.batchSize, offset += this.batchSize
       ) {
         const input = inputDataset.getBatch(offset, this.batchSize);
         const output = outputDataset.getBatch(offset, this.batchSize);

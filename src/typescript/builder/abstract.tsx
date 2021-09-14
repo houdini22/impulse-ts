@@ -12,6 +12,7 @@ abstract class AbstractBuilder {
   }
 
   createLayer(type: Layers, callback: Function) {
+    // @ts-ignore
     const layer = new type();
 
     if (typeof callback === "function") {

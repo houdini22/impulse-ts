@@ -122,15 +122,25 @@ export class Matrix {
       })
       .setOutput([this.cols, this.rows]);
 
-    return new Matrix(this.cols, this.rows, kernel(this.data));
+    return new Matrix(this.cols, this.rows, kernel(this.data) as number[][]);
   }
 
   conjugate(): Matrix {
     return this;
   }
 
-  colwiseMaxCoeffIndex(): number {
-    return 0; // todo
+  colMaxCoeffIndex(col: number): number {
+    let maxIndex = -1;
+    let max = -Infinity;
+
+    for (let row = 0; row < this.rows; row += 1) {
+      if (this.data[row][col] > max) {
+        max = this.data[row][col];
+        maxIndex = row;
+      }
+    }
+
+    return maxIndex;
   }
 
   block(
@@ -142,17 +152,17 @@ export class Matrix {
     const data = [];
 
     for (
-      let row = startRow;
+      let row = startRow, newRow = 0;
       row < this.rows && row < startRow + blockRows;
-      row += 1
+      row += 1, newRow += 1
     ) {
       data[row] = new Array(blockCols);
       for (
-        let col = startCol;
+        let col = startCol, newCol = 0;
         col < this.cols && col < startCol + blockCols;
-        col += 1
+        col += 1, newCol += 1
       ) {
-        data[row][col] = this.data[row][col];
+        data[newRow][newCol] = this.data[row][col];
       }
     }
 
@@ -180,7 +190,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
       cols: m1.rows,
     });
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
@@ -197,7 +207,7 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
     })
     .setOutput([m1.rows, m2.cols]);
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
@@ -214,12 +224,13 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
     })
     .setOutput([m1.rows, m2.cols]);
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   const kernel = gpu
     .createKernel(function () {
+      // @ts-ignore
       return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
     })
     .setOutput([m1.rows, m1.cols])
@@ -227,7 +238,7 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
       parameter,
     });
 
-  return new Matrix(m1.rows, m1.cols, kernel());
+  return new Matrix(m1.rows, m1.cols, kernel() as number[][]);
 };
 
 export const setZeros = (m1: Matrix): Matrix => {
@@ -236,7 +247,7 @@ export const setZeros = (m1: Matrix): Matrix => {
       return 0.0;
     })
     .setOutput([m1.rows, m1.cols]);
-  return new Matrix(m1.rows, m1.cols, kernel());
+  return new Matrix(m1.rows, m1.cols, kernel() as number[][]);
 };
 
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
@@ -253,12 +264,13 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
     })
     .setOutput([m1.rows, m2.cols]);
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] * this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])
@@ -266,7 +278,7 @@ export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
       number: num,
     });
 
-  return new Matrix(m1.rows, m1.cols, kernel(m1.data));
+  return new Matrix(m1.rows, m1.cols, kernel(m1.data) as number[][]);
 };
 
 export const sum = (m: Matrix): number => {
@@ -291,12 +303,13 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
     })
     .setOutput([m1.rows, m2.cols]);
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] / this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])
@@ -304,7 +317,7 @@ export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
       number: num,
     });
 
-  return new Matrix(m1.rows, m1.cols, kernel(m1.data));
+  return new Matrix(m1.rows, m1.cols, kernel(m1.data) as number[][]);
 };
 
 export const softmaxActivation = (m: Matrix): Matrix => {
@@ -313,7 +326,7 @@ export const softmaxActivation = (m: Matrix): Matrix => {
       return Math.exp(a[this.thread.x][this.thread.y]);
     })
     .setOutput([m.rows, m.cols]);
-  const data = new Matrix(m.rows, m.cols, kernel(m.data));
+  const data = new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
   const divider = new Matrix(1, m.cols, data.colwiseSum().data).replicate(
     m.rows,
     1
@@ -337,7 +350,7 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
     output.cols,
     elementWiseMultiply(
       output,
-      new Matrix(output.rows, output.cols, kernel(predictions.data))
+      new Matrix(output.rows, output.cols, kernel(predictions.data) as number[][])
     ).data
   ).sum();
 };
@@ -348,7 +361,7 @@ export const logisticActivation = (m: Matrix): Matrix => {
       return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const logisticDerivative = (m: Matrix): Matrix => {
@@ -360,7 +373,7 @@ export const logisticDerivative = (m: Matrix): Matrix => {
       );
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
@@ -404,7 +417,7 @@ export const tanhActivation = (m: Matrix): Matrix => {
       );
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const tanhDerivative = (m: Matrix): Matrix => {
@@ -419,7 +432,7 @@ export const tanhDerivative = (m: Matrix): Matrix => {
       );
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const reluActivation = (m: Matrix): Matrix => {
@@ -428,7 +441,7 @@ export const reluActivation = (m: Matrix): Matrix => {
       return Math.max(0.0, a[this.thread.x][this.thread.y]);
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const reluDerivative = (m: Matrix): Matrix => {
@@ -440,7 +453,7 @@ export const reluDerivative = (m: Matrix): Matrix => {
       return 0;
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const softplusActivation = (m: Matrix): Matrix => {
@@ -449,7 +462,7 @@ export const softplusActivation = (m: Matrix): Matrix => {
       return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const softplusDerivative = (m: Matrix): Matrix => {
@@ -458,7 +471,7 @@ export const softplusDerivative = (m: Matrix): Matrix => {
       return 1 / (1 + Math.exp(-a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
 export const penalty = (m: Matrix): number => {
@@ -467,7 +480,7 @@ export const penalty = (m: Matrix): number => {
       return Math.pow(a[this.thread.x][this.thread.y], 2);
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data)).sum();
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]).sum();
 };
 
 export const sqrt = (m: Matrix): Matrix => {
@@ -476,5 +489,5 @@ export const sqrt = (m: Matrix): Matrix => {
       return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
     })
     .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data));
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };

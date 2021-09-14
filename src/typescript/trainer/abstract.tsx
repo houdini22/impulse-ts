@@ -9,7 +9,7 @@ export abstract class AbstractTrainer {
   iterations: number = 1000;
   learningRate: number = 0.1;
   verbose: boolean = true;
-  verboseStep: number = 10;
+  verboseStep: number = 1;
   stepCallback: Function = () => null;
 
   constructor(network: Network, optimizer: AbstractOptimizer) {
@@ -82,8 +82,8 @@ export abstract class AbstractTrainer {
         (numBatches * (miniBatchSize / batchSize));
 
       for (let col = 0; col < predictedOutput.cols; col += 1) {
-        const index1 = predictedOutput.colwiseMaxCoeffIndex();
-        const index2 = predictedOutput.colwiseMaxCoeffIndex();
+        const index1 = predictedOutput.colMaxCoeffIndex(col);
+        const index2 = predictedOutput.colMaxCoeffIndex(col);
 
         if (index1 === index2) {
           accuracy++;

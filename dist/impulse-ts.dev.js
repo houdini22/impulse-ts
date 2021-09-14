@@ -41,6 +41,7 @@ var AbstractBuilder = /*#__PURE__*/function () {
   _createClass(AbstractBuilder, [{
     key: "createLayer",
     value: function createLayer(type, callback) {
+      // @ts-ignore
       var layer = new type();
 
       if (typeof callback === "function") {
@@ -1320,11 +1321,11 @@ var Matrix = /*#__PURE__*/function () {
     value: function block(startRow, startCol, blockRows, blockCols) {
       var data = [];
 
-      for (var row = startRow; row < this.rows && row < startRow + blockRows; row += 1) {
+      for (var row = startRow, newRow = 0; row < this.rows && row < startRow + blockRows; row += 1, newRow += 1) {
         data[row] = new Array(blockCols);
 
-        for (var col = startCol; col < this.cols && col < startCol + blockCols; col += 1) {
-          data[row][col] = this.data[row][col];
+        for (var col = startCol, newCol = 0; col < this.cols && col < startCol + blockCols; col += 1, newCol += 1) {
+          data[newRow][newCol] = this.data[row][col];
         }
       }
 
@@ -1382,6 +1383,7 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
 };
 var fillRandom = function fillRandom(m1, parameter) {
   var kernel = gpu.createKernel(function () {
+    // @ts-ignore
     return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
   }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
@@ -1410,6 +1412,7 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
 };
 var elementWiseMultiplyNumber = function elementWiseMultiplyNumber(m1, num) {
   var kernel = gpu.createKernel(function (a) {
+    // @ts-ignore
     return a[this.thread.x][this.thread.y] * this.constants.number;
   }).setOutput([m1.rows, m1.cols]).setConstants({
     number: num
@@ -1438,6 +1441,7 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
 };
 var elementWiseDivideNumber = function elementWiseDivideNumber(m1, num) {
   var kernel = gpu.createKernel(function (a) {
+    // @ts-ignore
     return a[this.thread.x][this.thread.y] / this.constants.number;
   }).setOutput([m1.rows, m1.cols]).setConstants({
     number: num
@@ -1853,8 +1857,9 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
       for (var i = 0; i < this.iterations; i += 1) {
         var startIterationTime = new Date().getTime();
 
-        for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += 1) {
+        for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
           var input = inputDataset.getBatch(offset, this.batchSize);
+          console.log(input.rows, input.cols);
           var output = outputDataset.getBatch(offset, this.batchSize);
           var forward = this.network.forward(input);
           this.network.backward(input, output, forward, this.regularization);
