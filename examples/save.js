@@ -1,8 +1,6 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: {
-    LogisticLayer,
-  },
+  Layer: { LogisticLayer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();

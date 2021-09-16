@@ -3,7 +3,10 @@ import { Matrix } from "../math/Matrix";
 export class AbstractComputation {
   protected kernels = {};
 
-  addKernel(name: string, func: Function): AbstractComputation {
+  addKernel(
+    name: string,
+    func: (m: Matrix, m2: Matrix | number) => null
+  ): AbstractComputation {
     this.kernels[name] = func;
     return this;
   }

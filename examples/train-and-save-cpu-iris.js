@@ -1,12 +1,10 @@
 const {
-    NetworkBuilder: { NetworkBuilder1D },
-    Layer: {
-        LogisticLayer,
-    },
-    DatasetBuilder: { DatasetBuilder },
-    Optimizer: { OptimizerGradientDescent },
-    Trainer: { MiniBatchTrainer },
-    Computation: { ComputationCPU, setComputation },
+  NetworkBuilder: { NetworkBuilder1D },
+  Layer: { LogisticLayer },
+  DatasetBuilder: { DatasetBuilder },
+  Optimizer: { OptimizerGradientDescent },
+  Trainer: { MiniBatchTrainer },
+  Computation: { ComputationCPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

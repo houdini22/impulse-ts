@@ -1,13 +1,13 @@
 const {
-    NetworkBuilder: { NetworkBuilder3D },
-    Layer: {
-        LogisticLayer,
-        ConvLayer,
-        FullyConnectedLayer,
-        MaxPoolLayer,
-        TanhLayer,
-    },
-    DatasetBuilder: { DatasetBuilder },
+  NetworkBuilder: { NetworkBuilder3D },
+  Layer: {
+    LogisticLayer,
+    ConvLayer,
+    FullyConnectedLayer,
+    MaxPoolLayer,
+    TanhLayer,
+  },
+  DatasetBuilder: { DatasetBuilder },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

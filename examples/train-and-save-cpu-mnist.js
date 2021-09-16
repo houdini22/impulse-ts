@@ -1,8 +1,6 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: {
-    LogisticLayer,
-  },
+  Layer: { LogisticLayer },
   DatasetBuilder: { DatasetBuilder },
   Optimizer: { OptimizerAdam },
   Trainer: { MiniBatchTrainer },

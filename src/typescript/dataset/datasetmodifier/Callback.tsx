@@ -1,7 +1,8 @@
 import { AbstractDatasetModifier } from "./AbstractDatasetModifier";
+import { Matrix } from "../../math/Matrix";
 
 export class CallbackDatabaseModifier extends AbstractDatasetModifier {
-  protected callback: Function = (example) => example;
+  protected callback: (example: Matrix) => Matrix = (example) => example;
 
   applyToExample(example: number): void {
     for (
@@ -16,7 +17,7 @@ export class CallbackDatabaseModifier extends AbstractDatasetModifier {
     }
   }
 
-  setCallback(callback: Function): CallbackDatabaseModifier {
+  setCallback(callback: (example: Matrix) => Matrix): CallbackDatabaseModifier {
     this.callback = callback;
     return this;
   }
