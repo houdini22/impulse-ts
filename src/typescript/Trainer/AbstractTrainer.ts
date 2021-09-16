@@ -73,8 +73,8 @@ export abstract class AbstractTrainer {
       });
 
       for (let batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += 100) {
-        const inputBatch = inputDataset.getBatch(offset, batchSize);
-        const outputBatch = outputDataset.getBatch(offset, batchSize);
+        const inputBatch = inputDataset.getBatch(offset, batchSize).data;
+        const outputBatch = outputDataset.getBatch(offset, batchSize).data;
 
         if (inputBatch && outputBatch) {
           const predictedOutput = this.network.forward(inputBatch);

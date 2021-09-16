@@ -5,6 +5,7 @@ const {
   Optimizer: { OptimizerAdam },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
+  DatasetModifier: { MinMaxScalingDatabaseModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

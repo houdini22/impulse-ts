@@ -25,9 +25,9 @@ export class MiniBatchTrainer extends AbstractTrainer {
           const startIterationTime2 = new Date().getTime();
           const input = inputDataset.getBatch(offset, this.batchSize);
           const output = outputDataset.getBatch(offset, this.batchSize);
-          const forward = this.network.forward(input);
+          const forward = this.network.forward(input.data);
 
-          this.network.backward(input, output, forward, this.regularization);
+          this.network.backward(input.data, output.data, forward, this.regularization);
 
           this.network.getLayers().forEach((layer) => {
             if (this.optimizer) {
@@ -37,11 +37,12 @@ export class MiniBatchTrainer extends AbstractTrainer {
           });
 
           if (this.verbose) {
+            const cost = this.cost(input, output);
             const endIterationTime = new Date().getTime();
             console.log(
-              `Batch: ${offset} / ${numberOfExamples} | Time: ${endIterationTime - startIterationTime2} ms | ${
-                (endIterationTime - startIterationTime) / 1000
-              } s.`
+              `Batch: ${offset} / ${numberOfExamples} | Cost: ${cost.cost} | Batch time: ${
+                endIterationTime - startIterationTime2
+              } ms | Time from start: ${(endIterationTime - startIterationTime) / 1000} s.`
             );
           }
         }

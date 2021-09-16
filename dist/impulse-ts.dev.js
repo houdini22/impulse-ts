@@ -1068,11 +1068,16 @@ var Dataset = /*#__PURE__*/function () {
     this.numberOfExamples = numberOfExamples;
     var data = [];
 
-    for (var example = 0; example < numberOfExamples; example += 1) {
-      data[example] = [];
+    for (var col = 0; col < numberOfExamples; col += 1) {
+      data[col] = [];
 
-      for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        data[example][dataIndex] = arr[example][dataIndex].length ? Number(arr[example][dataIndex]) : NaN;
+      for (var row = 0; row < exampleSize; row += 1) {
+        if (typeof arr[row][col] === "string") {
+          // @ts-ignore
+          data[col][row] = Number(arr[row][col].length ? arr[row][col] : 0);
+        } else if (typeof arr[row][col] === "number") {
+          data[col][row] = arr[row][col];
+        }
       }
     }
 
@@ -1097,10 +1102,11 @@ var Dataset = /*#__PURE__*/function () {
     key: "getBatch",
     value: function getBatch(offset, batchSize) {
       if (this.data) {
-        return this.data.block(0, offset, this.data.rows, batchSize);
+        var data = this.data.block(0, offset, this.data.rows, batchSize);
+        return new Dataset(data.rows, data.cols, data.data);
       }
 
-      return null;
+      return new Dataset(0, 0, [[]]);
     }
   }]);
 
@@ -1121,34 +1127,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var AbstractDatasetModifier = /*#__PURE__*/function () {
-  function AbstractDatasetModifier(dataset) {
-    _classCallCheck(this, AbstractDatasetModifier);
+var AbstractDatasetModifier = function AbstractDatasetModifier(dataset) {
+  _classCallCheck(this, AbstractDatasetModifier);
 
-    _defineProperty(this, "dataset", null);
+  _defineProperty(this, "dataset", null);
 
-    this.dataset = dataset;
-  }
-
-  _createClass(AbstractDatasetModifier, [{
-    key: "apply",
-    value: function apply() {
-      for (var _example = 0; _example < this.dataset.getNumberOfExamples(); _example += 1) {
-        this.applyToExample(_example);
-      }
-
-      return this.dataset;
-    }
-  }]);
-
-  return AbstractDatasetModifier;
-}();
+  this.dataset = dataset;
+};
 
 /***/ }),
 
@@ -1212,8 +1199,8 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
   }
 
   _createClass(CallbackDatabaseModifier, [{
-    key: "applyToExample",
-    value: function applyToExample(example) {
+    key: "apply",
+    value: function apply() {
       for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
         var _example = this.callback(this.dataset.exampleAt(exampleIndex));
 
@@ -1223,6 +1210,8 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
           }
         }
       }
+
+      return this.dataset;
     }
   }, {
     key: "setCallback",
@@ -1248,7 +1237,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* binding */ MinMaxScalingDatabaseModifier)
 /* harmony export */ });
 /* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts");
-/* harmony import */ var _Computation_ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/ComputationGPU */ "./src/typescript/Computation/ComputationGPU.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1272,7 +1260,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
 var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
   _inherits(MinMaxScalingDatabaseModifier, _AbstractDatasetModif);
 
@@ -1285,30 +1272,40 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
   }
 
   _createClass(MinMaxScalingDatabaseModifier, [{
-    key: "applyToExample",
-    value: function applyToExample(example) {
+    key: "apply",
+    value: function apply() {
       var min = Infinity;
       var max = -Infinity;
 
-      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
-        var _example = this.dataset.exampleAt(exampleIndex);
+      for (var col = 0; col < this.dataset.getNumberOfExamples(); col += 1) {
+        var example = this.dataset.exampleAt(col);
 
-        for (var row = 0; row < _example.rows; row += 1) {
+        for (var row = 0; row < example.rows; row += 1) {
+          if (min > example.data[row][col]) {
+            min = example.data[row][col];
+          }
+
+          if (max < example.data[row][col]) {
+            max = example.data[row][col];
+          }
+
+          console.log(example.data[row][col]);
+        }
+      }
+
+      console.log(min, max);
+
+      for (var _col = 0; _col < this.dataset.getNumberOfExamples(); _col += 1) {
+        var _example = this.dataset.exampleAt(_col);
+
+        for (var _row = 0; _row < _example.rows; _row += 1) {
           if (_example && _example.data) {
-            min = Math.min(_example.data[row][0]);
-            max = Math.max(_example.data[row][0]);
+            this.dataset.data.data[_row][_col] = (_example.data[_row][_col] - min) / (max - min);
           }
         }
       }
 
-      var kernel = _Computation_ComputationGPU__WEBPACK_IMPORTED_MODULE_1__.gpu.createKernel(function (a) {
-        // @ts-ignore
-        return (a[this.thread.x][this.thread.y] - this.constants.min) / (this.constants.max - this.constants.min);
-      }).setOutput([this.dataset.data.rows, this.dataset.data.cols]).setConstants({
-        min: min,
-        max: max
-      });
-      this.dataset.data.data = kernel(this.dataset.data.data);
+      return this.dataset;
     }
   }]);
 
@@ -1375,8 +1372,8 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
   }
 
   _createClass(MissingDataScalingDatabaseModifier, [{
-    key: "applyToExample",
-    value: function applyToExample(example) {
+    key: "apply",
+    value: function apply() {
       var _this2 = this;
 
       var rowsToFill = [];
@@ -1385,17 +1382,17 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
       var valueToFill = 0;
 
       for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
-        var _example = this.dataset.exampleAt(exampleIndex);
+        var example = this.dataset.exampleAt(exampleIndex);
 
-        if (_example && _example.data) {
-          for (var row = 0; row < _example.rows; row += 1) {
-            if (isNaN(_example.data[row][0])) {
+        if (example && example.data) {
+          for (var row = 0; row < example.rows; row += 1) {
+            if (isNaN(example.data[row][0])) {
               rowsToFill.push({
                 row: row,
-                col: _example
+                col: example
               });
             } else {
-              sum += _example.data[row][0];
+              sum += example.data[row][0];
               correctExamplesCount++;
             }
           }
@@ -1414,6 +1411,7 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
           _this2.dataset.data.data[row][col] = valueToFill;
         }
       });
+      return this.dataset;
     }
   }, {
     key: "setModificationType",
@@ -4244,8 +4242,8 @@ var AbstractTrainer = /*#__PURE__*/function () {
         });
 
         for (var batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += 100) {
-          var inputBatch = inputDataset.getBatch(offset, batchSize);
-          var outputBatch = outputDataset.getBatch(offset, batchSize);
+          var inputBatch = inputDataset.getBatch(offset, batchSize).data;
+          var outputBatch = outputDataset.getBatch(offset, batchSize).data;
 
           if (inputBatch && outputBatch) {
             var predictedOutput = this.network.forward(inputBatch);
@@ -4361,8 +4359,8 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
             var startIterationTime2 = new Date().getTime();
             var input = inputDataset.getBatch(offset, this.batchSize);
             var output = outputDataset.getBatch(offset, this.batchSize);
-            var forward = this.network.forward(input);
-            this.network.backward(input, output, forward, this.regularization);
+            var forward = this.network.forward(input.data);
+            this.network.backward(input.data, output.data, forward, this.regularization);
             this.network.getLayers().forEach(function (layer) {
               if (_this2.optimizer) {
                 _this2.optimizer.setT(++t);
@@ -4372,8 +4370,9 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
             });
 
             if (this.verbose) {
+              var cost = this.cost(input, output);
               var endIterationTime = new Date().getTime();
-              console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Time: ").concat(endIterationTime - startIterationTime2, " ms | ").concat((endIterationTime - startIterationTime) / 1000, " s."));
+              console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Cost: ").concat(cost.cost, " | Batch time: ").concat(endIterationTime - startIterationTime2, " ms | Time from start: ").concat((endIterationTime - startIterationTime) / 1000, " s."));
             }
           }
 

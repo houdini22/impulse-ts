@@ -1,9 +1,10 @@
 import { AbstractDatasetModifier } from "./AbstractDatasetModifier";
+import { Dataset } from "../Dataset";
 
 export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier {
   protected modificationType = "mean";
 
-  applyToExample(example: number): void {
+  apply(): Dataset {
     const rowsToFill = [];
     let correctExamplesCount = 0;
     let sum = 0;
@@ -35,6 +36,8 @@ export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier 
         this.dataset.data.data[row][col] = valueToFill;
       }
     });
+
+    return this.dataset;
   }
 
   setModificationType(type: string): MissingDataScalingDatabaseModifier {
