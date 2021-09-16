@@ -42,7 +42,10 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then(
     DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_y.csv")).then(
       async (outputDataset) => {
         console.log("Loaded iris_y.csv");
-        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+        const trainer = new MiniBatchTrainer(
+          network,
+          new OptimizerGradientDescent()
+        );
         trainer.setIterations(1);
         trainer.setBatchSize(10);
         trainer.setLearningRate(0.001);
