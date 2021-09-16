@@ -34,6 +34,8 @@ export class Matrix {
           this.data[row][col] = arr[col];
         } else if (arr[col] instanceof Float32Array) {
           this.data[row][col] = arr[col][row];
+        } else if (arr[col] && typeof arr[col][row] === "number") {
+          this.data[row][col] = arr[col][row];
         } else {
           this.data[row][col] = 0;
         }

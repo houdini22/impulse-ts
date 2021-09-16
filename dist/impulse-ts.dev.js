@@ -3687,6 +3687,8 @@ var Matrix = /*#__PURE__*/function () {
             this.data[_row2][col] = arr[col];
           } else if (arr[col] instanceof Float32Array) {
             this.data[_row2][col] = arr[col][_row2];
+          } else if (arr[col] && typeof arr[col][_row2] === "number") {
+            this.data[_row2][col] = arr[col][_row2];
           } else {
             this.data[_row2][col] = 0;
           }
