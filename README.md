@@ -15,7 +15,11 @@ const {
   },
   Dataset: { Dataset },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerGradientDescent, OptimizerAdam, OptimizerAdadelta },
+  Optimizer: { 
+    OptimizerGradientDescent, 
+    OptimizerAdam,
+    OptimizerAdadelta
+  },
   Trainer: { MiniBatchTrainer },
   DatasetModifier: {
     CallbackDatabaseModifier,
