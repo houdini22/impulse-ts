@@ -2,7 +2,7 @@ import { Matrix } from "../math/matrix";
 import { maxpool } from "../math/math";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./abstract3d";
-import { BackpropagationToMaxPool } from "./backpropagation/backpropagationtomaxpool";
+import { BackpropagationToMaxPool } from "./backpropagation";
 
 class MaxPoolLayer extends AbstractLayer3D {
   filterSize: number;

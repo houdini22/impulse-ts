@@ -15,7 +15,7 @@ abstract class AbstractBuilder {
 
   createLayer(
     type: Layers,
-    callback: (layer: AbstractLayer) => void = null
+    callback: (layer: Layers) => void = null
   ): AbstractBuilder {
     const layer = new type();
 

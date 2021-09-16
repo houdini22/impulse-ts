@@ -50,8 +50,16 @@ class Builder1D extends AbstractBuilder {
         const network = builder.getNetwork();
 
         network.getLayers().forEach((layer, i) => {
-          layer.W = new Matrix(json["layers"][i]['weights']["W"].length, json["layers"][i]['weights']["W"][0].length, json["layers"][i]['weights']["W"]);
-          layer.b = new Matrix(json["layers"][i]['weights']["b"].length, json["layers"][i]['weights']["b"][0].length, json["layers"][i]['weights']["b"]);
+          layer.W = new Matrix(
+            json["layers"][i]["weights"]["W"].length,
+            json["layers"][i]["weights"]["W"][0].length,
+            json["layers"][i]["weights"]["W"]
+          );
+          layer.b = new Matrix(
+            json["layers"][i]["weights"]["b"].length,
+            json["layers"][i]["weights"]["b"][0].length,
+            json["layers"][i]["weights"]["b"]
+          );
         });
 
         resolve(network);

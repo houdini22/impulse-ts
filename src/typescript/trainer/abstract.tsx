@@ -1,6 +1,6 @@
 import Network from "../network";
 import { AbstractOptimizer } from "./optimizer/abstract";
-import { Dataset } from "../dataset/dataset";
+import { Dataset } from "../dataset";
 
 export interface CostResult {
   cost: number;
@@ -26,7 +26,10 @@ export abstract class AbstractTrainer {
     this.optimizer = optimizer;
   }
 
-  abstract train(inputDataset: Dataset, outputDataset: Dataset): AbstractTrainer;
+  abstract train(
+    inputDataset: Dataset,
+    outputDataset: Dataset
+  ): AbstractTrainer;
 
   setRegularization(regularization: number): AbstractTrainer {
     this.regularization = regularization;
@@ -104,11 +107,9 @@ export abstract class AbstractTrainer {
       }
     }
 
-    const result = {
+    return {
       cost,
       accuracy: ((accuracy - 1) / numberOfExamples) * 100,
     };
-
-    return result;
   }
 }

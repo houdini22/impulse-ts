@@ -12,22 +12,29 @@ const {
 const path = require("path");
 
 const builder = new Builder3D([20, 20, 1]);
-builder.createLayer(ConvLayer, (layer) => {
-  layer.setFilterSize(4).setPadding(1).setStride(1).setNumFilters(32);
-}).createLayer(MaxPoolLayer, (layer) => {
-  layer.setFilterSize(2).setStride(2);
-}).createLayer(ConvLayer, (layer) => {
-  layer.setFilterSize(3).setPadding(1).setStride(1).setNumFilters(64);
-}).createLayer(MaxPoolLayer, (layer) => {
-  layer.setFilterSize(2).setStride(2);
-}).createLayer(FullyConnectedLayer, (layer) => {})
-    .createLayer(TanhLayer, (layer) => {
-  layer.setSize([1024]);
-}).createLayer(TanhLayer, (layer) => {
-  layer.setSize([256]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([10]);
-});
+builder
+  .createLayer(ConvLayer, (layer) => {
+    layer.setFilterSize(4).setPadding(1).setStride(1).setNumFilters(32);
+  })
+  .createLayer(MaxPoolLayer, (layer) => {
+    layer.setFilterSize(2).setStride(2);
+  })
+  .createLayer(ConvLayer, (layer) => {
+    layer.setFilterSize(3).setPadding(1).setStride(1).setNumFilters(64);
+  })
+  .createLayer(MaxPoolLayer, (layer) => {
+    layer.setFilterSize(2).setStride(2);
+  })
+  .createLayer(FullyConnectedLayer, (layer) => {})
+  .createLayer(TanhLayer, (layer) => {
+    layer.setSize([1024]);
+  })
+  .createLayer(TanhLayer, (layer) => {
+    layer.setSize([256]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([10]);
+  });
 
 const network = builder.getNetwork();
 

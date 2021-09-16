@@ -46,12 +46,7 @@ export const softmaxActivation = (m: Matrix): Matrix => {
     m.rows,
     1
   );
-  const result = new Matrix(
-    m.rows,
-    m.cols,
-    elementWiseDivide(data, divider).data
-  );
-  return result;
+  return new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
 };
 
 export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
