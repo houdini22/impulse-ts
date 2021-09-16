@@ -5,11 +5,11 @@ import { getComputation } from "../computation/utils";
 
 class TanhLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getComputation().execute("tanhActivation", m);
+    return getComputation().execute("tanhActivation", m) as Matrix;
   }
 
   derivative(m: Matrix): Matrix {
-    return getComputation().execute("tanhDerivative", m);
+    return getComputation().execute("tanhDerivative", m) as Matrix;
   }
 
   getType(): LayerType {

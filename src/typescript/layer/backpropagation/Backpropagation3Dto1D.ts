@@ -1,4 +1,4 @@
-import { AbstractBackPropagation } from "./abstract";
+import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../math/Matrix";
 
 export class Backpropagation3Dto1D extends AbstractBackPropagation {

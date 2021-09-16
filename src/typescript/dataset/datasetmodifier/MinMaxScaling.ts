@@ -13,8 +13,10 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
     ) {
       const example = this.dataset.exampleAt(exampleIndex);
       for (let row = 0; row < example.rows; row += 1) {
-        min = Math.min(example.data[row][0]);
-        max = Math.max(example.data[row][0]);
+        if (example && example.data) {
+          min = Math.min(example.data[row][0]);
+          max = Math.max(example.data[row][0]);
+        }
       }
     }
 
@@ -30,6 +32,6 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
         min,
         max,
       });
-    this.dataset.data.data = kernel(this.dataset.data.data);
+    this.dataset.data.data = kernel(this.dataset.data.data) as number[][];
   }
 }

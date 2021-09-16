@@ -34,35 +34,35 @@ class FullyConnectedLayer extends ConvLayer {
   }
 
   setSize(dimension: Dimension): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setFilterSize(filterSize: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setStride(stride: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setPadding(padding: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setWidth(value: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setHeight(value: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setDepth(value: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 
   setNumFilters(value: number): FullyConnectedLayer {
-    throw new Error("Unsupported");
+    return this;
   }
 }
 

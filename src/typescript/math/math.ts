@@ -19,7 +19,10 @@ export const im2col = (
     ((height - kernel_h + 2 * pad_h) / stride_h + 1);
   let currentResultCol = 0;
 
-  const result = getComputation().execute("setZeros", new Matrix(rows, cols));
+  const result = getComputation().execute(
+    "setZeros",
+    new Matrix(rows, cols)
+  ) as Matrix;
 
   for (
     let boundingY = -pad_h;
@@ -42,10 +45,12 @@ export const im2col = (
               boundingX + x < width &&
               boundingY + y < height
             ) {
-              result.data[currentResultRow][currentResultCol] =
-                input.data[
-                  (y + boundingY) * width + boundingX + x + inputOffset
-                ][0];
+              if (result.data && input.data && result.data[currentResultRow]) {
+                result.data[currentResultRow][currentResultCol] =
+                  input.data[
+                    (y + boundingY) * width + boundingX + x + inputOffset
+                  ][0];
+              }
             }
             currentResultRow++;
           }

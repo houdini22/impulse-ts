@@ -12,8 +12,8 @@ export interface StepCallbackParameters {
 }
 
 export abstract class AbstractTrainer {
-  network: Network = null;
-  optimizer: AbstractOptimizer = null;
+  network: Network | null = null;
+  optimizer: AbstractOptimizer | null = null;
   regularization = 0;
   iterations = 1000;
   learningRate = 0.01;
@@ -72,37 +72,40 @@ export abstract class AbstractTrainer {
     let accuracy = 0;
     let penalty = 0;
 
-    this.network.getLayers().forEach((layer) => {
-      penalty += layer.penalty();
-    });
+    if (this.network) {
+      this.network.getLayers().forEach((layer) => {
+        penalty += layer.penalty();
+      });
 
-    for (
-      let batch = 0, offset = 0;
-      batch < numberOfExamples;
-      batch += batchSize, offset += 1
-    ) {
-      const predictedOutput = this.network.forward(
-        inputDataset.getBatch(offset, batchSize)
-      );
-      const correctOutput = outputDataset.getBatch(offset, batchSize);
+      for (
+        let batch = 0, offset = 0;
+        batch < numberOfExamples;
+        batch += batchSize, offset += 1
+      ) {
+        const batch = inputDataset.getBatch(offset, batchSize);
+        if (batch) {
+          const predictedOutput = this.network.forward(batch);
+          const correctOutput = batch;
 
-      const miniBatchSize = correctOutput.cols;
+          const miniBatchSize = correctOutput.cols;
 
-      const loss = this.network.loss(correctOutput, predictedOutput);
-      const error = this.network.error(miniBatchSize);
+          const loss = this.network.loss(correctOutput, predictedOutput);
+          const error = this.network.error(miniBatchSize);
 
-      cost +=
-        (error * loss +
-          (this.regularization * penalty) / (2.0 * miniBatchSize)) /
-        // TODO: fix it
-        (numBatches * (miniBatchSize / batchSize));
+          cost +=
+              (error * loss +
+                  (this.regularization * penalty) / (2.0 * miniBatchSize)) /
+              // TODO: fix it
+              (numBatches * (miniBatchSize / batchSize));
 
-      for (let col = 0; col < predictedOutput.cols; col += 1) {
-        const index1 = predictedOutput.colMaxCoeffIndex(col);
-        const index2 = correctOutput.colMaxCoeffIndex(col);
+          for (let col = 0; col < predictedOutput.cols; col += 1) {
+            const index1 = predictedOutput.colMaxCoeffIndex(col);
+            const index2 = correctOutput.colMaxCoeffIndex(col);
 
-        if (index1 === index2) {
-          accuracy++;
+            if (index1 === index2) {
+              accuracy++;
+            }
+          }
         }
       }
     }

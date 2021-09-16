@@ -1,7 +1,7 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
 import { getComputation } from "../../computation/utils";
-import {Matrix} from "../../math/Matrix";
+import { Matrix } from "../../math/Matrix";
 
 export class OptimizerGradientDescent extends AbstractOptimizer {
   optimize(layer: Layers): void {

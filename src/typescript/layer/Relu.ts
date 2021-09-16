@@ -5,11 +5,11 @@ import { getComputation } from "../computation/utils";
 
 class ReluLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getComputation().execute("reluActivation", m);
+    return getComputation().execute("reluActivation", m) as Matrix;
   }
 
   derivative(m: Matrix): Matrix {
-    return getComputation().execute("reluDerivative", m);
+    return getComputation().execute("reluDerivative", m) as Matrix;
   }
 
   getType(): LayerType {

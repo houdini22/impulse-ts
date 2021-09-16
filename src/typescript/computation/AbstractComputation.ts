@@ -1,7 +1,9 @@
 import { Matrix } from "../math/Matrix";
 
+interface KernelsInterface {}
+
 export class AbstractComputation {
-  protected kernels = {};
+  protected kernels: KernelsInterface = {};
 
   addKernel(
     name: string,

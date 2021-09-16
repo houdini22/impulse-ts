@@ -1,7 +1,7 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
 import { getComputation } from "../../computation/utils";
-import {Matrix} from "../../math/Matrix";
+import { Matrix } from "../../math/Matrix";
 
 export class OptimizerAdam extends AbstractOptimizer {
   optimize(layer: Layers): void {
@@ -14,8 +14,16 @@ export class OptimizerAdam extends AbstractOptimizer {
 
     layer.vW = getComputation().execute(
       "elementWiseAdd",
-      getComputation().execute("elementWiseMultiplyNumber", layer.vW, beta1) as Matrix,
-      getComputation().execute("elementWiseMultiplyNumber", layer.gW, 1 - beta1) as Matrix
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.vW,
+        beta1
+      ) as Matrix,
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gW,
+        1 - beta1
+      ) as Matrix
     ) as Matrix;
     const wCorrected = getComputation().execute(
       "elementWiseDivideNumber",
@@ -25,8 +33,16 @@ export class OptimizerAdam extends AbstractOptimizer {
 
     layer.cW = getComputation().execute(
       "elementWiseAdd",
-      getComputation().execute("elementWiseMultiplyNumber", layer.cW, beta1) as Matrix,
-      getComputation().execute("elementWiseMultiplyNumber", layer.gW, 1 - beta1) as Matrix
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.cW,
+        beta1
+      ) as Matrix,
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gW,
+        1 - beta1
+      ) as Matrix
     ) as Matrix;
     const sCorrected = getComputation().execute(
       "sqrt",
@@ -42,15 +58,27 @@ export class OptimizerAdam extends AbstractOptimizer {
       layer.W,
       getComputation().execute(
         "elementWiseMultiplyNumber",
-        getComputation().execute("elementWiseMultiply", wCorrected, sCorrected) as Matrix,
+        getComputation().execute(
+          "elementWiseMultiply",
+          wCorrected,
+          sCorrected
+        ) as Matrix,
         learningRate
       ) as Matrix
     ) as Matrix;
 
     layer.vb = getComputation().execute(
       "elementWiseAdd",
-      getComputation().execute("elementWiseMultiplyNumber", layer.vb, beta1) as Matrix,
-      getComputation().execute("elementWiseMultiplyNumber", layer.gb, 1 - beta1) as Matrix
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.vb,
+        beta1
+      ) as Matrix,
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gb,
+        1 - beta1
+      ) as Matrix
     ) as Matrix;
     const wCorrected2 = getComputation().execute(
       "elementWiseDivideNumber",
@@ -59,10 +87,18 @@ export class OptimizerAdam extends AbstractOptimizer {
     ) as Matrix;
     layer.cb = getComputation().execute(
       "elementWiseAdd",
-      getComputation().execute("elementWiseMultiplyNumber", layer.cb, beta2) as Matrix,
       getComputation().execute(
         "elementWiseMultiplyNumber",
-        getComputation().execute("elementWiseMultiply", layer.gb, layer.gb) as Matrix,
+        layer.cb,
+        beta2
+      ) as Matrix,
+      getComputation().execute(
+        "elementWiseMultiplyNumber",
+        getComputation().execute(
+          "elementWiseMultiply",
+          layer.gb,
+          layer.gb
+        ) as Matrix,
         1 - beta2
       ) as Matrix
     ) as Matrix;
@@ -80,7 +116,11 @@ export class OptimizerAdam extends AbstractOptimizer {
       layer.b,
       getComputation().execute(
         "elementWiseMultiplyNumber",
-        getComputation().execute("elementWiseDivide", wCorrected2, sCorrected2) as Matrix,
+        getComputation().execute(
+          "elementWiseDivide",
+          wCorrected2,
+          sCorrected2
+        ) as Matrix,
         learningRate
       ) as Matrix
     ) as Matrix;

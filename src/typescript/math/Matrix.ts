@@ -3,9 +3,9 @@ import { getComputation } from "../computation/utils";
 export class Matrix {
   public rows = 0;
   public cols = 0;
-  public data = null;
+  public data: number[][] | null = null;
 
-  constructor(rows = 0, cols = 0, data: number[][] = null) {
+  constructor(rows = 0, cols = 0, data: number[][] | null = null) {
     this.resize(rows, cols);
     if (data) {
       this.generateData(data);
@@ -24,40 +24,34 @@ export class Matrix {
   }
 
   generateData(arr: number[][]): Matrix {
-    this.data = [];
+    const data = [];
     for (let row = 0; row < this.rows; row += 1) {
-      this.data[row] = new Array(this.cols);
+      data[row] = new Array(this.cols);
     }
     for (let col = 0; col < this.cols; col += 1) {
       for (let row = 0; row < this.rows; row += 1) {
         if (typeof arr[col] === "number") {
-          this.data[row][col] = arr[col];
+          data[row][col] = arr[col];
         } else if (arr[col] instanceof Float32Array) {
-          this.data[row][col] = arr[col][row];
+          data[row][col] = arr[col][row];
         } else if (arr[col] && typeof arr[col][row] === "number") {
-          this.data[row][col] = arr[col][row];
+          data[row][col] = arr[col][row];
         } else {
-          this.data[row][col] = 0;
+          data[row][col] = 0;
         }
       }
     }
+    this.data = data;
     return this;
-  }
-
-  toBuffer(): ArrayBuffer {
-    const result = new ArrayBuffer(this.rows * this.cols * 64);
-    const view = new DataView(result, 0, this.rows * this.cols * 64);
-    this.data.forEach((num, i) => {
-      view.setFloat64(i, num);
-    });
-    return result;
   }
 
   sum(): number {
     let sum = 0.0;
     for (let row = 0; row < this.rows; row += 1) {
       for (let col = 0; col < this.cols; col += 1) {
-        sum += this.data[row][col];
+        if (this.data) {
+          sum += this.data[row][col];
+        }
       }
     }
     return sum;
@@ -68,7 +62,9 @@ export class Matrix {
     for (let col = 0; col < this.cols; col += 1) {
       let sum = 0.0;
       for (let row = 0; row < this.rows; row += 1) {
-        sum += this.data[row][col];
+        if (this.data) {
+          sum += this.data[row][col];
+        }
       }
       data[col] = [sum];
     }
@@ -80,7 +76,9 @@ export class Matrix {
     for (let row = 0; row < this.rows; row += 1) {
       let sum = 0.0;
       for (let col = 0; col < this.rows; col += 1) {
-        sum += this.data[row][col];
+        if (this.data) {
+          sum += this.data[row][col];
+        }
       }
       data[row] = [sum];
     }
@@ -128,7 +126,7 @@ export class Matrix {
     let max = -Infinity;
 
     for (let row = 0; row < this.rows; row += 1) {
-      if (this.data[row][col] > max) {
+      if (this.data && this.data[row][col] > max) {
         max = this.data[row][col];
         maxIndex = row;
       }
@@ -156,7 +154,9 @@ export class Matrix {
         col < this.cols && col < startCol + blockCols;
         col += 1, newCol += 1
       ) {
-        data[newRow][newCol] = this.data[row][col];
+        if (this.data) {
+          data[newRow][newCol] = this.data[row][col];
+        }
       }
     }
 
@@ -166,14 +166,18 @@ export class Matrix {
   col(col: number): Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
-      data[row] = [this.data[row][col]];
+      if (this.data) {
+        data[row] = [this.data[row][col]];
+      }
     }
     return new Matrix(this.rows, 1, data);
   }
 
   setCol(col: number, tmp: Matrix): Matrix {
     for (let row = 0; row < this.rows; row += 1) {
-      this.data[row][col] = tmp.data[row][0];
+      if (this.data && tmp.data) {
+        this.data[row][col] = tmp.data[row][0];
+      }
     }
     return this;
   }
@@ -185,14 +189,12 @@ export class Matrix {
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        data[_row++][0] = this.data[row][col];
+        if (this.data) {
+          data[_row++][0] = this.data[row][col];
+        }
       }
     }
 
     return new Matrix(this.rows * this.cols, 1, data);
   }
 }
-
-export const cols = (m: Matrix): number => {
-  return m.cols;
-};

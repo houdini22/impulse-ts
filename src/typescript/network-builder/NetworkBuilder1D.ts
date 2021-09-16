@@ -10,6 +10,7 @@ import {
   TanhLayer,
 } from "../layer/";
 import { Matrix } from "../math/Matrix";
+import {JSONLayerData} from "./types";
 
 class NetworkBuilder1D extends AbstractNetworkBuilder {
   firstLayerTransition(layer: Layers): void {
@@ -27,7 +28,7 @@ class NetworkBuilder1D extends AbstractNetworkBuilder {
 
         const builder = new NetworkBuilder1D(json["dimensions"]);
 
-        json["layers"].forEach((layerData) => {
+        json["layers"].forEach((layerData: JSONLayerData) => {
           let layerClass = null;
 
           if (layerData["type"] === "logistic") {
@@ -49,20 +50,22 @@ class NetworkBuilder1D extends AbstractNetworkBuilder {
 
         const network = builder.getNetwork();
 
-        network.getLayers().forEach((layer, i) => {
-          layer.W = new Matrix(
-            json["layers"][i]["weights"]["W"].length,
-            json["layers"][i]["weights"]["W"][0].length,
-            json["layers"][i]["weights"]["W"]
-          );
-          layer.b = new Matrix(
-            json["layers"][i]["weights"]["b"].length,
-            json["layers"][i]["weights"]["b"][0].length,
-            json["layers"][i]["weights"]["b"]
-          );
-        });
+        if (network) {
+          network.getLayers().forEach((layer, i) => {
+            layer.W = new Matrix(
+                json["layers"][i]["weights"]["W"].length,
+                json["layers"][i]["weights"]["W"][0].length,
+                json["layers"][i]["weights"]["W"]
+            );
+            layer.b = new Matrix(
+                json["layers"][i]["weights"]["b"].length,
+                json["layers"][i]["weights"]["b"][0].length,
+                json["layers"][i]["weights"]["b"]
+            );
+          });
 
-        resolve(network);
+          resolve(network);
+        }
       });
     });
   }

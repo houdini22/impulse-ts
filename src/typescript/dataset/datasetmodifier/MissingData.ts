@@ -15,15 +15,17 @@ export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier 
       exampleIndex += 1
     ) {
       const example = this.dataset.exampleAt(exampleIndex);
-      for (let row = 0; row < example.data.rows; row += 1) {
-        if (isNaN(example[row][0])) {
-          rowsToFill.push({
-            row,
-            col: example,
-          });
-        } else {
-          sum += example[row][0];
-          correctExamplesCount++;
+      if (example && example.data) {
+        for (let row = 0; row < example.data.rows; row += 1) {
+          if (isNaN(example.data[row][0])) {
+            rowsToFill.push({
+              row,
+              col: example,
+            });
+          } else {
+            sum += example.data[row][0];
+            correctExamplesCount++;
+          }
         }
       }
     }
@@ -33,7 +35,9 @@ export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier 
     }
 
     rowsToFill.forEach(({ row, col }) => {
-      this.dataset.data.data[row][col] = valueToFill;
+      if (this.dataset && this.dataset.data && this.dataset.data.data) {
+        this.dataset.data.data[row][col] = valueToFill;
+      }
     });
   }
 

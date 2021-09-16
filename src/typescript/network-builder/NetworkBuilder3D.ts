@@ -11,10 +11,13 @@ import {
 } from "../layer/";
 import { ConvLayer } from "../layer/";
 import { MaxPoolLayer } from "../layer/";
+import { JSONLayerData } from "./types";
 
 class NetworkBuilder3D extends AbstractNetworkBuilder {
   firstLayerTransition(layer: Layers): void {
-    layer.setSize(this.dimensions);
+    if (this.dimensions) {
+      layer.setSize(this.dimensions);
+    }
   }
 
   static fromJSON(jsonPath: string): Promise<Network> {
@@ -26,66 +29,58 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
         }
         const json = JSON.parse(data.toString());
 
-        const builder = new NetworkBuilder3D(json["dimensions"]);
+        const builder = new NetworkBuilder3D(json["size"]);
 
-        json["layers"].forEach((layerData) => {
-          let layerClass = null;
-
+        json["layers"].forEach((layerData: JSONLayerData) => {
           if (layerData["type"] === "logistic") {
-            layerClass = LogisticLayer;
-            builder.createLayer(layerClass, (layer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(LogisticLayer, (layer) => {
+              layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softmax") {
-            layerClass = SoftmaxLayer;
-            builder.createLayer(layerClass, (layer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(SoftmaxLayer, (layer) => {
+              layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "relu") {
-            layerClass = ReluLayer;
-            builder.createLayer(layerClass, (layer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(ReluLayer, (layer) => {
+              layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softplus") {
-            layerClass = SoftplusLayer;
-            builder.createLayer(layerClass, (layer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(SoftplusLayer, (layer) => {
+              layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "tanh") {
-            layerClass = TanhLayer;
-            builder.createLayer(layerClass, (layer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(TanhLayer, (layer) => {
+              layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "conv") {
-            layerClass = ConvLayer;
-            builder.createLayer(layerClass, (layer: ConvLayer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(ConvLayer, (layer: ConvLayer) => {
+              layer.setSize(layerData["size"]);
               layer.setFilterSize(layerData["filterSize"]);
               layer.setStride(layerData["stride"]);
               layer.setNumFilters(layerData["numFilters"]);
               layer.setPadding(layerData["padding"]);
             });
           } else if (layerData["type"] === "maxpool") {
-            layerClass = MaxPoolLayer;
-            builder.createLayer(layerClass, (layer: MaxPoolLayer) => {
-              layer.setSize(layerData["dimensions"]);
+            builder.createLayer(MaxPoolLayer, (layer: MaxPoolLayer) => {
+              layer.setSize(layerData["size"]);
               layer.setFilterSize(layerData["filterSize"]);
               layer.setStride(layerData["stride"]);
             });
           } else if (layerData["type"] === "fullyconnected") {
-            layerClass = MaxPoolLayer;
-            builder.createLayer(layerClass);
+            builder.createLayer(MaxPoolLayer);
           }
         });
 
         const network = builder.getNetwork();
 
-        network.getLayers().forEach((layer, i) => {
-          layer.W = json["layers"]["W"];
-          layer.b = json["layers"]["b"];
-        });
+        if (network) {
+          network.getLayers().forEach((layer, i) => {
+            layer.W = json["layers"]["W"];
+            layer.b = json["layers"]["b"];
+          });
 
-        resolve(network);
+          resolve(network);
+        }
       });
     });
   }

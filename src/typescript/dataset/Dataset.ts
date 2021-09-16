@@ -3,7 +3,7 @@ import { Matrix } from "../math/Matrix";
 export class Dataset {
   public exampleSize = 0;
   public numberOfExamples = 0;
-  public data: Matrix = null;
+  public data: Matrix | null = null;
 
   constructor(exampleSize: number, numberOfExamples: number, arr: string[][]) {
     this.exampleSize = exampleSize;
@@ -22,15 +22,22 @@ export class Dataset {
     this.data = new Matrix(this.exampleSize, this.numberOfExamples, data);
   }
 
-  exampleAt(index: number): Matrix {
-    return this.data.col(index);
+  exampleAt(index: number): Matrix | null {
+    if (this.data) {
+      return this.data.col(index);
+    }
+
+    return null;
   }
 
   getNumberOfExamples(): number {
     return this.numberOfExamples;
   }
 
-  getBatch(offset: number, batchSize: number): Matrix {
-    return this.data.block(0, offset, this.data.rows, batchSize);
+  getBatch(offset: number, batchSize: number): Matrix | null {
+    if (this.data) {
+      return this.data.block(0, offset, this.data.rows, batchSize);
+    }
+    return null;
   }
 }

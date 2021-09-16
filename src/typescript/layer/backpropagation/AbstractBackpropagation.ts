@@ -2,10 +2,10 @@ import { Layers } from "../../types";
 import { Matrix } from "../../math/Matrix";
 
 export abstract class AbstractBackPropagation {
-  protected layer: Layers = null;
-  protected previousLayer: Layers = null;
+  protected layer: Layers | null = null;
+  protected previousLayer: Layers | null = null;
 
-  constructor(layer: Layers, previousLayer: Layers) {
+  constructor(layer: Layers | null, previousLayer: Layers) {
     this.layer = layer;
     this.previousLayer = previousLayer;
   }

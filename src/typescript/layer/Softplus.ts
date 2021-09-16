@@ -5,11 +5,11 @@ import { getComputation } from "../computation/utils";
 
 class SoftplusLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getComputation().execute("softplusActivation", m);
+    return getComputation().execute("softplusActivation", m) as Matrix;
   }
 
   derivative(m: Matrix): Matrix {
-    return getComputation().execute("softplusDerivative", m);
+    return getComputation().execute("softplusDerivative", m) as Matrix;
   }
 
   getType(): LayerType {

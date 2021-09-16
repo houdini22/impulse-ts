@@ -22,7 +22,7 @@
   "scripts": {
     "build-dev": "webpack --config ./configs/dev.js",
     "build-prod": "webpack --config ./configs/prod.js",
-    "prettier-write": "prettier --write \"src/typescript/**/*.tsx\" && prettier --write \"examples/**/*.js\"",
+    "prettier-write": "prettier --write \"src/typescript/**/*.ts\" && prettier --write \"examples/**/*.js\"",
     "preinstall": "node-gyp clean || true; node-gyp --debug configure build",
     "install": "node-gyp rebuild --debug",
     "clean-dist": "rm -f -r -d ./dist/*",

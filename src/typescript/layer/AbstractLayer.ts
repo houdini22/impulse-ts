@@ -1,6 +1,6 @@
 import { Matrix } from "../math/Matrix";
 import { Dimension, Layers } from "../types";
-import { AbstractBackPropagation } from "./backpropagation/abstract";
+import { AbstractBackPropagation } from "./backpropagation/AbstractBackpropagation";
 import { getComputation } from "../computation/utils";
 
 abstract class AbstractLayer {
@@ -18,8 +18,8 @@ abstract class AbstractLayer {
   protected width = 0;
   protected height = 0;
   protected depth = 0;
-  protected previousLayer: Layers = null;
-  protected backPropagation: AbstractBackPropagation = null;
+  protected previousLayer: Layers | null = null;
+  protected backPropagation: AbstractBackPropagation | null = null;
 
   constructor() {
     this.W = new Matrix();
@@ -39,7 +39,7 @@ abstract class AbstractLayer {
     return this;
   }
 
-  getBackPropagation(): AbstractBackPropagation {
+  getBackPropagation(): AbstractBackPropagation | null {
     return this.backPropagation;
   }
 
@@ -89,7 +89,7 @@ abstract class AbstractLayer {
 
   abstract getOutputDepth(): number;
 
-  abstract configure(): number;
+  abstract configure(): void;
 
   abstract is1D(): boolean;
 
@@ -102,7 +102,7 @@ abstract class AbstractLayer {
 
   abstract setSize(dimension: Dimension): AbstractLayer;
 
-  abstract getSize(): number;
+  abstract getSize(): Dimension | number;
 
   abstract activation(value: Matrix): Matrix;
 
