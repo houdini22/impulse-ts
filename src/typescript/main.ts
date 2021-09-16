@@ -19,7 +19,7 @@ import {
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
 } from "./Dataset/DatasetModifier";
-import { ComputationCPU, ComputationGPU, setComputation } from "./Computation";
+import { ComputationCPU, ComputationGPU, setComputation, getComputation } from "./Computation";
 import { DatasetBuilderSourceCSV } from "./DatasetBuilder/DatasetBuilderSource";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
@@ -56,6 +56,7 @@ const Computation = {
   ComputationCPU,
   ComputationGPU,
   setComputation,
+  getComputation,
 };
 const Dataset = {
   Dataset: DatasetDataset,

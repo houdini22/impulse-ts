@@ -997,7 +997,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractComputation": () => (/* reexport safe */ _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__.AbstractComputation),
 /* harmony export */   "ComputationGPU": () => (/* reexport safe */ _ComputationGPU__WEBPACK_IMPORTED_MODULE_1__.ComputationGPU),
 /* harmony export */   "ComputationCPU": () => (/* reexport safe */ _ComputationCPU__WEBPACK_IMPORTED_MODULE_2__.ComputationCPU),
-/* harmony export */   "setComputation": () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_3__.setComputation)
+/* harmony export */   "setComputation": () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_3__.setComputation),
+/* harmony export */   "getComputation": () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_3__.getComputation)
 /* harmony export */ });
 /* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/Computation/AbstractComputation.ts");
 /* harmony import */ var _ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ComputationGPU */ "./src/typescript/Computation/ComputationGPU.ts");
@@ -5120,7 +5121,8 @@ var DatasetModifier = {
 var Computation = {
   ComputationCPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationCPU,
   ComputationGPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationGPU,
-  setComputation: _Computation__WEBPACK_IMPORTED_MODULE_8__.setComputation
+  setComputation: _Computation__WEBPACK_IMPORTED_MODULE_8__.setComputation,
+  getComputation: _Computation__WEBPACK_IMPORTED_MODULE_8__.getComputation
 };
 var Dataset = {
   Dataset: _Dataset__WEBPACK_IMPORTED_MODULE_3__.Dataset

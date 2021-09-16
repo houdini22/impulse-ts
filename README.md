@@ -1,35 +1,54 @@
 Full API documentation available at [https://houdini22.github.io/impulse-ts/](https://houdini22.github.io/impulse-ts/).
 
 ### Exports
+
 ```javascript
 const {
-  NetworkBuilder: { NetworkBuilder1D, NetworkBuilder3D },
-  Math: { Matrix },
-  Layer: {
-    LogisticLayer,
-    ConvLayer,
-    FullyConnectedLayer,
-    MaxPoolLayer,
-    PurelinLayer,
-    ReluLayer,
-    SoftmaxLayer,
-    TanhLayer,
-  },
-  Dataset: { Dataset },
-  DatasetBuilder: { DatasetBuilder },
-  DatasetBuilderSource: { DatasetBuilderSourceCSV },
-  Optimizer: { 
-    OptimizerGradientDescent, 
-    OptimizerAdam,
-    OptimizerAdadelta
-  },
-  Trainer: { MiniBatchTrainer },
-  DatasetModifier: {
-    CallbackDatabaseModifier,
-    MinMaxScalingDatabaseModifier,
-    MissingDataScalingDatabaseModifier,
-  },
-  Computation: { ComputationCPU, ComputationGPU, setComputation },
+    NetworkBuilder: {
+        NetworkBuilder1D,
+        NetworkBuilder3D
+    },
+    Math: {
+        Matrix
+    },
+    Layer: {
+        LogisticLayer,
+        ConvLayer,
+        FullyConnectedLayer,
+        MaxPoolLayer,
+        PurelinLayer,
+        ReluLayer,
+        SoftmaxLayer,
+        TanhLayer,
+    },
+    Dataset: {
+        Dataset
+    },
+    DatasetBuilder: {
+        DatasetBuilder
+    },
+    DatasetBuilderSource: {
+        DatasetBuilderSourceCSV
+    },
+    Optimizer: {
+        OptimizerGradientDescent,
+        OptimizerAdam,
+        OptimizerAdadelta
+    },
+    Trainer: {
+        MiniBatchTrainer
+    },
+    DatasetModifier: {
+        CallbackDatabaseModifier,
+        MinMaxScalingDatabaseModifier,
+        MissingDataScalingDatabaseModifier,
+    },
+    Computation: {
+        ComputationCPU,
+        ComputationGPU,
+        setComputation,
+        getComputation,
+    },
 } = require("impulse-ts");
 ```
 
@@ -37,13 +56,13 @@ const {
 
 ```javascript
 const {
-    NetworkBuilder: { NetworkBuilder1D },
-    Layer: { LogisticLayer },
-    DatasetBuilder: { DatasetBuilder },
-    Optimizer: { OptimizerAdam },
-    Trainer: { MiniBatchTrainer },
-    Computation: { ComputationCPU, setComputation },
-    DatasetModifier: { MinMaxScalingDatabaseModifier },
+    NetworkBuilder: {NetworkBuilder1D},
+    Layer: {LogisticLayer},
+    DatasetBuilder: {DatasetBuilder},
+    Optimizer: {OptimizerAdam},
+    Trainer: {MiniBatchTrainer},
+    Computation: {ComputationCPU, setComputation},
+    DatasetModifier: {MinMaxScalingDatabaseModifier},
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -84,26 +103,27 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inpu
 ```
 
 ### Restore network and predict
+
 ```javascript
 const {
-  Builder: { NetworkBuilder1D },
-  Dataset: { DatasetBuilder },
+    Builder: {NetworkBuilder1D},
+    Dataset: {DatasetBuilder},
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
 
 NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
-  (network) => {
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
-      (inputDataset) => {
-        DatasetBuilder.fromCSV(
-          path.resolve(__dirname, "./data/mnist_y.csv")
-        ).then(async (outputDataset) => {
-          const result = network.forward(inputDataset.exampleAt(0));
-          console.log("forward", result);
-        });
-      }
-    );
-  }
+    (network) => {
+        DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
+            (inputDataset) => {
+                DatasetBuilder.fromCSV(
+                    path.resolve(__dirname, "./data/mnist_y.csv")
+                ).then(async (outputDataset) => {
+                    const result = network.forward(inputDataset.exampleAt(0));
+                    console.log("forward", result);
+                });
+            }
+        );
+    }
 );
 ``` 
