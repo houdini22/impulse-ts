@@ -19,7 +19,7 @@ export abstract class AbstractTrainer {
   learningRate = 0.01;
   verbose = true;
   verboseStep = 1;
-  stepCallback = () => undefined;
+  stepCallback = (): void => undefined;
 
   constructor(network: Network, optimizer: AbstractOptimizer) {
     this.network = network;
