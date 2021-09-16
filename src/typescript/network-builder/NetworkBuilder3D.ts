@@ -10,6 +10,7 @@ import { JSONLayerData } from "./types";
 class NetworkBuilder3D extends AbstractNetworkBuilder {
   firstLayerTransition(layer: Layers): void {
     if (this.dimensions) {
+      // @ts-ignore
       layer.setSize(this.dimensions);
     }
   }
@@ -29,26 +30,31 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
           if (layerData["type"] === "logistic") {
             // @ts-ignore
             builder.createLayer(LogisticLayer, (layer) => {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softmax") {
             // @ts-ignore
             builder.createLayer(SoftmaxLayer, (layer) => {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "relu") {
             // @ts-ignore
             builder.createLayer(ReluLayer, (layer) => {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softplus") {
             // @ts-ignore
             builder.createLayer(SoftplusLayer, (layer) => {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "tanh") {
             // @ts-ignore
             builder.createLayer(TanhLayer, (layer) => {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "conv") {

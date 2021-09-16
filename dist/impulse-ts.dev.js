@@ -2155,8 +2155,8 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
       for (var i = 0; i < input.cols; i += 1) {
         var conv = (0,_math_math__WEBPACK_IMPORTED_MODULE_1__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
-        var tmp = this.Z = (0,_computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("add", (0,_computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("multiply", this.W, conv), this.b.replicate(1, input.cols)).rollToColMatrix();
-        result.setCol(i, tmp);
+        var tmp = (0,_computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("add", (0,_computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("multiply", this.W, conv), this.b.replicate(1, input.cols));
+        result.setCol(i, tmp.rollToColMatrix());
       }
 
       this.Z = result;
@@ -3937,6 +3937,7 @@ var NetworkBuilder1D = /*#__PURE__*/function (_AbstractNetworkBuild) {
             }
 
             builder.createLayer(layerClass, function (layer) {
+              // @ts-ignore
               layer.setSize(layerData["size"]);
             });
           });
@@ -4018,6 +4019,7 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
     key: "firstLayerTransition",
     value: function firstLayerTransition(layer) {
       if (this.dimensions) {
+        // @ts-ignore
         layer.setSize(this.dimensions);
       }
     }
@@ -4037,26 +4039,31 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
             if (layerData["type"] === "logistic") {
               // @ts-ignore
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.LogisticLayer, function (layer) {
+                // @ts-ignore
                 layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "softmax") {
               // @ts-ignore
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.SoftmaxLayer, function (layer) {
+                // @ts-ignore
                 layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "relu") {
               // @ts-ignore
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.ReluLayer, function (layer) {
+                // @ts-ignore
                 layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "softplus") {
               // @ts-ignore
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.SoftplusLayer, function (layer) {
+                // @ts-ignore
                 layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "tanh") {
               // @ts-ignore
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.TanhLayer, function (layer) {
+                // @ts-ignore
                 layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "conv") {
