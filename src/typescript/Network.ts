@@ -36,7 +36,7 @@ class Network {
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
     const m = X.cols;
 
-    let delta = getComputation().execute("elementWiseSubtract", predictions, Y) as Matrix;
+    let delta = getComputation().execute("subtract", predictions, Y) as Matrix;
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       const backPropagation = this.layers[layer].getBackPropagation();

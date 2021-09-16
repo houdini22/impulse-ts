@@ -14,6 +14,7 @@ abstract class AbstractNetworkBuilder {
 
   createLayer(layerClass: Layers, callback: (layer: Layers) => void | null = null): AbstractNetworkBuilder {
     if (this.network) {
+      // @ts-ignore
       const layer: Layers = new layerClass();
 
       if (typeof callback === "function") {
@@ -23,6 +24,7 @@ abstract class AbstractNetworkBuilder {
       if (this.lastLayer === null) {
         this.firstLayerTransition(layer);
       } else {
+        // @ts-ignore
         layer.transition(this.lastLayer);
       }
 

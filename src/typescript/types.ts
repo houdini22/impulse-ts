@@ -31,7 +31,8 @@ export type Layers =
   | FullyConnectedLayer
   | PurelinLayer
   | AbstractLayer
-  | AbstractLayer1D;
+  | AbstractLayer1D
+  | AbstractLayer3D;
 export type Layers1D =
   | LogisticLayer
   | SoftmaxLayer

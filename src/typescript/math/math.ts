@@ -17,7 +17,7 @@ export const im2col = (
   const cols = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
   let currentResultCol = 0;
 
-  const result = getComputation().execute("setZeros", new Matrix(rows, cols)) as Matrix;
+  const result = getComputation().execute("fillZeros", new Matrix(rows, cols)) as Matrix;
 
   for (let boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
     for (let boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
@@ -57,7 +57,7 @@ export const maxpool = (
   const resultDepth = channels;
 
   let currentResultCol = 0;
-  const result = getComputation().execute("setZeros", new Matrix(resultWidth * resultHeight * resultDepth, 1));
+  const result = getComputation().execute("fillZeros", new Matrix(resultWidth * resultHeight * resultDepth, 1)) as Matrix;
 
   for (let boundingY = 0; boundingY + kernel_h <= height; boundingY += stride_h) {
     for (let boundingX = 0; boundingX + kernel_w <= width; boundingX += stride_w) {
@@ -70,7 +70,9 @@ export const maxpool = (
             _max = Math.max(_max, input.data[inputOffset + (y + boundingY) * width + boundingX + x][0]);
           }
         }
-        result.data[outputOffset + currentResultCol][0] = _max;
+        if (result.data) {
+          result.data[outputOffset + currentResultCol][0] = _max;
+        }
       }
       currentResultCol++;
     }

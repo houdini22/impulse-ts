@@ -13,16 +13,16 @@ setComputation(new ComputationCPU());
 const builder = new NetworkBuilder1D([400]);
 builder
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize([1000]);
+    layer.setSize(1000);
   })
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize([500]);
+    layer.setSize(500);
   })
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize([200]);
+    layer.setSize(200);
   })
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize([10]);
+    layer.setSize(10);
   });
 
 const network = builder.getNetwork();

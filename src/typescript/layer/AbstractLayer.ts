@@ -45,7 +45,7 @@ abstract class AbstractLayer {
 
   forward(input: Matrix): Matrix {
     this.Z = getComputation().execute(
-      "elementWiseAdd",
+      "add",
       getComputation().execute("multiply", this.W, input) as Matrix,
       this.b.replicate(1, input.cols)
     ) as Matrix;

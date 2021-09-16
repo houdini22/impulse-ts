@@ -40,8 +40,8 @@ export class MiniBatchTrainer extends AbstractTrainer {
             const endIterationTime = new Date().getTime();
             console.log(
               `Batch: ${offset} / ${numberOfExamples} | Time: ${endIterationTime - startIterationTime2} ms | ${
-                endIterationTime - startIterationTime
-              } ms.`
+                (endIterationTime - startIterationTime) / 1000
+              } s.`
             );
           }
         }

@@ -27,26 +27,32 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
 
         json["layers"].forEach((layerData: JSONLayerData) => {
           if (layerData["type"] === "logistic") {
+            // @ts-ignore
             builder.createLayer(LogisticLayer, (layer) => {
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softmax") {
+            // @ts-ignore
             builder.createLayer(SoftmaxLayer, (layer) => {
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "relu") {
+            // @ts-ignore
             builder.createLayer(ReluLayer, (layer) => {
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "softplus") {
+            // @ts-ignore
             builder.createLayer(SoftplusLayer, (layer) => {
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "tanh") {
+            // @ts-ignore
             builder.createLayer(TanhLayer, (layer) => {
               layer.setSize(layerData["size"]);
             });
           } else if (layerData["type"] === "conv") {
+            // @ts-ignore
             builder.createLayer(ConvLayer, (layer: ConvLayer) => {
               layer.setSize(layerData["size"]);
               layer.setFilterSize(layerData["filterSize"]);
@@ -55,12 +61,14 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
               layer.setPadding(layerData["padding"]);
             });
           } else if (layerData["type"] === "maxpool") {
+            // @ts-ignore
             builder.createLayer(MaxPoolLayer, (layer: MaxPoolLayer) => {
               layer.setSize(layerData["size"]);
               layer.setFilterSize(layerData["filterSize"]);
               layer.setStride(layerData["stride"]);
             });
           } else if (layerData["type"] === "fullyconnected") {
+            // @ts-ignore
             builder.createLayer(MaxPoolLayer);
           }
         });

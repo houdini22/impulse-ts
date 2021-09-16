@@ -21,7 +21,7 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m2.cols, data);
 };
 
-export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
+export const divideNumber = (m1: Matrix, num: number): Matrix => {
   const data = [];
 
   for (let row = 0; row < m1.rows; row += 1) {
@@ -126,7 +126,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   }
   const logSubMatrix = new Matrix(predictions.rows, predictions.cols, data);
 
-  return elementWiseAdd(elementWiseMultiply(output, logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
+  return add(elementWiseMultiply(output, logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {
@@ -265,7 +265,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m2.cols, data);
 };
 
-export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
+export const add = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -285,12 +285,12 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
-export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
+export const subtract = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
-    throw new Error("ROWS number not equal.");
+    throw new Error(`ROWS number not equal: m1.rows ${m1.rows} !== m2.rows ${m2.rows}`);
   }
   if (m1.cols !== m2.cols) {
-    throw new Error("COLS number not equal.");
+    throw new Error(`COLS number not equal: m1.cols ${m1.cols} !== m2.cols ${m2.cols}`);
   }
 
   const data = [];
@@ -310,13 +310,13 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = Math.random() - 0.5;
+      data[row][col] = (Math.random() - 0.5) * 0.1;
     }
   }
   return new Matrix(m1.rows, m1.cols, data);
 };
 
-export const setZeros = (m1: Matrix): Matrix => {
+export const fillZeros = (m1: Matrix): Matrix => {
   const data = [];
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
@@ -358,7 +358,7 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
-export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
+export const multiplyNumber = (m1: Matrix, num: number): Matrix => {
   const data = [];
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
@@ -402,14 +402,14 @@ export class ComputationCPU extends AbstractComputation {
     super();
 
     this.addKernel("multiply", multiply);
-    this.addKernel("elementWiseAdd", elementWiseAdd);
-    this.addKernel("elementWiseSubtract", elementWiseSubtract);
+    this.addKernel("add", add);
+    this.addKernel("subtract", subtract);
     this.addKernel("fillRandom", fillRandom);
-    this.addKernel("setZeros", setZeros);
+    this.addKernel("fillZeros", fillZeros);
     this.addKernel("elementWiseMultiply", elementWiseMultiply);
-    this.addKernel("elementWiseMultiplyNumber", elementWiseMultiplyNumber);
+    this.addKernel("multiplyNumber", multiplyNumber);
     this.addKernel("elementWiseDivide", elementWiseDivide);
-    this.addKernel("elementWiseDivideNumber", elementWiseDivideNumber);
+    this.addKernel("divideNumber", divideNumber);
     this.addKernel("softmaxActivation", softmaxActivation);
     this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);

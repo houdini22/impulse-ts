@@ -23,7 +23,7 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m1.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
-export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
+export const divideNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
@@ -103,7 +103,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
     })
     .setOutput([predictions.rows, predictions.cols]);
 
-  return elementWiseAdd(
+  return add(
     elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data) as number[][])),
     elementWiseMultiply(
       new Matrix(output.rows, output.cols, kernel2(output.data) as number[][]),
@@ -227,7 +227,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
-export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
+export const add = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -245,7 +245,7 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
-export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
+export const subtract = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
     throw new Error("ROWS number not equal.");
   }
@@ -276,7 +276,7 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   return new Matrix(m1.rows, m1.cols, kernel() as number[][]);
 };
 
-export const setZeros = (m1: Matrix): Matrix => {
+export const fillZeros = (m1: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function () {
       return 0.0;
@@ -312,7 +312,7 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
-export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
+export const multiplyNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
@@ -342,14 +342,14 @@ export class ComputationGPU extends AbstractComputation {
     super();
 
     this.addKernel("multiply", multiply);
-    this.addKernel("elementWiseAdd", elementWiseAdd);
-    this.addKernel("elementWiseSubtract", elementWiseSubtract);
+    this.addKernel("add", add);
+    this.addKernel("subtract", subtract);
     this.addKernel("fillRandom", fillRandom);
-    this.addKernel("setZeros", setZeros);
+    this.addKernel("fillZeros", fillZeros);
     this.addKernel("elementWiseMultiply", elementWiseMultiply);
-    this.addKernel("elementWiseMultiplyNumber", elementWiseMultiplyNumber);
+    this.addKernel("multiplyNumber", multiplyNumber);
     this.addKernel("elementWiseDivide", elementWiseDivide);
-    this.addKernel("elementWiseDivideNumber", elementWiseDivideNumber);
+    this.addKernel("divideNumber", divideNumber);
     this.addKernel("softmaxActivation", softmaxActivation);
     this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);

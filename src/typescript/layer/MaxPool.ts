@@ -2,14 +2,12 @@ import { Matrix } from "../math/Matrix";
 import { maxpool } from "../math/math";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
-import { BackpropagationToMaxPool } from "./backpropagation";
 
 class MaxPoolLayer extends AbstractLayer3D {
   filterSize = 0;
   stride = 0;
 
   configure(): void {
-    this.backPropagation = new BackpropagationToMaxPool(this, this.previousLayer);
   }
 
   getOutputHeight(): number {
@@ -40,6 +38,10 @@ class MaxPoolLayer extends AbstractLayer3D {
 
   getStride(): number {
     return this.stride;
+  }
+
+  getPadding(): number {
+    return 0;
   }
 
   forward(input: Matrix): Matrix {

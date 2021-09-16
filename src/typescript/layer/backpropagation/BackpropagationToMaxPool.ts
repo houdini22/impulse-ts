@@ -9,7 +9,7 @@ export class BackpropagationToMaxPool extends AbstractBackPropagation {
   propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
     const prevLayer = this.previousLayer;
     if (prevLayer) {
-      const result = getComputation().execute("setZeros", new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)) as Matrix;
+      const result = getComputation().execute("fillZeros", new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)) as Matrix;
 
       const filterSize = prevLayer.getFilterSize();
       const stride = prevLayer.getStride();

@@ -38,7 +38,7 @@ class NetworkBuilder1D extends AbstractNetworkBuilder {
           }
 
           builder.createLayer(layerClass, (layer) => {
-            layer.setSize(layerData["size"]);
+            layer.setSize(layerData["size"] as number);
           });
         });
 

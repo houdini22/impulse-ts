@@ -304,7 +304,7 @@ NODE_MODULE_INITIALIZER(Local <Object> exports,
     exports->Set(context, String::NewFromUtf8(isolate, "MatrixMultiply").ToLocalChecked(),
                  FunctionTemplate::New(isolate, MatrixMultiply)->GetFunction(context).ToLocalChecked()).FromJust();
     exports->Set(context, String::NewFromUtf8(isolate, "MatrixElementWiseAdd").ToLocalChecked(),
-                 FunctionTemplate::New(isolate, MatrixElementWiseAdd)->GetFunction(
+                 FunctionTemplate::New(isolate, Matrixadd)->GetFunction(
                          context).ToLocalChecked()).FromJust();
     exports->Set(context, String::NewFromUtf8(isolate, "MatrixElementWiseSubtract").ToLocalChecked(),
                  FunctionTemplate::New(isolate, MatrixElementWiseSubtract)->GetFunction(
