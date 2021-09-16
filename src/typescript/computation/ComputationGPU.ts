@@ -45,10 +45,7 @@ export const softmaxActivation = (m: Matrix): Matrix => {
     })
     .setOutput([m.rows, m.cols]);
   const data = new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
-  const divider = new Matrix(1, m.cols, data.colwiseSum().data).replicate(
-    m.rows,
-    1
-  );
+  const divider = new Matrix(1, m.cols, data.colwiseSum().data).replicate(m.rows, 1);
   return new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
 };
 
@@ -62,14 +59,7 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
   return new Matrix(
     output.rows,
     output.cols,
-    elementWiseMultiply(
-      output,
-      new Matrix(
-        output.rows,
-        output.cols,
-        kernel(predictions.data) as number[][]
-      )
-    ).data
+    elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(predictions.data) as number[][])).data
   ).sum();
 };
 
@@ -87,10 +77,7 @@ export const logisticDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
-      return (
-        a[this.thread.x][this.thread.y] *
-        (1.0 - a[this.thread.x][this.thread.y])
-      );
+      return a[this.thread.x][this.thread.y] * (1.0 - a[this.thread.x][this.thread.y]);
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
@@ -117,17 +104,10 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
     .setOutput([predictions.rows, predictions.cols]);
 
   return elementWiseAdd(
-    elementWiseMultiply(
-      output,
-      new Matrix(output.rows, output.cols, kernel(output.data) as number[][])
-    ),
+    elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data) as number[][])),
     elementWiseMultiply(
       new Matrix(output.rows, output.cols, kernel2(output.data) as number[][]),
-      new Matrix(
-        predictions.rows,
-        predictions.cols,
-        kernel3(predictions.data) as number[][]
-      )
+      new Matrix(predictions.rows, predictions.cols, kernel3(predictions.data) as number[][])
     )
   ).sum();
 };
@@ -136,9 +116,7 @@ export const tanhActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
-      return (
-        2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0
-      );
+      return 2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0;
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
@@ -148,13 +126,7 @@ export const tanhDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
-      return (
-        1.0 -
-        Math.pow(
-          2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0,
-          2.0
-        )
-      );
+      return 1.0 - Math.pow(2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0, 2.0);
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
@@ -227,24 +199,15 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a, b) {
       // @ts-ignore
-      return (
-        b[this.thread.x][this.thread.y] -
-        Math.pow(a[this.thread.x][this.thread.y], 2)
-      );
+      return b[this.thread.x][this.thread.y] - Math.pow(a[this.thread.x][this.thread.y], 2);
     })
     .setOutput([output.rows, output.cols]);
-  return new Matrix(
-    output.rows,
-    output.cols,
-    kernel(output.data) as number[][]
-  ).sum();
+  return new Matrix(output.rows, output.cols, kernel(output.data) as number[][]).sum();
 };
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
-    throw new Error(
-      `DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`
-    );
+    throw new Error(`DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`);
   }
 
   const kernel = gpu

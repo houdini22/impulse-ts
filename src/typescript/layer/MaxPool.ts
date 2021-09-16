@@ -9,10 +9,7 @@ class MaxPoolLayer extends AbstractLayer3D {
   stride = 0;
 
   configure(): void {
-    this.backPropagation = new BackpropagationToMaxPool(
-      this,
-      this.previousLayer
-    );
+    this.backPropagation = new BackpropagationToMaxPool(this, this.previousLayer);
   }
 
   getOutputHeight(): number {
@@ -46,10 +43,7 @@ class MaxPoolLayer extends AbstractLayer3D {
   }
 
   forward(input: Matrix): Matrix {
-    const result = new Matrix(
-      this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(),
-      input.cols
-    );
+    const result = new Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols);
 
     for (let i = 0; i < input.cols; i += 1) {
       const pool = maxpool(

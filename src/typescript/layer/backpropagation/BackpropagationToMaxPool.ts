@@ -6,18 +6,10 @@ import { getComputation } from "../../computation/utils";
 export class BackpropagationToMaxPool extends AbstractBackPropagation {
   protected previousLayer: Layers3D | null = null;
 
-  propagate(
-    input: Matrix,
-    numberOfExamples: number,
-    regularization: number,
-    sigma: Matrix
-  ): Matrix {
+  propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
     const prevLayer = this.previousLayer;
     if (prevLayer) {
-      const result = getComputation().execute(
-        "setZeros",
-        new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)
-      ) as Matrix;
+      const result = getComputation().execute("setZeros", new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)) as Matrix;
 
       const filterSize = prevLayer.getFilterSize();
       const stride = prevLayer.getStride();
@@ -43,27 +35,10 @@ export class BackpropagationToMaxPool extends AbstractBackPropagation {
               let maxX = 0;
               let maxY = 0;
 
-              for (
-                let y = 0, vStart = vertStart;
-                y < filterSize;
-                y++, vStart++
-              ) {
-                for (
-                  let x = 0, hStart = horizStart;
-                  x < filterSize;
-                  x++, hStart++
-                ) {
-                  if (
-                    prevLayer.Z.data &&
-                    _max <
-                      prevLayer.Z.data[
-                        inputOffset + vStart * inputWidth + hStart
-                      ][m]
-                  ) {
-                    _max =
-                      prevLayer.Z.data[
-                        inputOffset + vStart * inputWidth + hStart
-                      ][m];
+              for (let y = 0, vStart = vertStart; y < filterSize; y++, vStart++) {
+                for (let x = 0, hStart = horizStart; x < filterSize; x++, hStart++) {
+                  if (prevLayer.Z.data && _max < prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m]) {
+                    _max = prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m];
                     maxX = hStart;
                     maxY = vStart;
                   }

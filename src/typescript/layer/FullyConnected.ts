@@ -16,18 +16,12 @@ class FullyConnectedLayer extends ConvLayer {
         this.height = previousLayer.getOutputHeight();
         this.depth = previousLayer.getOutputDepth();
         this.numFilters =
-          previousLayer.getOutputWidth() *
-          previousLayer.getOutputHeight() *
-          previousLayer.getOutputDepth();
+          previousLayer.getOutputWidth() * previousLayer.getOutputHeight() * previousLayer.getOutputDepth();
       } else {
-        throw new Error(
-          "Invalid usage. Cannot fully connect with previous non maxpool layer."
-        );
+        throw new Error("Invalid usage. Cannot fully connect with previous non maxpool layer.");
       }
     } else {
-      throw new Error(
-        "Invalid usage. Cannot fully connect with previous 1D layer."
-      );
+      throw new Error("Invalid usage. Cannot fully connect with previous 1D layer.");
     }
 
     return this;

@@ -11,41 +11,25 @@ class ConvLayer extends AbstractLayer3D {
   protected stride = 1;
 
   configure(): void {
-    this.W.resize(
-      this.numFilters,
-      this.filterSize * this.filterSize * this.depth
-    );
-    this.W = getComputation().execute(
-      "fillRandom",
-      this.W,
-      this.width * this.height * this.depth
-    ) as Matrix;
+    this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
+    this.W = getComputation().execute("fillRandom", this.W, this.width * this.height * this.depth) as Matrix;
 
     this.b.resize(this.numFilters, 1);
     this.b = getComputation().execute("fillRandom", this.b, 0.01) as Matrix;
 
-    this.gW.resize(
-      this.numFilters,
-      this.filterSize * this.filterSize * this.depth
-    );
+    this.gW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
     this.gW = getComputation().execute("setZeros", this.gW) as Matrix;
 
     this.gb.resize(this.numFilters, 1);
     this.gb = getComputation().execute("setZeros", this.gb) as Matrix;
 
-    this.cW.resize(
-      this.numFilters,
-      this.filterSize * this.filterSize * this.depth
-    );
+    this.cW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
     this.cW = getComputation().execute("setZeros", this.gb) as Matrix;
 
     this.cb.resize(this.numFilters, 1);
     this.cb = getComputation().execute("setZeros", this.cb) as Matrix;
 
-    this.vW.resize(
-      this.numFilters,
-      this.filterSize * this.filterSize * this.depth
-    );
+    this.vW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
     this.vW = getComputation().execute("setZeros", this.vW) as Matrix;
 
     this.vb.resize(this.numFilters, 1);
@@ -101,10 +85,7 @@ class ConvLayer extends AbstractLayer3D {
   }
 
   forward(input: Matrix): Matrix {
-    const result = new Matrix(
-      this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(),
-      input.cols
-    );
+    const result = new Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols);
 
     for (let i = 0; i < input.cols; i += 1) {
       const conv = im2col(

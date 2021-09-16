@@ -21,11 +21,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
       for (let i = 0; i < this.iterations; i += 1) {
         const startIterationTime = new Date().getTime();
 
-        for (
-          let batch = 0, offset = 0;
-          batch < numberOfExamples;
-          batch += this.batchSize, offset += this.batchSize
-        ) {
+        for (let batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
           const startIterationTime2 = new Date().getTime();
           const input = inputDataset.getBatch(offset, this.batchSize);
           const output = outputDataset.getBatch(offset, this.batchSize);
@@ -43,9 +39,9 @@ export class MiniBatchTrainer extends AbstractTrainer {
           if (this.verbose) {
             const endIterationTime = new Date().getTime();
             console.log(
-              `Batch: ${offset} / ${numberOfExamples} | Time: ${
-                endIterationTime - startIterationTime2
-              } ms | ${endIterationTime - startIterationTime} ms.`
+              `Batch: ${offset} / ${numberOfExamples} | Time: ${endIterationTime - startIterationTime2} ms | ${
+                endIterationTime - startIterationTime
+              } ms.`
             );
           }
         }
@@ -56,9 +52,9 @@ export class MiniBatchTrainer extends AbstractTrainer {
             const currentResult = this.cost(inputDataset, outputDataset);
 
             console.log(
-              `Iteration: ${i + 1} | Cost: ${currentResult.cost} | Accuracy: ${
-                currentResult.accuracy
-              }% | Time: ${(endTime - startTime) / 100} s.`
+              `Iteration: ${i + 1} | Cost: ${currentResult.cost} | Accuracy: ${currentResult.accuracy}% | Time: ${
+                (endTime - startTime) / 100
+              } s.`
             );
           }
         }

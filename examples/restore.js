@@ -4,9 +4,7 @@ const {
 const path = require("path");
 const timeStart = new Date().getTime();
 
-NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/save.json")).then(
-  (network) => {
-    const timeEnd = new Date().getTime();
-    console.log(`Restored in ${timeEnd - timeStart} ms.`);
-  }
-);
+NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/save.json")).then((network) => {
+  const timeEnd = new Date().getTime();
+  console.log(`Restored in ${timeEnd - timeStart} ms.`);
+});

@@ -8,18 +8,10 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
   configure(): void {
     this.W.resize(this.height, this.width);
-    this.W = getComputation().execute(
-      "fillRandom",
-      this.W,
-      this.width
-    ) as Matrix;
+    this.W = getComputation().execute("fillRandom", this.W, this.width) as Matrix;
 
     this.b.resize(this.height, 1);
-    this.b = getComputation().execute(
-      "fillRandom",
-      this.b,
-      this.width
-    ) as Matrix;
+    this.b = getComputation().execute("fillRandom", this.b, this.width) as Matrix;
 
     this.gW.resize(this.height, this.width);
     this.gW = getComputation().execute("setZeros", this.gW) as Matrix;
@@ -52,11 +44,7 @@ abstract class AbstractLayer1D extends AbstractLayer {
     if (previousLayer.is1D()) {
       this.setWidth(previousLayer.getSize() as number);
     } else if (previousLayer.is3D()) {
-      this.setWidth(
-        previousLayer.getOutputWidth() *
-          previousLayer.getOutputHeight() *
-          previousLayer.getOutputDepth()
-      );
+      this.setWidth(previousLayer.getOutputWidth() * previousLayer.getOutputHeight() * previousLayer.getOutputDepth());
     }
 
     super.transition(previousLayer);

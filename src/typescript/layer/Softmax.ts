@@ -17,11 +17,7 @@ class SoftmaxLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return getComputation().execute(
-      "softmaxLoss",
-      output,
-      predictions
-    ) as number;
+    return getComputation().execute("softmaxLoss", output, predictions) as number;
   }
 
   error(m: number): number {

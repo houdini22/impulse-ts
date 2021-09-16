@@ -6,12 +6,7 @@ import { getComputation } from "../../computation/utils";
 export class BackpropagationToConv extends AbstractBackPropagation {
   protected previousLayer: Layers3D | null = null;
 
-  propagate(
-    input: Matrix,
-    numberOfExamples: number,
-    regularization: number,
-    sigma: Matrix
-  ): Matrix {
+  propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
     const previousLayer = this.previousLayer;
 
     if (previousLayer) {
@@ -27,27 +22,15 @@ export class BackpropagationToConv extends AbstractBackPropagation {
 
       const tmpResult = getComputation().execute(
         "setZeros",
-        new Matrix(
-          (inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth,
-          numberOfExamples
-        )
+        new Matrix((inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth, numberOfExamples)
       ) as Matrix;
 
-      const result = new Matrix(
-        inputWidth * inputHeight * inputDepth,
-        numberOfExamples
-      );
+      const result = new Matrix(inputWidth * inputHeight * inputDepth, numberOfExamples);
 
       const aPrev = previousLayer.derivative(previousLayer.A);
 
-      previousLayer.gW = getComputation().execute(
-        "setZeros",
-        previousLayer.gW
-      ) as Matrix;
-      previousLayer.gb = getComputation().execute(
-        "setZeros",
-        previousLayer.gb
-      ) as Matrix;
+      previousLayer.gW = getComputation().execute("setZeros", previousLayer.gW) as Matrix;
+      previousLayer.gb = getComputation().execute("setZeros", previousLayer.gb) as Matrix;
 
       for (let m = 0; m < numberOfExamples; m++) {
         for (let c = 0; c < outputDepth; c++) {
@@ -66,37 +49,24 @@ export class BackpropagationToConv extends AbstractBackPropagation {
                   y++, vertical++, verticalPad++
                 ) {
                   for (
-                    let x = 0,
-                      horizontal = horizStart,
-                      horizontalPad = -padding;
+                    let x = 0, horizontal = horizStart, horizontalPad = -padding;
                     x < filterSize;
                     x++, horizontal++, horizontalPad++
                   ) {
                     if (previousLayer.W.data && tmpResult.data && sigma.data) {
                       tmpResult.data[
-                        d *
-                          (inputWidth + 2 * padding) *
-                          (inputHeight + 2 * padding) +
+                        d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) +
                           vertical * (inputWidth + 2 * padding) +
                           horizontal
                       ][m] +=
-                        previousLayer.W.data[c][
-                          d * filterSize * filterSize + y * filterSize + x
-                        ] *
-                        sigma.data[
-                          c * outputWidth * outputHeight + h * outputWidth + w
-                        ][m];
+                        previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] *
+                        sigma.data[c * outputWidth * outputHeight + h * outputWidth + w][m];
                     }
 
                     let z = 0;
                     if (padding == 0) {
                       if (previousLayer.Z.data) {
-                        z =
-                          previousLayer.Z.data[
-                            d * inputWidth * inputHeight +
-                              vertical * inputWidth +
-                              horizontal
-                          ][m];
+                        z = previousLayer.Z.data[d * inputWidth * inputHeight + vertical * inputWidth + horizontal][m];
                       }
                     } else {
                       if (
@@ -108,25 +78,15 @@ export class BackpropagationToConv extends AbstractBackPropagation {
                         if (previousLayer.Z.data) {
                           z =
                             previousLayer.Z.data[
-                              d * inputWidth * inputHeight +
-                                verticalPad * inputWidth +
-                                horizontalPad
+                              d * inputWidth * inputHeight + verticalPad * inputWidth + horizontalPad
                             ][m];
                         }
                       }
                     }
 
                     if (previousLayer.gW.data && sigma.data) {
-                      previousLayer.gW.data[c][
-                        d * filterSize * filterSize + y * filterSize + x
-                      ] +=
-                        (z *
-                          sigma.data[
-                            c * (outputWidth * outputHeight) +
-                              h * outputWidth +
-                              w
-                          ][m]) /
-                        numberOfExamples;
+                      previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] +=
+                        (z * sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m]) / numberOfExamples;
                     }
                   }
                 }
@@ -134,9 +94,7 @@ export class BackpropagationToConv extends AbstractBackPropagation {
 
               if (previousLayer.gb.data && sigma.data) {
                 previousLayer.gb.data[c][0] +=
-                  sigma.data[
-                    c * (outputWidth * outputHeight) + h * outputWidth + w
-                  ][m] / numberOfExamples;
+                  sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
               }
             }
           }
@@ -146,28 +104,11 @@ export class BackpropagationToConv extends AbstractBackPropagation {
           // unpad
           for (let c = 0; c < inputDepth; c++) {
             for (let h = -padding, y = 0; h < inputHeight + padding; h++, y++) {
-              for (
-                let w = -padding, x = 0;
-                w < inputWidth + padding;
-                w++, x++
-              ) {
-                if (
-                  w >= 0 &&
-                  h >= 0 &&
-                  w < inputWidth &&
-                  h < inputHeight &&
-                  result.data &&
-                  tmpResult.data
-                ) {
-                  result.data[
-                    c * inputWidth * inputHeight + h * inputWidth + w
-                  ][m] =
+              for (let w = -padding, x = 0; w < inputWidth + padding; w++, x++) {
+                if (w >= 0 && h >= 0 && w < inputWidth && h < inputHeight && result.data && tmpResult.data) {
+                  result.data[c * inputWidth * inputHeight + h * inputWidth + w][m] =
                     tmpResult.data[
-                      c *
-                        (inputWidth + 2 * padding) *
-                        (inputHeight + 2 * padding) +
-                        y * (inputWidth + 2 * padding) +
-                        x
+                      c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + y * (inputWidth + 2 * padding) + x
                     ][m];
                 }
               }

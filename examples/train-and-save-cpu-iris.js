@@ -27,22 +27,15 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then(
-  (inputDataset) => {
-    console.log("Loaded iris_x.csv");
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_y.csv")).then(
-      async (outputDataset) => {
-        console.log("Loaded iris_y.csv");
-        const trainer = new MiniBatchTrainer(
-          network,
-          new OptimizerGradientDescent()
-        );
-        trainer.setIterations(1);
-        trainer.setBatchSize(10);
-        trainer.setLearningRate(0.00001);
-        trainer.train(inputDataset, outputDataset);
-        await network.save(path.resolve(__dirname, "./data/iris.json"));
-      }
-    );
-  }
-);
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then((inputDataset) => {
+  console.log("Loaded iris_x.csv");
+  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_y.csv")).then(async (outputDataset) => {
+    console.log("Loaded iris_y.csv");
+    const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+    trainer.setIterations(1);
+    trainer.setBatchSize(10);
+    trainer.setLearningRate(0.00001);
+    trainer.train(inputDataset, outputDataset);
+    await network.save(path.resolve(__dirname, "./data/iris.json"));
+  });
+});

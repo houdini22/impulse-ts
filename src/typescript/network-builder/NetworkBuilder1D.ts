@@ -2,13 +2,7 @@ import { AbstractNetworkBuilder } from "./AbstractNetworkBuilder";
 import { Layers } from "../types";
 import Network from "../Network";
 import * as fs from "fs";
-import {
-  LogisticLayer,
-  ReluLayer,
-  SoftmaxLayer,
-  SoftplusLayer,
-  TanhLayer,
-} from "../layer/";
+import { LogisticLayer, ReluLayer, SoftmaxLayer, SoftplusLayer, TanhLayer } from "../layer/";
 import { Matrix } from "../math/Matrix";
 import { JSONLayerData } from "./types";
 

@@ -27,17 +27,13 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
-  (inputDataset) => {
-    console.log("Loaded mnist_x.csv");
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(
-      async (outputDataset) => {
-        console.log("Loaded mnist_y.csv");
-        const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
-        trainer.setIterations(3);
-        trainer.train(inputDataset, outputDataset);
-        await network.save(path.resolve(__dirname, "./data/mnist.json"));
-      }
-    );
-  }
-);
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
+  console.log("Loaded mnist_x.csv");
+  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(async (outputDataset) => {
+    console.log("Loaded mnist_y.csv");
+    const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
+    trainer.setIterations(3);
+    trainer.train(inputDataset, outputDataset);
+    await network.save(path.resolve(__dirname, "./data/mnist.json"));
+  });
+});

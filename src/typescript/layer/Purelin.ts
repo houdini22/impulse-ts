@@ -17,11 +17,7 @@ class PurelinLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return getComputation().execute(
-      "purelinLoss",
-      output,
-      predictions
-    ) as number;
+    return getComputation().execute("purelinLoss", output, predictions) as number;
   }
 
   error(m: number): number {

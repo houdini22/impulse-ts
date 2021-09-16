@@ -1,11 +1,4 @@
-import {
-  SoftmaxLayer,
-  LogisticLayer,
-  TanhLayer,
-  ReluLayer,
-  SoftplusLayer,
-  AbstractLayer,
-} from "./layer";
+import { SoftmaxLayer, LogisticLayer, TanhLayer, ReluLayer, SoftplusLayer, AbstractLayer } from "./layer";
 import { ConvLayer } from "./layer/";
 import { MaxPoolLayer } from "./layer/";
 import { FullyConnectedLayer } from "./layer/";

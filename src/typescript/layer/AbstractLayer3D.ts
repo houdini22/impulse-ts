@@ -16,11 +16,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
 
   transition(previousLayer: AbstractLayer): AbstractLayer3D {
     if (previousLayer.is3D()) {
-      this.setSize([
-        previousLayer.getOutputWidth(),
-        previousLayer.getOutputHeight(),
-        previousLayer.getOutputDepth(),
-      ]);
+      this.setSize([previousLayer.getOutputWidth(), previousLayer.getOutputHeight(), previousLayer.getOutputDepth()]);
     }
 
     super.transition(previousLayer);

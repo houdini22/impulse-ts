@@ -8,11 +8,7 @@ export abstract class AbstractDatasetModifier {
   }
 
   apply(): Dataset {
-    for (
-      let example = 0;
-      example < this.dataset.getNumberOfExamples();
-      example += 1
-    ) {
+    for (let example = 0; example < this.dataset.getNumberOfExamples(); example += 1) {
       this.applyToExample(example);
     }
 

@@ -5,11 +5,7 @@ export class CallbackDatabaseModifier extends AbstractDatasetModifier {
   protected callback: (example: Matrix) => Matrix = (example) => example;
 
   applyToExample(example: number): void {
-    for (
-      let exampleIndex = 0;
-      exampleIndex < this.dataset.getNumberOfExamples();
-      exampleIndex += 1
-    ) {
+    for (let exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
       const example = this.callback(this.dataset.exampleAt(exampleIndex));
       for (let row = 0; row < this.dataset.data.rows; row += 1) {
         if (example) {

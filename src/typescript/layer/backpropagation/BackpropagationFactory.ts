@@ -6,10 +6,7 @@ import { BackpropagationToConv } from "./BackpropagationToConv";
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 
 export class BackpropagationFactory {
-  static create(
-    previousLayer: Layers,
-    layer: Layers
-  ): AbstractBackPropagation | null {
+  static create(previousLayer: Layers, layer: Layers): AbstractBackPropagation | null {
     if (previousLayer == null) {
       if (layer.is1D()) {
         return new Backpropagation1Dto1D(layer, previousLayer);
@@ -21,10 +18,7 @@ export class BackpropagationFactory {
         return new BackpropagationToMaxPool(layer, previousLayer);
       } else if (previousLayer.getType() == LayerType.conv) {
         return new BackpropagationToConv(layer, previousLayer);
-      } else if (
-        previousLayer.is1D() ||
-        previousLayer.getType() == LayerType.fullyconnected
-      ) {
+      } else if (previousLayer.is1D() || previousLayer.getType() == LayerType.fullyconnected) {
         return new Backpropagation1Dto1D(layer, previousLayer);
       }
     }

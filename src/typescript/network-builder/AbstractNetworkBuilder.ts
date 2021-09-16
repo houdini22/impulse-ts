@@ -12,10 +12,7 @@ abstract class AbstractNetworkBuilder {
     this.network = new Network(dimension);
   }
 
-  createLayer(
-    layerClass: Layers,
-    callback: (layer: Layers) => void | null = null
-  ): AbstractNetworkBuilder {
+  createLayer(layerClass: Layers, callback: (layer: Layers) => void | null = null): AbstractNetworkBuilder {
     if (this.network) {
       const layer: Layers = new layerClass();
 
@@ -30,9 +27,7 @@ abstract class AbstractNetworkBuilder {
       }
 
       layer.configure();
-      layer.setBackPropagation(
-        BackpropagationFactory.create(this.lastLayer, layer)
-      );
+      layer.setBackPropagation(BackpropagationFactory.create(this.lastLayer, layer));
 
       this.network.addLayer(layer);
       this.lastLayer = layer;

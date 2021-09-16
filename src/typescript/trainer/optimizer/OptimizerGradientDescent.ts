@@ -12,20 +12,12 @@ export class OptimizerGradientDescent extends AbstractOptimizer {
     layer.W = getComputation().execute(
       "elementWiseSubtract",
       layer.W,
-      getComputation().execute(
-        "elementWiseMultiplyNumber",
-        layer.gW,
-        learningRate
-      ) as Matrix
+      getComputation().execute("elementWiseMultiplyNumber", layer.gW, learningRate) as Matrix
     ) as Matrix;
     layer.b = getComputation().execute(
       "elementWiseSubtract",
       layer.b,
-      getComputation().execute(
-        "elementWiseMultiplyNumber",
-        layer.gb,
-        learningRate
-      ) as Matrix
+      getComputation().execute("elementWiseMultiplyNumber", layer.gb, learningRate) as Matrix
     ) as Matrix;
   }
 }

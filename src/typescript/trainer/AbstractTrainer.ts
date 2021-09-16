@@ -26,10 +26,7 @@ export abstract class AbstractTrainer {
     this.optimizer = optimizer;
   }
 
-  abstract train(
-    inputDataset: Dataset,
-    outputDataset: Dataset
-  ): AbstractTrainer;
+  abstract train(inputDataset: Dataset, outputDataset: Dataset): AbstractTrainer;
 
   setRegularization(regularization: number): AbstractTrainer {
     this.regularization = regularization;
@@ -56,9 +53,7 @@ export abstract class AbstractTrainer {
     return this;
   }
 
-  setStepCallback(
-    stepCallback: (data: StepCallbackParameters) => void
-  ): AbstractTrainer {
+  setStepCallback(stepCallback: (data: StepCallbackParameters) => void): AbstractTrainer {
     this.stepCallback = stepCallback;
     return this;
   }
@@ -77,11 +72,7 @@ export abstract class AbstractTrainer {
         penalty += layer.penalty();
       });
 
-      for (
-        let batch = 0, offset = 0;
-        batch < numberOfExamples;
-        batch += batchSize, offset += 100
-      ) {
+      for (let batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += 100) {
         const inputBatch = inputDataset.getBatch(offset, batchSize);
         const outputBatch = outputDataset.getBatch(offset, batchSize);
 
@@ -95,8 +86,7 @@ export abstract class AbstractTrainer {
           const error = this.network.error(miniBatchSize);
 
           cost +=
-            (error * loss +
-              (this.regularization * penalty) / (2.0 * miniBatchSize)) /
+            (error * loss + (this.regularization * penalty) / (2.0 * miniBatchSize)) /
             // TODO: fix it
             (numBatches * (miniBatchSize / batchSize));
 

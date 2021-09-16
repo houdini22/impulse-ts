@@ -6,11 +6,7 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
     let min = Infinity;
     let max = -Infinity;
 
-    for (
-      let exampleIndex = 0;
-      exampleIndex < this.dataset.getNumberOfExamples();
-      exampleIndex += 1
-    ) {
+    for (let exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
       const example = this.dataset.exampleAt(exampleIndex);
       for (let row = 0; row < example.rows; row += 1) {
         if (example && example.data) {
@@ -23,10 +19,7 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
     const kernel = gpu
       .createKernel(function (a) {
         // @ts-ignore
-        return (
-          (a[this.thread.x][this.thread.y] - this.constants.min) /
-          (this.constants.max - this.constants.min)
-        );
+        return (a[this.thread.x][this.thread.y] - this.constants.min) / (this.constants.max - this.constants.min);
       })
       .setOutput([this.dataset.data.rows, this.dataset.data.cols])
       .setConstants({

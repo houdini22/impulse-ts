@@ -135,25 +135,12 @@ export class Matrix {
     return maxIndex;
   }
 
-  block(
-    startRow: number,
-    startCol: number,
-    blockRows: number,
-    blockCols: number
-  ): Matrix {
+  block(startRow: number, startCol: number, blockRows: number, blockCols: number): Matrix {
     const data = [];
 
-    for (
-      let row = startRow, newRow = 0;
-      row < this.rows && row < startRow + blockRows;
-      row += 1, newRow += 1
-    ) {
+    for (let row = startRow, newRow = 0; row < this.rows && row < startRow + blockRows; row += 1, newRow += 1) {
       data[row] = new Array(blockCols);
-      for (
-        let col = startCol, newCol = 0;
-        col < this.cols && col < startCol + blockCols;
-        col += 1, newCol += 1
-      ) {
+      for (let col = startCol, newCol = 0; col < this.cols && col < startCol + blockCols; col += 1, newCol += 1) {
         if (this.data) {
           data[newRow][newCol] = this.data[row][col];
         }

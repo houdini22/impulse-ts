@@ -45,15 +45,8 @@ export const softmaxActivation = (m: Matrix): Matrix => {
   }
 
   const calculated = new Matrix(m.rows, m.cols, data);
-  const divider = new Matrix(1, m.cols, calculated.colwiseSum().data).replicate(
-    m.rows,
-    1
-  );
-  return new Matrix(
-    m.rows,
-    m.cols,
-    elementWiseDivide(calculated, divider).data
-  );
+  const divider = new Matrix(1, m.cols, calculated.colwiseSum().data).replicate(m.rows, 1);
+  return new Matrix(m.rows, m.cols, elementWiseDivide(calculated, divider).data);
 };
 
 export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
@@ -133,10 +126,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   }
   const logSubMatrix = new Matrix(predictions.rows, predictions.cols, data);
 
-  return elementWiseAdd(
-    elementWiseMultiply(output, logMatrix),
-    elementWiseMultiply(subMatrix, logSubMatrix)
-  ).sum();
+  return elementWiseAdd(elementWiseMultiply(output, logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {
@@ -158,9 +148,7 @@ export const tanhDerivative = (m: Matrix): Matrix => {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
       if (m.data) {
-        data[row][col] =
-          1.0 -
-          Math.pow(2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0, 2.0);
+        data[row][col] = 1.0 - Math.pow(2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0, 2.0);
       }
     }
   }
@@ -212,8 +200,7 @@ export const softplusDerivative = (m: Matrix): Matrix => {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
       if (m.data) {
-        data[row][col] =
-          1 / (1 + Math.exp(-Math.log(1 + Math.exp(m.data[row][col]))));
+        data[row][col] = 1 / (1 + Math.exp(-Math.log(1 + Math.exp(m.data[row][col]))));
       }
     }
   }
@@ -252,8 +239,7 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
     data[row] = [];
     for (let col = 0; col < output.cols; col += 1) {
       if (output.data) {
-        data[row][col] =
-          output.data[row][col] - Math.pow(predictions[row][col], 2);
+        data[row][col] = output.data[row][col] - Math.pow(predictions[row][col], 2);
       }
     }
   }
@@ -262,9 +248,7 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
-    throw new Error(
-      `DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`
-    );
+    throw new Error(`DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`);
   }
   const data = [];
   for (let row = 0; row < m1.rows; ++row) {
@@ -356,14 +340,10 @@ export const setOnes = (m1: Matrix): Matrix => {
 
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
-    throw new Error(
-      `ROWS number not equal: m1.rows ${m1.rows} !== m2.rows ${m2.rows}`
-    );
+    throw new Error(`ROWS number not equal: m1.rows ${m1.rows} !== m2.rows ${m2.rows}`);
   }
   if (m1.cols !== m2.cols) {
-    throw new Error(
-      `COLS number not equal: m1.cols ${m1.cols} !== m2.cols ${m2.cols}`
-    );
+    throw new Error(`COLS number not equal: m1.cols ${m1.cols} !== m2.cols ${m2.cols}`);
   }
 
   const data = [];
