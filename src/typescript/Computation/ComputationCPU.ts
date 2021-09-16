@@ -94,11 +94,13 @@ export const logisticDerivative = (m: Matrix): Matrix => {
 
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   const log = [];
+  const epsilon = 1e-8;
+
   for (let row = 0; row < output.rows; row += 1) {
     log[row] = [];
     for (let col = 0; col < output.cols; col += 1) {
       if (output.data) {
-        log[row][col] = Math.log(output.data[row][col]);
+        log[row][col] = Math.log(output.data[row][col] + epsilon);
       }
     }
   }
@@ -120,7 +122,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
     data[row] = [];
     for (let col = 0; col < predictions.cols; col += 1) {
       if (predictions.data) {
-        data[row][col] = Math.log(1.0 - predictions.data[row][col]);
+        data[row][col] = Math.log(1.0 - predictions.data[row][col] + epsilon);
       }
     }
   }
@@ -310,7 +312,7 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = Math.random() - 0.1;
+      data[row][col] = (Math.random() * 4 - 2) * Math.sqrt(2 / parameter); // todo: gaussian distribution
     }
   }
   return new Matrix(m1.rows, m1.cols, data);

@@ -30,14 +30,14 @@ export class Matrix {
     }
     for (let col = 0; col < this.cols; col += 1) {
       for (let row = 0; row < this.rows; row += 1) {
-        if (typeof arr[col] === "number") {
-          data[row][col] = arr[col];
-        } else if (arr[col] instanceof Float32Array) {
-          data[row][col] = arr[col][row];
-        } else if (arr[col] && typeof arr[col][row] === "number") {
-          data[row][col] = arr[col][row];
+        if (typeof arr[row] === "number") {
+          data[row][col] = arr[row];
+        } else if (arr[row] instanceof Float32Array) {
+          data[row][col] = arr[row][col];
+        } else if (arr[row] && typeof arr[row][col] === "number") {
+          data[row][col] = arr[row][col];
         } else {
-          data[row][col] = 0;
+          data[row][col] = NaN;
         }
       }
     }

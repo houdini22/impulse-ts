@@ -197,13 +197,14 @@ var logisticDerivative = function logisticDerivative(m) {
 };
 var logisticLoss = function logisticLoss(output, predictions) {
   var log = [];
+  var epsilon = 1e-8;
 
   for (var row = 0; row < output.rows; row += 1) {
     log[row] = [];
 
     for (var col = 0; col < output.cols; col += 1) {
       if (output.data) {
-        log[row][col] = Math.log(output.data[row][col]);
+        log[row][col] = Math.log(output.data[row][col] + epsilon);
       }
     }
   }
@@ -229,7 +230,7 @@ var logisticLoss = function logisticLoss(output, predictions) {
 
     for (var _col2 = 0; _col2 < predictions.cols; _col2 += 1) {
       if (predictions.data) {
-        data[_row2][_col2] = Math.log(1.0 - predictions.data[_row2][_col2]);
+        data[_row2][_col2] = Math.log(1.0 - predictions.data[_row2][_col2] + epsilon);
       }
     }
   }
@@ -448,7 +449,7 @@ var fillRandom = function fillRandom(m1, parameter) {
     data[row] = [];
 
     for (var col = 0; col < m1.cols; col += 1) {
-      data[row][col] = Math.random() - 0.1;
+      data[row][col] = (Math.random() * 4 - 2) * Math.sqrt(2 / parameter); // todo: gaussian distribution
     }
   }
 
@@ -3614,14 +3615,14 @@ var Matrix = /*#__PURE__*/function () {
 
       for (var col = 0; col < this.cols; col += 1) {
         for (var _row2 = 0; _row2 < this.rows; _row2 += 1) {
-          if (typeof arr[col] === "number") {
-            data[_row2][col] = arr[col];
-          } else if (arr[col] instanceof Float32Array) {
-            data[_row2][col] = arr[col][_row2];
-          } else if (arr[col] && typeof arr[col][_row2] === "number") {
-            data[_row2][col] = arr[col][_row2];
+          if (typeof arr[_row2] === "number") {
+            data[_row2][col] = arr[_row2];
+          } else if (arr[_row2] instanceof Float32Array) {
+            data[_row2][col] = arr[_row2][col];
+          } else if (arr[_row2] && typeof arr[_row2][col] === "number") {
+            data[_row2][col] = arr[_row2][col];
           } else {
-            data[_row2][col] = 0;
+            data[_row2][col] = NaN;
           }
         }
       }

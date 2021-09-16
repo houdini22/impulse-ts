@@ -63,13 +63,28 @@ const {
 
 ```javascript
 const {
-    NetworkBuilder: {NetworkBuilder1D},
-    Layer: {LogisticLayer},
-    DatasetBuilder: {DatasetBuilder},
-    Optimizer: {OptimizerAdam},
-    Trainer: {MiniBatchTrainer},
-    Computation: {ComputationCPU, setComputation},
-    DatasetModifier: {MinMaxScalingDatabaseModifier},
+    NetworkBuilder: {
+        NetworkBuilder1D
+    },
+    Layer: {
+        LogisticLayer
+    },
+    DatasetBuilder: {
+        DatasetBuilder
+    },
+    Optimizer: {
+        OptimizerAdam
+    },
+    Trainer: {
+        MiniBatchTrainer
+    },
+    Computation: {
+        ComputationCPU,
+        setComputation
+    },
+    DatasetModifier: {
+        MinMaxScalingDatabaseModifier
+    },
 } = require("impulse-ts");
 const path = require("path");
 
@@ -113,8 +128,12 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inpu
 
 ```javascript
 const {
-    Builder: {NetworkBuilder1D},
-    Dataset: {DatasetBuilder},
+    Builder: {
+        NetworkBuilder1D
+    },
+    Dataset: {
+        DatasetBuilder
+    },
 } = require("impulse-ts");
 const path = require("path");
 const timeStart = new Date().getTime();
