@@ -1572,8 +1572,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ConvLayer": () => (/* binding */ ConvLayer)
 /* harmony export */ });
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _abstract3d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abstract3d */ "./src/typescript/layer/abstract3d.tsx");
+/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
+/* harmony import */ var _abstract3d__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./abstract3d */ "./src/typescript/layer/abstract3d.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1597,6 +1598,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -1714,7 +1716,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       var result = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols);
 
       for (var i = 0; i < input.cols; i += 1) {
-        var conv = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
+        var conv = (0,_math_math__WEBPACK_IMPORTED_MODULE_1__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
         var tmp = this.Z = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseAdd)((0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.multiply)(this.W, conv), this.b.replicate(1, input.cols)).rollToColMatrix();
         result.setCol(i, tmp);
       }
@@ -1736,7 +1738,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }, {
     key: "getType",
     value: function getType() {
-      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.conv;
+      return _types__WEBPACK_IMPORTED_MODULE_2__.LayerType.conv;
     }
   }, {
     key: "loss",
@@ -1751,7 +1753,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }]);
 
   return ConvLayer;
-}(_abstract3d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer3D);
+}(_abstract3d__WEBPACK_IMPORTED_MODULE_3__.AbstractLayer3D);
 
 
 
@@ -2014,9 +2016,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MaxPoolLayer": () => (/* binding */ MaxPoolLayer)
 /* harmony export */ });
 /* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _abstract3d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abstract3d */ "./src/typescript/layer/abstract3d.tsx");
-/* harmony import */ var _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./backpropagation/backpropagationtomaxpool */ "./src/typescript/layer/backpropagation/backpropagationtomaxpool.tsx");
+/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
+/* harmony import */ var _abstract3d__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./abstract3d */ "./src/typescript/layer/abstract3d.tsx");
+/* harmony import */ var _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backpropagation/backpropagationtomaxpool */ "./src/typescript/layer/backpropagation/backpropagationtomaxpool.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2044,6 +2047,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   _inherits(MaxPoolLayer, _AbstractLayer3D);
 
@@ -2058,7 +2062,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   _createClass(MaxPoolLayer, [{
     key: "configure",
     value: function configure() {
-      this.backPropagation = new _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_3__.BackpropagationToMaxPool(this, this.previousLayer);
+      this.backPropagation = new _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_4__.BackpropagationToMaxPool(this, this.previousLayer);
     }
   }, {
     key: "getOutputHeight",
@@ -2103,7 +2107,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       var result = new _math_matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols);
 
       for (var i = 0; i < input.cols; i += 1) {
-        var pool = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.maxpool)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.stride, this.stride).rollToColMatrix();
+        var pool = (0,_math_math__WEBPACK_IMPORTED_MODULE_1__.maxpool)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.stride, this.stride).rollToColMatrix();
         result.setCol(i, pool);
       }
 
@@ -2124,7 +2128,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }, {
     key: "getType",
     value: function getType() {
-      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.maxpool;
+      return _types__WEBPACK_IMPORTED_MODULE_2__.LayerType.maxpool;
     }
   }, {
     key: "loss",
@@ -2139,7 +2143,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }]);
 
   return MaxPoolLayer;
-}(_abstract3d__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer3D);
+}(_abstract3d__WEBPACK_IMPORTED_MODULE_3__.AbstractLayer3D);
 
 
 
@@ -2481,6 +2485,82 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
+/***/ "./src/typescript/math/math.tsx":
+/*!**************************************!*\
+  !*** ./src/typescript/math/math.tsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "im2col": () => (/* binding */ im2col),
+/* harmony export */   "maxpool": () => (/* binding */ maxpool)
+/* harmony export */ });
+/* harmony import */ var _matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./matrix */ "./src/typescript/math/matrix.tsx");
+
+var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
+  var rows = kernel_w * kernel_h * channels;
+  var cols = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
+  var currentResultCol = 0;
+  var result = (0,_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(new _matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(rows, cols));
+
+  for (var boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
+    for (var boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
+      var currentResultRow = 0;
+
+      for (var channel = 0; channel < channels; channel++) {
+        var inputOffset = height * width * channel;
+
+        for (var y = 0; y < kernel_h; y++) {
+          for (var x = 0; x < kernel_w; x++) {
+            if (boundingY + y >= 0 && boundingX + x >= 0 && boundingX + x < width && boundingY + y < height) {
+              result.data[currentResultRow][currentResultCol] = input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
+            }
+
+            currentResultRow++;
+          }
+        }
+      }
+
+      currentResultCol++;
+    }
+  }
+
+  return result;
+};
+var maxpool = function maxpool(input, channels, height, width, kernel_h, kernel_w, stride_h, stride_w) {
+  var resultWidth = (width - kernel_w) / stride_w + 1;
+  var resultHeight = (height - kernel_h) / stride_h + 1;
+  var resultDepth = channels;
+  var currentResultCol = 0;
+  var result = (0,_matrix__WEBPACK_IMPORTED_MODULE_0__.setZeros)(new _matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(resultWidth * resultHeight * resultDepth, 1));
+
+  for (var boundingY = 0; boundingY + kernel_h <= height; boundingY += stride_h) {
+    for (var boundingX = 0; boundingX + kernel_w <= width; boundingX += stride_w) {
+      for (var channel = 0; channel < channels; channel++) {
+        var _max = -Infinity;
+
+        var inputOffset = height * width * channel;
+        var outputOffset = resultWidth * resultHeight * channel;
+
+        for (var y = 0; y < kernel_h; y++) {
+          for (var x = 0; x < kernel_w; x++) {
+            _max = Math.max(_max, input.data[inputOffset + (y + boundingY) * width + boundingX + x][0]);
+          }
+        }
+
+        result.data[outputOffset + currentResultCol][0] = _max;
+      }
+
+      currentResultCol++;
+    }
+  }
+
+  return new _matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+};
+
+/***/ }),
+
 /***/ "./src/typescript/math/matrix.tsx":
 /*!****************************************!*\
   !*** ./src/typescript/math/matrix.tsx ***!
@@ -2516,9 +2596,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "softplusDerivative": () => (/* binding */ softplusDerivative),
 /* harmony export */   "penalty": () => (/* binding */ penalty),
 /* harmony export */   "sqrt": () => (/* binding */ sqrt),
-/* harmony export */   "purelinLoss": () => (/* binding */ purelinLoss),
-/* harmony export */   "im2col": () => (/* binding */ im2col),
-/* harmony export */   "maxpool": () => (/* binding */ maxpool)
+/* harmony export */   "purelinLoss": () => (/* binding */ purelinLoss)
 /* harmony export */ });
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gpu.js */ "gpu.js");
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_0__);
@@ -2983,66 +3061,6 @@ var purelinLoss = function purelinLoss(output, predictions) {
   }).setOutput([output.rows, output.cols]);
   return new Matrix(output.rows, output.cols, kernel(output.data)).sum();
 };
-var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
-  var rows = kernel_w * kernel_h * channels;
-  var cols = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
-  var currentResultCol = 0;
-  var result = setZeros(new Matrix(rows, cols));
-
-  for (var boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
-    for (var boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
-      var currentResultRow = 0;
-
-      for (var channel = 0; channel < channels; channel++) {
-        var inputOffset = height * width * channel;
-
-        for (var y = 0; y < kernel_h; y++) {
-          for (var x = 0; x < kernel_w; x++) {
-            if (boundingY + y >= 0 && boundingX + x >= 0 && boundingX + x < width && boundingY + y < height) {
-              result.data[currentResultRow][currentResultCol] = input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
-            }
-
-            currentResultRow++;
-          }
-        }
-      }
-
-      currentResultCol++;
-    }
-  }
-
-  return result;
-};
-var maxpool = function maxpool(input, channels, height, width, kernel_h, kernel_w, stride_h, stride_w) {
-  var resultWidth = (width - kernel_w) / stride_w + 1;
-  var resultHeight = (height - kernel_h) / stride_h + 1;
-  var resultDepth = channels;
-  var currentResultCol = 0;
-  var result = setZeros(new Matrix(resultWidth * resultHeight * resultDepth, 1));
-
-  for (var boundingY = 0; boundingY + kernel_h <= height; boundingY += stride_h) {
-    for (var boundingX = 0; boundingX + kernel_w <= width; boundingX += stride_w) {
-      for (var channel = 0; channel < channels; channel++) {
-        var _max = -Infinity;
-
-        var inputOffset = height * width * channel;
-        var outputOffset = resultWidth * resultHeight * channel;
-
-        for (var y = 0; y < kernel_h; y++) {
-          for (var x = 0; x < kernel_w; x++) {
-            _max = Math.max(_max, input.data[inputOffset + (y + boundingY) * width + boundingX + x][0]);
-          }
-        }
-
-        result.data[outputOffset + currentResultCol][0] = _max;
-      }
-
-      currentResultCol++;
-    }
-  }
-
-  return new Matrix();
-};
 
 /***/ }),
 
@@ -3109,9 +3127,10 @@ var Network = /*#__PURE__*/function () {
     value: function backward(X, Y, predictions, regularization) {
       var m = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.cols)(X);
       var delta = (0,_math_matrix__WEBPACK_IMPORTED_MODULE_0__.elementWiseSubtract)(predictions, Y);
-      this.layers.reverse().forEach(function (layer) {
-        delta = layer.getBackPropagation().propagate(X, m, regularization, delta);
-      });
+
+      for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
+        delta = this.layers[layer].getBackPropagation().propagate(X, m, regularization, delta);
+      }
     }
   }, {
     key: "loss",
@@ -3363,6 +3382,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
         var startIterationTime = new Date().getTime();
 
         for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
+          var startIterationTime2 = new Date().getTime();
           var input = inputDataset.getBatch(offset, this.batchSize);
           var output = outputDataset.getBatch(offset, this.batchSize);
           var forward = this.network.forward(input);
@@ -3375,7 +3395,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
 
           if (this.verbose) {
             var endIterationTime = new Date().getTime();
-            console.log("Batch: ".concat(offset + 1, " / ").concat(Math.ceil(numberOfExamples / this.batchSize), " | Time: ").concat(endIterationTime - startIterationTime, " ms."));
+            console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Time: ").concat(endIterationTime - startIterationTime2, " ms | ").concat(endIterationTime - startIterationTime, " ms."));
           }
         }
 

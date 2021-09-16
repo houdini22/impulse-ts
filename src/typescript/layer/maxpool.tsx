@@ -1,4 +1,5 @@
-import { Matrix, maxpool } from "../math/matrix";
+import { Matrix } from "../math/matrix";
+import { maxpool } from "../math/math";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./abstract3d";
 import { BackpropagationToMaxPool } from "./backpropagation/backpropagationtomaxpool";

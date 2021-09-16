@@ -1,10 +1,4 @@
-import {
-  Matrix,
-  purelinLoss,
-  reluActivation,
-  reluDerivative,
-  setOnes,
-} from "../math/matrix";
+import { Matrix, purelinLoss, setOnes } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
 

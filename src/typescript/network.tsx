@@ -36,9 +36,9 @@ class Network {
 
     let delta = elementWiseSubtract(predictions, Y);
 
-    this.layers.reverse().forEach((layer) => {
-      delta = layer.getBackPropagation().propagate(X, m, regularization, delta);
-    });
+    for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
+      delta = this.layers[layer].getBackPropagation().propagate(X, m, regularization, delta);
+    }
   }
 
   loss(output: Matrix, predictions: Matrix) {

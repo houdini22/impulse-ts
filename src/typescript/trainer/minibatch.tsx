@@ -25,6 +25,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
         batch < numberOfExamples;
         batch += this.batchSize, offset += this.batchSize
       ) {
+        const startIterationTime2 = new Date().getTime();
         const input = inputDataset.getBatch(offset, this.batchSize);
         const output = outputDataset.getBatch(offset, this.batchSize);
         const forward = this.network.forward(input);
@@ -39,9 +40,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
         if (this.verbose) {
           const endIterationTime = new Date().getTime();
           console.log(
-            `Batch: ${offset + 1} / ${Math.ceil(
-              numberOfExamples / this.batchSize
-            )} | Time: ${endIterationTime - startIterationTime} ms.`
+            `Batch: ${offset} / ${numberOfExamples} | Time: ${endIterationTime - startIterationTime2} ms | ${endIterationTime - startIterationTime} ms.`
           );
         }
       }

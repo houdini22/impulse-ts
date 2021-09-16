@@ -1,7 +1,7 @@
 const {
   Builders: { Builder1D },
   Dataset: { DatasetBuilder },
-  Layers: { LogisticLayer },
+  Layers: { LogisticLayer, SoftmaxLayer },
   Optimizers: { OptimizerGradientDescent },
   Trainers: { MiniBatchTrainer },
 } = require("../dist/impulse-ts.dev");
@@ -17,7 +17,7 @@ builder.createLayer(LogisticLayer, (layer) => {
 builder.createLayer(LogisticLayer, (layer) => {
   layer.setSize([200]);
 });
-builder.createLayer(LogisticLayer, (layer) => {
+builder.createLayer(SoftmaxLayer, (layer) => {
   layer.setSize([10]);
 });
 

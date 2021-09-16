@@ -4,10 +4,10 @@ import {
   setZeros,
   reluActivation,
   reluDerivative,
-  im2col,
   elementWiseAdd,
   multiply,
 } from "../math/matrix";
+import { im2col } from "../math/math";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./abstract3d";
 
