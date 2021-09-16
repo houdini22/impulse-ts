@@ -361,7 +361,7 @@ export const transpose = (m: Matrix): Matrix => {
       data[col][row] = m.data[row][col];
     }
   }
-  return new Matrix(m.rows, m.cols, data);
+  return new Matrix(m.cols, m.rows, data);
 };
 
 export class ComputationCPU extends AbstractComputation {

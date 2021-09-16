@@ -831,7 +831,7 @@ var transpose = function transpose(m) {
     }
   }
 
-  return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, data);
+  return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.cols, m.rows, data);
 };
 var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
   _inherits(ComputationCPU, _AbstractComputation);
