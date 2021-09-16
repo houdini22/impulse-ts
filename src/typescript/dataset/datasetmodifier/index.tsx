@@ -1,6 +1,6 @@
-import { CallbackDatabaseModifier } from "./callback";
-import { MinMaxScalingDatabaseModifier } from "./minmaxscaling";
-import { MissingDataScalingDatabaseModifier } from "./missingdata";
+import { CallbackDatabaseModifier } from "./Callback";
+import { MinMaxScalingDatabaseModifier } from "./MinMaxScaling";
+import { MissingDataScalingDatabaseModifier } from "./MissingData";
 
 export {
   CallbackDatabaseModifier,

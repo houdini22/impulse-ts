@@ -1,4 +1,4 @@
-import { Dataset } from "./dataset";
-import { DatasetBuilder } from "./datasetbuilder";
+import { Dataset } from "./Dataset";
+import { DatasetBuilder } from "./DatasetBuilder";
 
 export { Dataset, DatasetBuilder };

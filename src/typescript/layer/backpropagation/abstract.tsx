@@ -1,5 +1,5 @@
 import { Layers } from "../../types";
-import { Matrix } from "../../math/matrix";
+import { Matrix } from "../../math/Matrix";
 
 export abstract class AbstractBackPropagation {
   protected layer: Layers = null;

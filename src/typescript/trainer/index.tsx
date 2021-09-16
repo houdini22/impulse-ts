@@ -1,3 +1,3 @@
-import { MiniBatchTrainer } from "./minibatch";
+import { MiniBatchTrainer } from "./MiniBatchTrainer";
 
 export { MiniBatchTrainer };

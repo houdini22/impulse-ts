@@ -9,7 +9,7 @@ import {
   FullyConnectedLayer,
   MaxPoolLayer,
 } from "./layer";
-import { Matrix } from "./math/matrix";
+import { Matrix } from "./math/Matrix";
 import { DatasetBuilder } from "./dataset";
 import { OptimizerAdam, OptimizerGradientDescent } from "./trainer/optimizer";
 import { MiniBatchTrainer } from "./trainer";

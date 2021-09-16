@@ -9,7 +9,7 @@ import {
 import { ConvLayer } from "./layer/";
 import { MaxPoolLayer } from "./layer/";
 import { FullyConnectedLayer } from "./layer/";
-import { PurelinLayer } from "./layer/purelin";
+import { PurelinLayer } from "./layer/Purelin";
 
 export type Dimension = [number] | [number, number, number];
 

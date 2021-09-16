@@ -1,7 +1,7 @@
-import { Backpropagation1Dto1D } from "./backpropagation1dto1d";
-import { BackpropagationToConv } from "./backpropagationtoconv";
-import { BackpropagationToMaxPool } from "./backpropagationtomaxpool";
-import { Backpropagation3Dto1D } from "./backpropagationto3dto1d";
+import { Backpropagation1Dto1D } from "./Backpropagation1Dto1D";
+import { BackpropagationToConv } from "./BackpropagationToConv";
+import { BackpropagationToMaxPool } from "./BackpropagationToMaxPool";
+import { Backpropagation3Dto1D } from "./Backpropagation3Dto1D";
 
 export {
   BackpropagationToMaxPool,

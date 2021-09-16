@@ -4097,7 +4097,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
         for (var col = 0; col < predictedOutput.cols; col += 1) {
           var index1 = predictedOutput.colMaxCoeffIndex(col);
-          var index2 = predictedOutput.colMaxCoeffIndex(col);
+          var index2 = correctOutput.colMaxCoeffIndex(col);
 
           if (index1 === index2) {
             accuracy++;

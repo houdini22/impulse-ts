@@ -43,7 +43,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
       async (outputDataset) => {
         console.log("Loaded mnist_y.csv");
         const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
-        trainer.setIterations(1);
+        trainer.setIterations(3);
         trainer.train(inputDataset, outputDataset);
         await network.save(path.resolve(__dirname, "./data/mnist.json"));
       }

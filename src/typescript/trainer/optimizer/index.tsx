@@ -1,4 +1,4 @@
-import { OptimizerAdam } from "./adam";
-import { OptimizerGradientDescent } from "./gradientdescent";
+import { OptimizerAdam } from "./OptimizerAdam";
+import { OptimizerGradientDescent } from "./OptimizerGradientDescent";
 
 export { OptimizerAdam, OptimizerGradientDescent };

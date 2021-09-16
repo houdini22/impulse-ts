@@ -1,4 +1,4 @@
-import { Matrix } from "./matrix";
+import { Matrix } from "./Matrix";
 import { getComputation } from "../computation/utils";
 
 export const im2col = (

@@ -1,12 +1,12 @@
-import { AbstractLayer } from "./abstract";
-import { SoftmaxLayer } from "./softmax";
-import { LogisticLayer } from "./logistic";
-import { TanhLayer } from "./tanh";
-import { ReluLayer } from "./relu";
-import { SoftplusLayer } from "./softplus";
-import { ConvLayer } from "./conv";
-import { FullyConnectedLayer } from "./fullyconnected";
-import { MaxPoolLayer } from "./maxpool";
+import { AbstractLayer } from "./AbstractLayer";
+import { SoftmaxLayer } from "./Softmax";
+import { LogisticLayer } from "./Logistic";
+import { TanhLayer } from "./Tanh";
+import { ReluLayer } from "./Relu";
+import { SoftplusLayer } from "./Softplus";
+import { ConvLayer } from "./Conv";
+import { FullyConnectedLayer } from "./FullyConnected";
+import { MaxPoolLayer } from "./MaxPool";
 
 export {
   AbstractLayer,
