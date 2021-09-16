@@ -3,6 +3,8 @@ import { ConvLayer } from "./layer/";
 import { MaxPoolLayer } from "./layer/";
 import { FullyConnectedLayer } from "./layer/";
 import { PurelinLayer } from "./layer/Purelin";
+import { AbstractLayer3D } from "./layer/AbstractLayer3D";
+import { AbstractLayer1D } from "./layer/AbstractLayer1D";
 
 export type Dimension = [number] | [number, number, number];
 
@@ -27,7 +29,9 @@ export type Layers =
   | ConvLayer
   | MaxPoolLayer
   | FullyConnectedLayer
-  | PurelinLayer;
+  | PurelinLayer
+  | AbstractLayer
+  | AbstractLayer1D;
 export type Layers1D =
   | LogisticLayer
   | SoftmaxLayer
@@ -35,5 +39,6 @@ export type Layers1D =
   | ReluLayer
   | SoftplusLayer
   | PurelinLayer
-  | AbstractLayer;
-export type Layers3D = ConvLayer | MaxPoolLayer | FullyConnectedLayer;
+  | AbstractLayer
+  | AbstractLayer1D;
+export type Layers3D = ConvLayer | MaxPoolLayer | FullyConnectedLayer | AbstractLayer3D;

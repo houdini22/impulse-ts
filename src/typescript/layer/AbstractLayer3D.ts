@@ -1,5 +1,5 @@
 import { AbstractLayer } from "./AbstractLayer";
-import { Dimension } from "../types";
+import { Dimension, Layers } from "../types";
 
 abstract class AbstractLayer3D extends AbstractLayer {
   configure(): void {
@@ -14,7 +14,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
     return true;
   }
 
-  transition(previousLayer: AbstractLayer): AbstractLayer3D {
+  transition(previousLayer: Layers): Layers {
     if (previousLayer.is3D()) {
       this.setSize([previousLayer.getOutputWidth(), previousLayer.getOutputHeight(), previousLayer.getOutputDepth()]);
     }
@@ -24,7 +24,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
     return this;
   }
 
-  setSize(dimension: Dimension | number): AbstractLayer3D {
+  setSize(dimension: Dimension | number): Layers {
     this.setWidth(dimension[0]);
     this.setHeight(dimension[1]);
     this.setDepth(dimension[2]);

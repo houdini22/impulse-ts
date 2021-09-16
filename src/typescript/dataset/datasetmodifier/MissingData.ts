@@ -12,7 +12,7 @@ export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier 
     for (let exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
       const example = this.dataset.exampleAt(exampleIndex);
       if (example && example.data) {
-        for (let row = 0; row < example.data.rows; row += 1) {
+        for (let row = 0; row < example.rows; row += 1) {
           if (isNaN(example.data[row][0])) {
             rowsToFill.push({
               row,
