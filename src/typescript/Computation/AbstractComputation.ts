@@ -13,6 +13,9 @@ export class AbstractComputation {
   }
 
   execute(name: string, ...args: [Matrix, Matrix] | [Matrix, number] | [Matrix]): Matrix | number {
+    if (!this.kernels[name]) {
+      throw new Error(`Kernel '${name}' not exists.`);
+    }
     return this.kernels[name].apply(null, args);
   }
 }

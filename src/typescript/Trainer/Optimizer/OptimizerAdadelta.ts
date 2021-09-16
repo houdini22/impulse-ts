@@ -11,9 +11,9 @@ export class OptimizerAdadelta extends AbstractOptimizer {
   adadelta(layer: Layers, learningRate: number, batchSize: number): void {
     const gamma = 0.9;
 
-    layer.cW = getComputation().execute(
+    layer.sW = getComputation().execute(
       "add",
-      getComputation().execute("multiplyNumber", layer.cW, gamma) as Matrix,
+      getComputation().execute("multiplyNumber", layer.sW, gamma) as Matrix,
       getComputation().execute(
         "multiplyNumber",
         getComputation().execute("elementWiseMultiply", layer.gW, layer.gW) as Matrix,
@@ -28,7 +28,7 @@ export class OptimizerAdadelta extends AbstractOptimizer {
         getComputation().execute(
           "elementWiseDivide",
           getComputation().execute("sqrt", layer.vW) as Matrix,
-          getComputation().execute("sqrt", layer.cW) as Matrix
+          getComputation().execute("sqrt", layer.sW) as Matrix
         ) as Matrix,
         -1
       ) as Matrix,
@@ -37,7 +37,7 @@ export class OptimizerAdadelta extends AbstractOptimizer {
 
     layer.vW = getComputation().execute(
       "add",
-      getComputation().execute("multiplyNumber", layer.cW, gamma) as Matrix,
+      getComputation().execute("multiplyNumber", layer.sW, gamma) as Matrix,
       getComputation().execute(
         "multiplyNumber",
         getComputation().execute("pow", deltaParameters, 2) as Matrix,
@@ -47,7 +47,7 @@ export class OptimizerAdadelta extends AbstractOptimizer {
 
     layer.W = getComputation().execute("add", layer.W, deltaParameters) as Matrix;
 
-    layer.cb = getComputation().execute(
+    layer.sb = getComputation().execute(
       "add",
       getComputation().execute("multiplyNumber", layer.gb, gamma) as Matrix,
       getComputation().execute(
@@ -64,7 +64,7 @@ export class OptimizerAdadelta extends AbstractOptimizer {
         getComputation().execute(
           "elementWiseDivide",
           getComputation().execute("sqrt", layer.vb) as Matrix,
-          layer.cb
+          layer.sb
         ) as Matrix,
         -1
       ) as Matrix,
@@ -73,10 +73,10 @@ export class OptimizerAdadelta extends AbstractOptimizer {
 
     layer.vb = getComputation().execute(
       "add",
-      getComputation().execute("multiplyNumber", layer.cb, gamma) as Matrix,
+      getComputation().execute("multiplyNumber", layer.sb, gamma) as Matrix,
       getComputation().execute(
         "multiplyNumber",
-        getComputation().execute("pow", layer.cb, 2) as Matrix,
+        getComputation().execute("pow", layer.sb, 2) as Matrix,
         1 - gamma
       ) as Matrix
     ) as Matrix;

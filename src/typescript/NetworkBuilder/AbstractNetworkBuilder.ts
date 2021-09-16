@@ -28,6 +28,7 @@ abstract class AbstractNetworkBuilder {
         layer.transition(this.lastLayer);
       }
 
+      layer.setPreviousLayer(this.lastLayer);
       layer.configure();
       layer.setBackPropagation(BackpropagationFactory.create(this.lastLayer, layer));
 

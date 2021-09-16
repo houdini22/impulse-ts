@@ -36,6 +36,10 @@ var AbstractComputation = /*#__PURE__*/function () {
   }, {
     key: "execute",
     value: function execute(name) {
+      if (!this.kernels[name]) {
+        throw new Error("Kernel '".concat(name, "' not exists."));
+      }
+
       for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
@@ -1776,7 +1780,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractLayer": () => (/* binding */ AbstractLayer)
 /* harmony export */ });
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1809,9 +1813,11 @@ var AbstractLayer = /*#__PURE__*/function () {
     this.gW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.gb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.vW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.cW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.vb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.cb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.sW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.sb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.dW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+    this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
   }
 
   _createClass(AbstractLayer, [{
@@ -1821,6 +1827,11 @@ var AbstractLayer = /*#__PURE__*/function () {
       return this;
     }
   }, {
+    key: "setPreviousLayer",
+    value: function setPreviousLayer(layer) {
+      this.previousLayer = layer;
+    }
+  }, {
     key: "getBackPropagation",
     value: function getBackPropagation() {
       return this.backPropagation;
@@ -1828,7 +1839,7 @@ var AbstractLayer = /*#__PURE__*/function () {
   }, {
     key: "forward",
     value: function forward(input) {
-      this.Z = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiply", this.W, input), this.b.replicate(1, input.cols));
+      this.Z = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiply", this.W, input), this.b.replicate(1, input.cols));
       this.A = this.activation(this.Z);
       return this.A;
     }
@@ -1874,7 +1885,7 @@ var AbstractLayer = /*#__PURE__*/function () {
   }, {
     key: "penalty",
     value: function penalty() {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("penalty", this.W);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("penalty", this.W);
     }
   }]);
 
@@ -1952,22 +1963,27 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
   _createClass(AbstractLayer1D, [{
     key: "configure",
     value: function configure() {
+      var prevLayer = this.previousLayer;
       this.W.resize(this.height, this.width);
-      this.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.W, this.width);
+      this.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.W, prevLayer ? prevLayer.getHeight() : this.height);
       this.b.resize(this.height, 1);
-      this.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.b, this.width);
+      this.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.b, prevLayer ? prevLayer.getHeight() : this.height);
       this.gW.resize(this.height, this.width);
       this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gW);
       this.gb.resize(this.height, 1);
       this.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gb);
-      this.cW.resize(this.height, this.width);
-      this.cW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cW);
-      this.cb.resize(this.height, 1);
-      this.cb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
+      this.sW.resize(this.height, this.width);
+      this.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
+      this.sb.resize(this.height, 1);
+      this.sb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
       this.vW.resize(this.height, this.width);
       this.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.vW);
       this.vb.resize(this.height, 1);
-      this.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
+      this.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
+      this.dW.resize(this.height, this.width);
+      this.dW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
+      this.db.resize(this.height, 1);
+      this.db = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
     }
   }, {
     key: "is1D",
@@ -2202,14 +2218,15 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
 
   _createClass(Backpropagation1Dto1D, [{
     key: "propagate",
-    value: function propagate(input, numberOfExamples, regularization, sigma) {
+    value: function propagate(input, numberOfExamples, regularization, delta) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-      var delta = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose());
-      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
-      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum().transpose(), numberOfExamples);
+      var previousW = this.previousLayer !== null ? this.previousLayer.W : new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", previousActivations, delta.transpose());
+      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.gW.transpose(), 1 / numberOfExamples);
+      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", delta.rowwiseSum().transpose(), 1 / numberOfExamples);
 
       if (this.previousLayer !== null) {
-        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
+        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), delta), this.previousLayer.derivative(this.previousLayer.A));
       }
 
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
@@ -2628,7 +2645,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Math/math */ "./src/typescript/Math/math.ts");
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/Layer/AbstractLayer3D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2689,21 +2706,21 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
     key: "configure",
     value: function configure() {
       this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-      this.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillRandom", this.W, this.width * this.height * this.depth);
+      this.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillRandom", this.W, this.width * this.height * this.depth);
       this.b.resize(this.numFilters, 1);
-      this.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillRandom", this.b, 0.01);
+      this.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillRandom", this.b, 0.01);
       this.gW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-      this.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gW);
+      this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gW);
       this.gb.resize(this.numFilters, 1);
-      this.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gb);
-      this.cW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-      this.cW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gb);
-      this.cb.resize(this.numFilters, 1);
-      this.cb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.cb);
+      this.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gb);
+      this.sW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
+      this.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.gb);
+      this.sb.resize(this.numFilters, 1);
+      this.sb = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.sb);
       this.vW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-      this.vW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.vW);
+      this.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.vW);
       this.vb.resize(this.numFilters, 1);
-      this.vb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.vb);
+      this.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("fillZeros", this.vb);
     }
   }, {
     key: "getOutputHeight",
@@ -2771,7 +2788,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
       for (var i = 0; i < input.cols; i += 1) {
         var conv = (0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
-        var tmp = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("multiply", this.W, conv), this.b.replicate(1, input.cols));
+        var tmp = (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("multiply", this.W, conv), this.b.replicate(1, input.cols));
         result.setCol(i, tmp.rollToColMatrix());
       }
 
@@ -2782,12 +2799,12 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }, {
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("reluActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("reluActivation", m);
     }
   }, {
     key: "derivative",
     value: function derivative(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("reluDerivative", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("reluDerivative", m);
     }
   }, {
     key: "getType",
@@ -2945,7 +2962,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2986,12 +3003,12 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(LogisticLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticActivation", m);
     }
   }, {
     key: "derivative",
     value: function derivative(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticDerivative", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticDerivative", m);
     }
   }, {
     key: "getType",
@@ -3001,7 +3018,7 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "loss",
     value: function loss(output, predictions) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticLoss", output, predictions);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticLoss", output, predictions);
     }
   }, {
     key: "error",
@@ -3189,7 +3206,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3230,12 +3247,12 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(ReluLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluActivation", m);
     }
   }, {
     key: "derivative",
     value: function derivative(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluDerivative", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluDerivative", m);
     }
   }, {
     key: "getType",
@@ -3273,7 +3290,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3314,7 +3331,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(SoftmaxLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxActivation", m);
     }
   }, {
     key: "derivative",
@@ -3329,7 +3346,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "loss",
     value: function loss(output, predictions) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxLoss", output, predictions);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxLoss", output, predictions);
     }
   }, {
     key: "error",
@@ -3357,7 +3374,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3398,12 +3415,12 @@ var SoftplusLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(SoftplusLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softplusActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softplusActivation", m);
     }
   }, {
     key: "derivative",
     value: function derivative(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softplusDerivative", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softplusDerivative", m);
     }
   }, {
     key: "getType",
@@ -3441,7 +3458,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3482,12 +3499,12 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(TanhLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhActivation", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhActivation", m);
     }
   }, {
     key: "derivative",
     value: function derivative(m) {
-      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhDerivative", m);
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhDerivative", m);
     }
   }, {
     key: "getType",
@@ -4061,6 +4078,8 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
           // @ts-ignore
           _layer.transition(this.lastLayer);
         }
+
+        _layer.setPreviousLayer(this.lastLayer);
 
         _layer.configure();
 
@@ -4720,13 +4739,13 @@ var OptimizerAdadelta = /*#__PURE__*/function (_AbstractOptimizer) {
     key: "adadelta",
     value: function adadelta(layer, learningRate, batchSize) {
       var gamma = 0.9;
-      layer.cW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cW, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gW, layer.gW), 1.0 - gamma));
-      var deltaParameters = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.vW), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.cW)), -1), layer.gW);
-      layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cW, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("pow", deltaParameters, 2), 1 - gamma));
+      layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gW, layer.gW), 1.0 - gamma));
+      var deltaParameters = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.vW), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.sW)), -1), layer.gW);
+      layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("pow", deltaParameters, 2), 1 - gamma));
       layer.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", layer.W, deltaParameters);
-      layer.cb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gb, layer.gb), 1 - gamma));
-      var deltaParameters2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.vb), layer.cb), -1), layer.gb);
-      layer.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cb, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("pow", layer.cb, 2), 1 - gamma));
+      layer.sb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gb, layer.gb), 1 - gamma));
+      var deltaParameters2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", layer.vb), layer.sb), -1), layer.gb);
+      layer.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sb, gamma), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("pow", layer.sb, 2), 1 - gamma));
       layer.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.b, deltaParameters2);
     }
   }]);
@@ -4747,7 +4766,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "OptimizerAdam": () => (/* binding */ OptimizerAdam)
 /* harmony export */ });
 /* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4770,6 +4789,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
@@ -4778,12 +4799,36 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
   var _super = _createSuper(OptimizerAdam);
 
   function OptimizerAdam() {
+    var _this;
+
     _classCallCheck(this, OptimizerAdam);
 
-    return _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "beta1", 0.9);
+
+    _defineProperty(_assertThisInitialized(_this), "beta2", 0.999);
+
+    return _this;
   }
 
   _createClass(OptimizerAdam, [{
+    key: "setBeta1",
+    value: function setBeta1(beta1) {
+      this.beta1 = beta1;
+      return this;
+    }
+  }, {
+    key: "setBeta2",
+    value: function setBeta2(beta2) {
+      this.beta2 = beta2;
+      return this;
+    }
+  }, {
     key: "optimize",
     value: function optimize(layer) {
       this.adam(layer, this.learningRate, this.t);
@@ -4791,18 +4836,16 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
   }, {
     key: "adam",
     value: function adam(layer, learningRate, t) {
-      var beta1 = 0.9;
-      var beta2 = 0.999;
-      layer.vW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, beta1), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - beta1));
-      var wCorrected = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vW, 1 - Math.pow(beta1, t));
-      layer.cW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cW, beta1), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - beta1));
-      var sCorrected = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cW, 1 - Math.pow(beta2, t)));
-      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", wCorrected, sCorrected), learningRate));
-      layer.vb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, beta1), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, 1 - beta1));
-      var wCorrected2 = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vb, 1 - Math.pow(beta1, t));
-      layer.cb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.cb, beta2), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gb, layer.gb), 1 - beta2));
-      var sCorrected2 = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.cb, 1 - Math.pow(beta2, t)));
-      layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", wCorrected2, sCorrected2), learningRate));
+      layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta1));
+      var vCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t));
+      layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta2));
+      var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, 1 - Math.pow(this.beta2, t)));
+      layer.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", vCorrected, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", sCorrected)), learningRate));
+      layer.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, 1 - this.beta1));
+      var vCorrected2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vb, 1 - Math.pow(this.beta1, t));
+      layer.sb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sb, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gb, layer.gb), 1 - this.beta2));
+      var sCorrected2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.sb, 1 - Math.pow(this.beta2, t));
+      layer.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", vCorrected2, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", sCorrected2)), learningRate));
     }
   }]);
 
@@ -4876,6 +4919,91 @@ var OptimizerGradientDescent = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
+/***/ "./src/typescript/Trainer/Optimizer/OptimizerMomentum.ts":
+/*!***************************************************************!*\
+  !*** ./src/typescript/Trainer/Optimizer/OptimizerMomentum.ts ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "OptimizerMomentum": () => (/* binding */ OptimizerMomentum)
+/* harmony export */ });
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+var OptimizerMomentum = /*#__PURE__*/function (_AbstractOptimizer) {
+  _inherits(OptimizerMomentum, _AbstractOptimizer);
+
+  var _super = _createSuper(OptimizerMomentum);
+
+  function OptimizerMomentum() {
+    var _this;
+
+    _classCallCheck(this, OptimizerMomentum);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "beta", 0.9);
+
+    return _this;
+  }
+
+  _createClass(OptimizerMomentum, [{
+    key: "optimize",
+    value: function optimize(layer) {
+      this.momentum(layer, this.learningRate);
+    }
+  }, {
+    key: "setBeta",
+    value: function setBeta(beta) {
+      this.beta = beta;
+      return this;
+    }
+  }, {
+    key: "momentum",
+    value: function momentum(layer, learningRate) {
+      layer.dW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", layer.dW, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.dW, 1 - this.beta));
+      layer.db = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", layer.db, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.db, 1 - this.beta));
+      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.dW, learningRate));
+      layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.db, learningRate));
+    }
+  }]);
+
+  return OptimizerMomentum;
+}(_AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__.AbstractOptimizer);
+
+/***/ }),
+
 /***/ "./src/typescript/Trainer/Optimizer/index.ts":
 /*!***************************************************!*\
   !*** ./src/typescript/Trainer/Optimizer/index.ts ***!
@@ -4886,11 +5014,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerAdam": () => (/* reexport safe */ _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__.OptimizerAdam),
 /* harmony export */   "OptimizerGradientDescent": () => (/* reexport safe */ _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__.OptimizerGradientDescent),
-/* harmony export */   "OptimizerAdadelta": () => (/* reexport safe */ _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__.OptimizerAdadelta)
+/* harmony export */   "OptimizerAdadelta": () => (/* reexport safe */ _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__.OptimizerAdadelta),
+/* harmony export */   "OptimizerMomentum": () => (/* reexport safe */ _OptimizerMomentum__WEBPACK_IMPORTED_MODULE_3__.OptimizerMomentum)
 /* harmony export */ });
 /* harmony import */ var _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OptimizerAdam */ "./src/typescript/Trainer/Optimizer/OptimizerAdam.ts");
 /* harmony import */ var _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptimizerGradientDescent */ "./src/typescript/Trainer/Optimizer/OptimizerGradientDescent.ts");
 /* harmony import */ var _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./OptimizerAdadelta */ "./src/typescript/Trainer/Optimizer/OptimizerAdadelta.ts");
+/* harmony import */ var _OptimizerMomentum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./OptimizerMomentum */ "./src/typescript/Trainer/Optimizer/OptimizerMomentum.ts");
+
 
 
 
@@ -5100,7 +5231,8 @@ var DatasetBuilder = {
 var Optimizer = {
   OptimizerAdam: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
   OptimizerGradientDescent: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerGradientDescent,
-  OptimizerAdadelta: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdadelta
+  OptimizerAdadelta: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdadelta,
+  OptimizerMomentum: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerMomentum
 };
 var Trainer = {
   MiniBatchTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.MiniBatchTrainer

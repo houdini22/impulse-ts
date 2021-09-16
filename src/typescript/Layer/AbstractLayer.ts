@@ -1,7 +1,7 @@
 import { Matrix } from "../Math/Matrix";
 import { Dimension, Layers } from "../types";
 import { AbstractBackPropagation } from "./Backpropagation/AbstractBackpropagation";
-import { getComputation } from "../Computation/utils";
+import { getComputation } from "../Computation";
 
 abstract class AbstractLayer {
   public W: Matrix;
@@ -11,9 +11,11 @@ abstract class AbstractLayer {
   public gW: Matrix;
   public gb: Matrix;
   public vW: Matrix;
-  public cW: Matrix;
+  public sW: Matrix;
   public vb: Matrix;
-  public cb: Matrix;
+  public sb: Matrix;
+  public dW: Matrix;
+  public db: Matrix;
 
   protected width = 0;
   protected height = 0;
@@ -29,14 +31,20 @@ abstract class AbstractLayer {
     this.gW = new Matrix();
     this.gb = new Matrix();
     this.vW = new Matrix();
-    this.cW = new Matrix();
     this.vb = new Matrix();
-    this.cb = new Matrix();
+    this.sW = new Matrix();
+    this.sb = new Matrix();
+    this.dW = new Matrix();
+    this.db = new Matrix();
   }
 
   setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {
     this.backPropagation = backPropagation;
     return this;
+  }
+
+  setPreviousLayer(layer: Layers): void {
+    this.previousLayer = layer;
   }
 
   getBackPropagation(): AbstractBackPropagation | null {

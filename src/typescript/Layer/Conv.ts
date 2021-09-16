@@ -2,7 +2,7 @@ import { Matrix } from "../Math/Matrix";
 import { im2col } from "../Math/math";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
-import { getComputation } from "../Computation/utils";
+import { getComputation } from "../Computation";
 
 export class ConvLayer extends AbstractLayer3D {
   protected numFilters = 32;
@@ -23,11 +23,11 @@ export class ConvLayer extends AbstractLayer3D {
     this.gb.resize(this.numFilters, 1);
     this.gb = getComputation().execute("fillZeros", this.gb) as Matrix;
 
-    this.cW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-    this.cW = getComputation().execute("fillZeros", this.gb) as Matrix;
+    this.sW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
+    this.sW = getComputation().execute("fillZeros", this.gb) as Matrix;
 
-    this.cb.resize(this.numFilters, 1);
-    this.cb = getComputation().execute("fillZeros", this.cb) as Matrix;
+    this.sb.resize(this.numFilters, 1);
+    this.sb = getComputation().execute("fillZeros", this.sb) as Matrix;
 
     this.vW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
     this.vW = getComputation().execute("fillZeros", this.vW) as Matrix;

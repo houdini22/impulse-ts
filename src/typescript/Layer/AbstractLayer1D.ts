@@ -7,11 +7,13 @@ abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;
 
   configure(): void {
+    const prevLayer = this.previousLayer as Layers;
+
     this.W.resize(this.height, this.width);
-    this.W = getComputation().execute("fillRandom", this.W, this.width) as Matrix;
+    this.W = getComputation().execute("fillRandom", this.W, prevLayer ? prevLayer.getHeight() : this.height) as Matrix;
 
     this.b.resize(this.height, 1);
-    this.b = getComputation().execute("fillRandom", this.b, this.width) as Matrix;
+    this.b = getComputation().execute("fillRandom", this.b, prevLayer ? prevLayer.getHeight() : this.height) as Matrix;
 
     this.gW.resize(this.height, this.width);
     this.gW = getComputation().execute("fillZeros", this.gW) as Matrix;
@@ -19,17 +21,23 @@ abstract class AbstractLayer1D extends AbstractLayer {
     this.gb.resize(this.height, 1);
     this.gb = getComputation().execute("fillZeros", this.gb) as Matrix;
 
-    this.cW.resize(this.height, this.width);
-    this.cW = getComputation().execute("fillZeros", this.cW) as Matrix;
+    this.sW.resize(this.height, this.width);
+    this.sW = getComputation().execute("fillZeros", this.sW) as Matrix;
 
-    this.cb.resize(this.height, 1);
-    this.cb = getComputation().execute("fillZeros", this.cb) as Matrix;
+    this.sb.resize(this.height, 1);
+    this.sb = getComputation().execute("fillZeros", this.sb) as Matrix;
 
     this.vW.resize(this.height, this.width);
     this.vW = getComputation().execute("fillZeros", this.vW) as Matrix;
 
     this.vb.resize(this.height, 1);
-    this.vb = getComputation().execute("fillZeros", this.cb) as Matrix;
+    this.vb = getComputation().execute("fillZeros", this.sb) as Matrix;
+
+    this.dW.resize(this.height, this.width);
+    this.dW = getComputation().execute("fillZeros", this.sW) as Matrix;
+
+    this.db.resize(this.height, 1);
+    this.db = getComputation().execute("fillZeros", this.sb) as Matrix;
   }
 
   is1D(): boolean {
