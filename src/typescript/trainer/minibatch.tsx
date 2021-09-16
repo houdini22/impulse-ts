@@ -55,7 +55,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
           console.log(
             `Iteration: ${i + 1} | Cost: ${currentResult.cost} | Accuracy: ${
               currentResult.accuracy
-            }% | Time: ${endTime - startTime} ms.`
+            }% | Time: ${(endTime - startTime) * 100} s.`
           );
         }
       }

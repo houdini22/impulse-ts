@@ -1334,6 +1334,7 @@ var Dataset = /*#__PURE__*/function () {
       data[example] = [];
 
       for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
+        console.log(arr[example][dataIndex]);
         data[example][dataIndex] = arr[example][dataIndex].length ? Number(arr[example][dataIndex]) : NaN;
       }
     }
@@ -4206,7 +4207,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
           if ((i + 1) % this.verboseStep === 0) {
             var endTime = new Date().getTime();
             var currentResult = this.cost(inputDataset, outputDataset);
-            console.log("Iteration: ".concat(i + 1, " | Cost: ").concat(currentResult.cost, " | Accuracy: ").concat(currentResult.accuracy, "% | Time: ").concat(endTime - startTime, " ms."));
+            console.log("Iteration: ".concat(i + 1, " | Cost: ").concat(currentResult.cost, " | Accuracy: ").concat(currentResult.accuracy, "% | Time: ").concat((endTime - startTime) * 100, " s."));
           }
         }
 
