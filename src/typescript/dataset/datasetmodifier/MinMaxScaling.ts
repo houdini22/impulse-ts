@@ -22,12 +22,13 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
 
     const kernel = gpu
       .createKernel(function (a) {
+        // @ts-ignore
         return (
           (a[this.thread.x][this.thread.y] - this.constants.min) /
           (this.constants.max - this.constants.min)
         );
       })
-      .setOutput([this.dataset.data.data.rows, this.dataset.data.data.cols])
+      .setOutput([this.dataset.data.rows, this.dataset.data.cols])
       .setConstants({
         min,
         max,

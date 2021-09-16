@@ -104,7 +104,9 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   for (let row = 0; row < output.rows; row += 1) {
     log[row] = [];
     for (let col = 0; col < output.cols; col += 1) {
-      log[row][col] = Math.log(output.data[row][col]);
+      if (output.data) {
+        log[row][col] = Math.log(output.data[row][col]);
+      }
     }
   }
   const logMatrix = new Matrix(output.rows, output.cols, log);
@@ -113,7 +115,9 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   for (let row = 0; row < output.rows; row += 1) {
     sub[row] = [];
     for (let col = 0; col < output.cols; col += 1) {
-      sub[row][col] = 1.0 - output.data[row][col];
+      if (output.data) {
+        sub[row][col] = 1.0 - output.data[row][col];
+      }
     }
   }
   const subMatrix = new Matrix(output.rows, output.cols, sub);
@@ -122,7 +126,9 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   for (let row = 0; row < predictions.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = Math.log(1.0 - predictions.data[row][col]);
+      if (predictions.data) {
+        data[row][col] = Math.log(1.0 - predictions.data[row][col]);
+      }
     }
   }
   const logSubMatrix = new Matrix(predictions.rows, predictions.cols, data);
@@ -138,7 +144,9 @@ export const tanhActivation = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = 2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0;
+      if (m.data) {
+        data[row][col] = 2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0;
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -149,9 +157,11 @@ export const tanhDerivative = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] =
-        1.0 -
-        Math.pow(2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0, 2.0);
+      if (m.data) {
+        data[row][col] =
+          1.0 -
+          Math.pow(2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0, 2.0);
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -162,7 +172,9 @@ export const reluActivation = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.max(0.0, m.data[row][col]);
+      if (m.data) {
+        data[row][col] = Math.max(0.0, m.data[row][col]);
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -173,7 +185,9 @@ export const reluDerivative = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = m.data[row][col] > 0 ? 1 : 0;
+      if (m.data) {
+        data[row][col] = m.data[row][col] > 0 ? 1 : 0;
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -184,7 +198,9 @@ export const softplusActivation = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.log(1 + Math.exp(m.data[row][col]));
+      if (m.data) {
+        data[row][col] = Math.log(1 + Math.exp(m.data[row][col]));
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -195,8 +211,10 @@ export const softplusDerivative = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] =
-        1 / (1 + Math.exp(-Math.log(1 + Math.exp(m.data[row][col]))));
+      if (m.data) {
+        data[row][col] =
+          1 / (1 + Math.exp(-Math.log(1 + Math.exp(m.data[row][col]))));
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -207,7 +225,9 @@ export const penalty = (m: Matrix): number => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.pow(m.data[row][col], 2);
+      if (m.data) {
+        data[row][col] = Math.pow(m.data[row][col], 2);
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data).sum();
@@ -218,7 +238,9 @@ export const sqrt = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.sqrt(m.data[row][col] + 1e-8);
+      if (m.data) {
+        data[row][col] = Math.sqrt(m.data[row][col] + 1e-8);
+      }
     }
   }
   return new Matrix(m.rows, m.cols, data);
@@ -229,8 +251,10 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
   for (let row = 0; row < output.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < output.cols; col += 1) {
-      data[row][col] =
-        output.data[row][col] - Math.pow(predictions[row][col], 2);
+      if (output.data) {
+        data[row][col] =
+          output.data[row][col] - Math.pow(predictions[row][col], 2);
+      }
     }
   }
   return new Matrix(output.rows, output.cols, data).sum();
@@ -248,7 +272,9 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
     for (let col = 0; col < m2.cols; ++col) {
       data[row][col] = 0;
       for (let i = 0; i < m1.cols; ++i) {
-        data[row][col] += m1.data[row][i] * m2.data[i][col];
+        if (m1.data && m2.data) {
+          data[row][col] += m1.data[row][i] * m2.data[i][col];
+        }
       }
     }
   }
@@ -267,7 +293,9 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = m1.data[row][col] + m2.data[row][col];
+      if (m1.data && m2.data) {
+        data[row][col] = m1.data[row][col] + m2.data[row][col];
+      }
     }
   }
   return new Matrix(m1.rows, m1.cols, data);
@@ -285,7 +313,9 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = m1.data[row][col] - m2.data[row][col];
+      if (m1.data && m2.data) {
+        data[row][col] = m1.data[row][col] - m2.data[row][col];
+      }
     }
   }
   return new Matrix(m1.rows, m1.cols, data);
@@ -326,17 +356,23 @@ export const setOnes = (m1: Matrix): Matrix => {
 
 export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {
-    throw new Error("ROWS number not equal.");
+    throw new Error(
+      `ROWS number not equal: m1.rows ${m1.rows} !== m2.rows ${m2.rows}`
+    );
   }
   if (m1.cols !== m2.cols) {
-    throw new Error("COLS number not equal.");
+    throw new Error(
+      `COLS number not equal: m1.cols ${m1.cols} !== m2.cols ${m2.cols}`
+    );
   }
 
   const data = [];
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = m1.data[row][col] * m2.data[row][col];
+      if (m1.data && m2.data) {
+        data[row][col] = m1.data[row][col] * m2.data[row][col];
+      }
     }
   }
   return new Matrix(m1.rows, m1.cols, data);
@@ -347,7 +383,9 @@ export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = m1.data[row][col] * num;
+      if (m1.data) {
+        data[row][col] = m1.data[row][col] * num;
+      }
     }
   }
   return new Matrix(m1.rows, m1.cols, data);
@@ -358,7 +396,9 @@ export const transpose = (m: Matrix): Matrix => {
   for (let col = 0; col < m.cols; col += 1) {
     data[col] = [];
     for (let row = 0; row < m.rows; row += 1) {
-      data[col][row] = m.data[row][col];
+      if (m.data) {
+        data[col][row] = m.data[row][col];
+      }
     }
   }
   return new Matrix(m.cols, m.rows, data);

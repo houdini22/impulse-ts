@@ -28,7 +28,7 @@ abstract class AbstractLayer3D extends AbstractLayer {
     return this;
   }
 
-  setSize(dimension: Dimension): AbstractLayer3D {
+  setSize(dimension: Dimension | number): AbstractLayer3D {
     this.setWidth(dimension[0]);
     this.setHeight(dimension[1]);
     this.setDepth(dimension[2]);

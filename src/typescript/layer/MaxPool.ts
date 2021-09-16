@@ -5,8 +5,8 @@ import { AbstractLayer3D } from "./AbstractLayer3D";
 import { BackpropagationToMaxPool } from "./backpropagation";
 
 class MaxPoolLayer extends AbstractLayer3D {
-  filterSize: number = 0;
-  stride: number = 0;
+  filterSize = 0;
+  stride = 0;
 
   configure(): void {
     this.backPropagation = new BackpropagationToMaxPool(

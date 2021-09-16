@@ -134,9 +134,9 @@ export class BackpropagationToConv extends AbstractBackPropagation {
 
               if (previousLayer.gb.data && sigma.data) {
                 previousLayer.gb.data[c][0] +=
-                  sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][
-                    m
-                  ] / numberOfExamples;
+                  sigma.data[
+                    c * (outputWidth * outputHeight) + h * outputWidth + w
+                  ][m] / numberOfExamples;
               }
             }
           }
@@ -151,8 +151,17 @@ export class BackpropagationToConv extends AbstractBackPropagation {
                 w < inputWidth + padding;
                 w++, x++
               ) {
-                if (w >= 0 && h >= 0 && w < inputWidth && h < inputHeight && result.data && tmpResult.data) {
-                  result.data[c * inputWidth * inputHeight + h * inputWidth + w][m] =
+                if (
+                  w >= 0 &&
+                  h >= 0 &&
+                  w < inputWidth &&
+                  h < inputHeight &&
+                  result.data &&
+                  tmpResult.data
+                ) {
+                  result.data[
+                    c * inputWidth * inputHeight + h * inputWidth + w
+                  ][m] =
                     tmpResult.data[
                       c *
                         (inputWidth + 2 * padding) *

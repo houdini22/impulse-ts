@@ -15,6 +15,7 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
 
   const kernel = gpu
     .createKernel(function (a, b) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
     })
     .setOutput([m1.rows, m2.cols]);
@@ -25,6 +26,7 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
 export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] / this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])
@@ -38,6 +40,7 @@ export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
 export const softmaxActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.exp(a[this.thread.x][this.thread.y]);
     })
     .setOutput([m.rows, m.cols]);
@@ -52,6 +55,7 @@ export const softmaxActivation = (m: Matrix): Matrix => {
 export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.log(a[this.thread.x][this.thread.y]);
     })
     .setOutput([predictions.rows, predictions.cols]);
@@ -72,6 +76,7 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
 export const logisticActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
@@ -81,6 +86,7 @@ export const logisticActivation = (m: Matrix): Matrix => {
 export const logisticDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return (
         a[this.thread.x][this.thread.y] *
         (1.0 - a[this.thread.x][this.thread.y])
@@ -93,16 +99,19 @@ export const logisticDerivative = (m: Matrix): Matrix => {
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.log(a[this.thread.x][this.thread.y]);
     })
     .setOutput([output.rows, output.cols]);
   const kernel2 = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return 1.0 - a[this.thread.x][this.thread.y];
     })
     .setOutput([output.rows, output.cols]);
   const kernel3 = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.log(1.0 - a[this.thread.x][this.thread.y]);
     })
     .setOutput([predictions.rows, predictions.cols]);
@@ -126,6 +135,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
 export const tanhActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return (
         2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0
       );
@@ -137,6 +147,7 @@ export const tanhActivation = (m: Matrix): Matrix => {
 export const tanhDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return (
         1.0 -
         Math.pow(
@@ -152,6 +163,7 @@ export const tanhDerivative = (m: Matrix): Matrix => {
 export const reluActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.max(0.0, a[this.thread.x][this.thread.y]);
     })
     .setOutput([m.rows, m.cols]);
@@ -161,6 +173,7 @@ export const reluActivation = (m: Matrix): Matrix => {
 export const reluDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       if (a[this.thread.x][this.thread.y] > 0) {
         return 1;
       }
@@ -173,6 +186,7 @@ export const reluDerivative = (m: Matrix): Matrix => {
 export const softplusActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
@@ -182,6 +196,7 @@ export const softplusActivation = (m: Matrix): Matrix => {
 export const softplusDerivative = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return 1 / (1 + Math.exp(-a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
@@ -191,6 +206,7 @@ export const softplusDerivative = (m: Matrix): Matrix => {
 export const penalty = (m: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.pow(a[this.thread.x][this.thread.y], 2);
     })
     .setOutput([m.rows, m.cols]);
@@ -200,6 +216,7 @@ export const penalty = (m: Matrix): number => {
 export const sqrt = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
     })
     .setOutput([m.rows, m.cols]);
@@ -209,6 +226,7 @@ export const sqrt = (m: Matrix): Matrix => {
 export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a, b) {
+      // @ts-ignore
       return (
         b[this.thread.x][this.thread.y] -
         Math.pow(a[this.thread.x][this.thread.y], 2)
@@ -233,6 +251,7 @@ export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
     .createKernel(function (a, b) {
       let sum = 0;
       for (let i = 0; i < this.constants.cols; i++) {
+        // @ts-ignore
         sum += a[this.thread.x][i] * b[i][this.thread.y];
       }
       return sum;
@@ -255,6 +274,7 @@ export const elementWiseAdd = (m1: Matrix, m2: Matrix): Matrix => {
 
   const kernel = gpu
     .createKernel(function (a, b) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
     })
     .setOutput([m1.rows, m2.cols]);
@@ -272,6 +292,7 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
 
   const kernel = gpu
     .createKernel(function (a, b) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
     })
     .setOutput([m1.rows, m2.cols]);
@@ -320,6 +341,7 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
 
   const kernel = gpu
     .createKernel(function (a, b) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
     })
     .setOutput([m1.rows, m2.cols]);
@@ -330,6 +352,7 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
 export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return a[this.thread.x][this.thread.y] * this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])
@@ -343,6 +366,7 @@ export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
 export const transpose = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
+      // @ts-ignore
       return a[this.thread.y][this.thread.x];
     })
     .setOutput([m.cols, m.rows]);

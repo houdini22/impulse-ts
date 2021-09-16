@@ -100,7 +100,7 @@ abstract class AbstractLayer {
     return this;
   }
 
-  abstract setSize(dimension: Dimension): AbstractLayer;
+  abstract setSize(dimension: Dimension | number): AbstractLayer;
 
   abstract getSize(): Dimension | number;
 

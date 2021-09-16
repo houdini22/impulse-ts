@@ -569,11 +569,11 @@ var setOnes = function setOnes(m1) {
 };
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.rows !== m2.rows) {
-    throw new Error("ROWS number not equal.");
+    throw new Error("ROWS number not equal: m1.rows ".concat(m1.rows, " !== m2.rows ").concat(m2.rows));
   }
 
   if (m1.cols !== m2.cols) {
-    throw new Error("COLS number not equal.");
+    throw new Error("COLS number not equal: m1.cols ".concat(m1.cols, " !== m2.cols ").concat(m2.cols));
   }
 
   var data = [];
@@ -1306,7 +1306,9 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
         var _example = this.callback(this.dataset.exampleAt(exampleIndex));
 
         for (var row = 0; row < this.dataset.data.data.rows; row += 1) {
-          this.dataset.data.data[row][exampleIndex] = _example.data.data[row][0];
+          if (_example) {
+            this.dataset.data.data[row][exampleIndex] = _example.data.data[row][0];
+          }
         }
       }
     }
@@ -1380,7 +1382,7 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
         var _example = this.dataset.exampleAt(exampleIndex);
 
         for (var row = 0; row < _example.rows; row += 1) {
-          if (_example.data) {
+          if (_example && _example.data) {
             min = Math.min(_example.data[row][0]);
             max = Math.max(_example.data[row][0]);
           }
@@ -1472,15 +1474,15 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
       for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
         var _example = this.dataset.exampleAt(exampleIndex);
 
-        if (_example.data) {
+        if (_example && _example.data) {
           for (var row = 0; row < _example.data.rows; row += 1) {
-            if (isNaN(_example[row][0])) {
+            if (isNaN(_example.data[row][0])) {
               rowsToFill.push({
                 row: row,
                 col: _example
               });
             } else {
-              sum += _example[row][0];
+              sum += _example.data[row][0];
               correctExamplesCount++;
             }
           }
@@ -2189,42 +2191,42 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
   }, {
     key: "setSize",
     value: function setSize(dimension) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setFilterSize",
     value: function setFilterSize(filterSize) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setStride",
     value: function setStride(stride) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setPadding",
     value: function setPadding(padding) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setWidth",
     value: function setWidth(value) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setHeight",
     value: function setHeight(value) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setDepth",
     value: function setDepth(value) {
-      throw new Error("Unsupported");
+      return this;
     }
   }, {
     key: "setNumFilters",
     value: function setNumFilters(value) {
-      throw new Error("Unsupported");
+      return this;
     }
   }]);
 
@@ -3122,8 +3124,8 @@ var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
                 for (var d = 0; d < inputDepth; d++) {
                   for (var y = 0, vertical = vertStart, verticalPad = -padding; y < filterSize; y++, vertical++, verticalPad++) {
                     for (var x = 0, horizontal = horizStart, horizontalPad = -padding; x < filterSize; x++, horizontal++, horizontalPad++) {
-                      if (previousLayer.W.data) {
-                        tmpResult[d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + vertical * (inputWidth + 2 * padding) + horizontal][m] += previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] * sigma[c * outputWidth * outputHeight + h * outputWidth + w][m];
+                      if (previousLayer.W.data && tmpResult.data && sigma.data) {
+                        tmpResult.data[d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + vertical * (inputWidth + 2 * padding) + horizontal][m] += previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] * sigma.data[c * outputWidth * outputHeight + h * outputWidth + w][m];
                       }
 
                       var z = 0;
@@ -3140,15 +3142,15 @@ var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
                         }
                       }
 
-                      if (previousLayer.gW.data) {
-                        previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] += z * sigma[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+                      if (previousLayer.gW.data && sigma.data) {
+                        previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] += z * sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
                       }
                     }
                   }
                 }
 
-                if (previousLayer.gb.data) {
-                  previousLayer.gb.data[c][0] += sigma[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+                if (previousLayer.gb.data && sigma.data) {
+                  previousLayer.gb.data[c][0] += sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
                 }
               }
             }
@@ -3159,8 +3161,8 @@ var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
             for (var _c = 0; _c < inputDepth; _c++) {
               for (var _h = -padding, _y = 0; _h < inputHeight + padding; _h++, _y++) {
                 for (var _w = -padding, _x = 0; _w < inputWidth + padding; _w++, _x++) {
-                  if (_w >= 0 && _h >= 0 && _w < inputWidth && _h < inputHeight) {
-                    result[_c * inputWidth * inputHeight + _h * inputWidth + _w][m] = tmpResult[_c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + _y * (inputWidth + 2 * padding) + _x][m];
+                  if (_w >= 0 && _h >= 0 && _w < inputWidth && _h < inputHeight && result.data && tmpResult.data) {
+                    result.data[_c * inputWidth * inputHeight + _h * inputWidth + _w][m] = tmpResult.data[_c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + _y * (inputWidth + 2 * padding) + _x][m];
                   }
                 }
               }
@@ -3285,8 +3287,8 @@ var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
                   }
                 }
 
-                if (result.data) {
-                  result.data[inputOffset + maxY * inputWidth + maxX][m] = sigma[outputOffset + h * outputWidth + w][m];
+                if (result.data && sigma.data) {
+                  result.data[inputOffset + maxY * inputWidth + maxX][m] = sigma.data[outputOffset + h * outputWidth + w][m];
                 }
               }
             }
@@ -3749,11 +3751,11 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
 
   _createClass(AbstractNetworkBuilder, [{
     key: "createLayer",
-    value: function createLayer(type) {
+    value: function createLayer(layerClass) {
       var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       if (this.network) {
-        var _layer = new type();
+        var _layer = new layerClass();
 
         if (typeof callback === "function") {
           callback(_layer);
@@ -3879,11 +3881,14 @@ var NetworkBuilder1D = /*#__PURE__*/function (_AbstractNetworkBuild) {
             });
           });
           var network = builder.getNetwork();
-          network.getLayers().forEach(function (layer, i) {
-            layer.W = new _math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["W"].length, json["layers"][i]["weights"]["W"][0].length, json["layers"][i]["weights"]["W"]);
-            layer.b = new _math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["b"].length, json["layers"][i]["weights"]["b"][0].length, json["layers"][i]["weights"]["b"]);
-          });
-          resolve(network);
+
+          if (network) {
+            network.getLayers().forEach(function (layer, i) {
+              layer.W = new _math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["W"].length, json["layers"][i]["weights"]["W"][0].length, json["layers"][i]["weights"]["W"]);
+              layer.b = new _math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["b"].length, json["layers"][i]["weights"]["b"][0].length, json["layers"][i]["weights"]["b"]);
+            });
+            resolve(network);
+          }
         });
       });
     }
@@ -3952,7 +3957,9 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
   _createClass(NetworkBuilder3D, [{
     key: "firstLayerTransition",
     value: function firstLayerTransition(layer) {
-      layer.setSize(this.dimensions);
+      if (this.dimensions) {
+        layer.setSize(this.dimensions);
+      }
     }
   }], [{
     key: "fromJSON",
@@ -3965,31 +3972,31 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
           }
 
           var json = JSON.parse(data.toString());
-          var builder = new NetworkBuilder3D(json["dimensions"]);
+          var builder = new NetworkBuilder3D(json["size"]);
           json["layers"].forEach(function (layerData) {
             if (layerData["type"] === "logistic") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.LogisticLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "softmax") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.SoftmaxLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "relu") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.ReluLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "softplus") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.SoftplusLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "tanh") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.TanhLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
               });
             } else if (layerData["type"] === "conv") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.ConvLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
                 layer.setFilterSize(layerData["filterSize"]);
                 layer.setStride(layerData["stride"]);
                 layer.setNumFilters(layerData["numFilters"]);
@@ -3997,7 +4004,7 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
               });
             } else if (layerData["type"] === "maxpool") {
               builder.createLayer(_layer___WEBPACK_IMPORTED_MODULE_2__.MaxPoolLayer, function (layer) {
-                layer.setSize(layerData["dimensions"]);
+                layer.setSize(layerData["size"]);
                 layer.setFilterSize(layerData["filterSize"]);
                 layer.setStride(layerData["stride"]);
               });
@@ -4006,11 +4013,14 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
             }
           });
           var network = builder.getNetwork();
-          network.getLayers().forEach(function (layer, i) {
-            layer.W = json["layers"]["W"];
-            layer.b = json["layers"]["b"];
-          });
-          resolve(network);
+
+          if (network) {
+            network.getLayers().forEach(function (layer, i) {
+              layer.W = json["layers"]["W"];
+              layer.b = json["layers"]["b"];
+            });
+            resolve(network);
+          }
         });
       });
     }

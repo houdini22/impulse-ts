@@ -26,8 +26,8 @@
     "preinstall": "node-gyp clean || true; node-gyp --debug configure build",
     "install": "node-gyp rebuild --debug",
     "clean-dist": "rm -f -r -d ./dist/*",
-    "lint": "eslint . --ext .tsx",
-    "lint-fix": "eslint . --ext .tsx --fix"
+    "lint": "eslint . --ext .ts",
+    "lint-fix": "eslint . --ext .ts --fix"
   },
   "license": "Copyright Michał Baniowski",
   "dependencies": {

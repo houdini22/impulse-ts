@@ -10,7 +10,7 @@ import {
   TanhLayer,
 } from "../layer/";
 import { Matrix } from "../math/Matrix";
-import {JSONLayerData} from "./types";
+import { JSONLayerData } from "./types";
 
 class NetworkBuilder1D extends AbstractNetworkBuilder {
   firstLayerTransition(layer: Layers): void {
@@ -53,14 +53,14 @@ class NetworkBuilder1D extends AbstractNetworkBuilder {
         if (network) {
           network.getLayers().forEach((layer, i) => {
             layer.W = new Matrix(
-                json["layers"][i]["weights"]["W"].length,
-                json["layers"][i]["weights"]["W"][0].length,
-                json["layers"][i]["weights"]["W"]
+              json["layers"][i]["weights"]["W"].length,
+              json["layers"][i]["weights"]["W"][0].length,
+              json["layers"][i]["weights"]["W"]
             );
             layer.b = new Matrix(
-                json["layers"][i]["weights"]["b"].length,
-                json["layers"][i]["weights"]["b"][0].length,
-                json["layers"][i]["weights"]["b"]
+              json["layers"][i]["weights"]["b"].length,
+              json["layers"][i]["weights"]["b"][0].length,
+              json["layers"][i]["weights"]["b"]
             );
           });
 

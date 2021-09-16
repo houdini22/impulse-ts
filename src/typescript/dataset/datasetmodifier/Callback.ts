@@ -11,9 +11,9 @@ export class CallbackDatabaseModifier extends AbstractDatasetModifier {
       exampleIndex += 1
     ) {
       const example = this.callback(this.dataset.exampleAt(exampleIndex));
-      for (let row = 0; row < this.dataset.data.data.rows; row += 1) {
+      for (let row = 0; row < this.dataset.data.rows; row += 1) {
         if (example) {
-          this.dataset.data.data[row][exampleIndex] = example.data.data[row][0];
+          this.dataset.data.data[row][exampleIndex] = example.data[row][0];
         }
       }
     }

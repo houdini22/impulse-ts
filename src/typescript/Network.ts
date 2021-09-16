@@ -48,9 +48,10 @@ class Network {
     ) as Matrix;
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-      delta = this.layers[layer]
-        .getBackPropagation()
-        .propagate(X, m, regularization, delta);
+      const backPropagation = this.layers[layer].getBackPropagation();
+      if (backPropagation) {
+        delta = backPropagation.propagate(X, m, regularization, delta);
+      }
     }
   }
 

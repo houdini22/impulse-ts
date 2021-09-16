@@ -80,12 +80,14 @@ export abstract class AbstractTrainer {
       for (
         let batch = 0, offset = 0;
         batch < numberOfExamples;
-        batch += batchSize, offset += 1
+        batch += batchSize, offset += 100
       ) {
-        const batch = inputDataset.getBatch(offset, batchSize);
-        if (batch) {
-          const predictedOutput = this.network.forward(batch);
-          const correctOutput = batch;
+        const inputBatch = inputDataset.getBatch(offset, batchSize);
+        const outputBatch = outputDataset.getBatch(offset, batchSize);
+
+        if (inputBatch && outputBatch) {
+          const predictedOutput = this.network.forward(inputBatch);
+          const correctOutput = outputBatch;
 
           const miniBatchSize = correctOutput.cols;
 
@@ -93,10 +95,10 @@ export abstract class AbstractTrainer {
           const error = this.network.error(miniBatchSize);
 
           cost +=
-              (error * loss +
-                  (this.regularization * penalty) / (2.0 * miniBatchSize)) /
-              // TODO: fix it
-              (numBatches * (miniBatchSize / batchSize));
+            (error * loss +
+              (this.regularization * penalty) / (2.0 * miniBatchSize)) /
+            // TODO: fix it
+            (numBatches * (miniBatchSize / batchSize));
 
           for (let col = 0; col < predictedOutput.cols; col += 1) {
             const index1 = predictedOutput.colMaxCoeffIndex(col);

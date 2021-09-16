@@ -1,6 +1,6 @@
-import {Dimension} from "../types";
+import { Dimension } from "../types";
 
 export interface JSONLayerData {
-    type: string;
-    size: number | Dimension;
+  type: string;
+  size: number | Dimension;
 }

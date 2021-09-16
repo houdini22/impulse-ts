@@ -1,13 +1,15 @@
 import { Matrix } from "../math/Matrix";
 
-interface KernelsInterface {}
+interface KernelsInterface {
+  [id: string]: (m: Matrix, m2: Matrix | number) => Matrix | number;
+}
 
 export class AbstractComputation {
   protected kernels: KernelsInterface = {};
 
   addKernel(
     name: string,
-    func: (m: Matrix, m2: Matrix | number) => null
+    func: (m: Matrix, m2: Matrix | number) => Matrix | number
   ): AbstractComputation {
     this.kernels[name] = func;
     return this;

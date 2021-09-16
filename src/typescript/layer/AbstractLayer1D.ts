@@ -64,7 +64,7 @@ abstract class AbstractLayer1D extends AbstractLayer {
     return this;
   }
 
-  setSize(value: Dimension): AbstractLayer1D {
+  setSize(value: Dimension | number): AbstractLayer1D {
     this.setHeight(value[0]);
 
     return this;
