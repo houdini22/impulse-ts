@@ -11,7 +11,7 @@ import {
 } from "../layer/";
 
 class Builder1D extends AbstractBuilder {
-  firstLayerTransition(layer: Layers) {
+  firstLayerTransition(layer: Layers): void {
     layer.setWidth(this.dimensions[0]);
   }
 

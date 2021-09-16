@@ -13,7 +13,7 @@ import { ConvLayer } from "../layer/conv";
 import { MaxPoolLayer } from "../layer/maxpool";
 
 class Builder3D extends AbstractBuilder {
-  firstLayerTransition(layer: Layers) {
+  firstLayerTransition(layer: Layers): void {
     layer.setSize(this.dimensions);
   }
 
@@ -74,7 +74,7 @@ class Builder3D extends AbstractBuilder {
             });
           } else if (layerData["type"] === "fullyconnected") {
             layerClass = MaxPoolLayer;
-            builder.createLayer(layerClass, (layer) => {});
+            builder.createLayer(layerClass);
           }
         });
 

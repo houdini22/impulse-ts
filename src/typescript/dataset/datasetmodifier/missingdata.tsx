@@ -1,9 +1,9 @@
 import { AbstractDatasetModifier } from "./abstract";
 
 export class MissingDataScalingDatabaseModifier extends AbstractDatasetModifier {
-  protected modificationType: string = "mean";
+  protected modificationType = "mean";
 
-  applyToExample(example: number) {
+  applyToExample(example: number): void {
     const rowsToFill = [];
     let correctExamplesCount = 0;
     let sum = 0;

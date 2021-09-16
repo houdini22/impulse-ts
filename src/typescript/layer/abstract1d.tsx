@@ -3,9 +3,9 @@ import { Dimension, Layers } from "../types";
 import { getCurrentComputation } from "../computation/utils";
 
 abstract class AbstractLayer1D extends AbstractLayer {
-  protected depth: number = 1;
+  protected depth = 1;
 
-  configure() {
+  configure(): void {
     this.W.resize(this.height, this.width);
     this.W = getCurrentComputation().execute("fillRandom", this.W, this.width);
 
@@ -55,23 +55,25 @@ abstract class AbstractLayer1D extends AbstractLayer {
     return this;
   }
 
-  setSize(value: Dimension) {
+  setSize(value: Dimension): AbstractLayer1D {
     this.setHeight(value[0]);
+
+    return this;
   }
 
   getSize(): number {
     return this.height;
   }
 
-  getOutputWidth() {
+  getOutputWidth(): number {
     return this.width;
   }
 
-  getOutputHeight() {
+  getOutputHeight(): number {
     return this.height;
   }
 
-  getOutputDepth() {
+  getOutputDepth(): number {
     return 1;
   }
 }

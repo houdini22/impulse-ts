@@ -3,14 +3,13 @@ import { Layers } from "../../types";
 import { getCurrentComputation } from "../../computation/utils";
 
 export class OptimizerAdam extends AbstractOptimizer {
-  optimize(layer: Layers) {
+  optimize(layer: Layers): void {
     this.adam(layer, this.learningRate, this.t);
   }
 
-  adam(layer: Layers, learningRate: number, t: number) {
+  adam(layer: Layers, learningRate: number, t: number): void {
     const beta1 = 0.9;
     const beta2 = 0.999;
-    const epsilon = 1e-8;
 
     layer.vW = getCurrentComputation().execute(
       "elementWiseAdd",

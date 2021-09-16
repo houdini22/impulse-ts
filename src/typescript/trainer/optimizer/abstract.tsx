@@ -1,9 +1,9 @@
 import { Layers } from "../../types";
 
 export abstract class AbstractOptimizer {
-  protected batchSize: number = 0;
-  protected t: number = 0;
-  protected learningRate: number = 0;
+  protected batchSize = 0;
+  protected t = 0;
+  protected learningRate = 0;
 
   setBatchSize(batchSize: number): AbstractOptimizer {
     this.batchSize = batchSize;
@@ -20,5 +20,5 @@ export abstract class AbstractOptimizer {
     return this;
   }
 
-  abstract optimize(layer: Layers);
+  abstract optimize(layer: Layers): void;
 }

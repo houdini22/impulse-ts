@@ -1,8 +1,8 @@
 import { Matrix } from "../math/matrix";
 
 export class Dataset {
-  public exampleSize: number = 0;
-  public numberOfExamples: number = 0;
+  public exampleSize = 0;
+  public numberOfExamples = 0;
   public data: Matrix = null;
 
   constructor(exampleSize: number, numberOfExamples: number, arr: string[][]) {

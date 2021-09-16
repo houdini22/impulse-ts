@@ -2,7 +2,7 @@ import { AbstractDatasetModifier } from "./abstract";
 import { gpu } from "../../computation/computationgpu";
 
 export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
-  applyToExample(example: number) {
+  applyToExample(example: number): void {
     let min = Infinity;
     let max = -Infinity;
 
@@ -20,7 +20,6 @@ export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
 
     const kernel = gpu
       .createKernel(function (a) {
-        // @ts-ignore
         return (
           (a[this.thread.x][this.thread.y] - this.constants.min) /
           (this.constants.max - this.constants.min)

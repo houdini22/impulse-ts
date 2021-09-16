@@ -5,7 +5,7 @@ export class Matrix {
   public cols = 0;
   public data = null;
 
-  constructor(rows: number = 0, cols: number = 0, data: number[][] = null) {
+  constructor(rows = 0, cols = 0, data: number[][] = null) {
     this.resize(rows, cols);
     if (data) {
       this.generateData(data);

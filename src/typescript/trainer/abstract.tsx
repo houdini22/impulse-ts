@@ -2,15 +2,24 @@ import Network from "../network";
 import { AbstractOptimizer } from "./optimizer/abstract";
 import { Dataset } from "../dataset/dataset";
 
+export interface CostResult {
+  cost: number;
+  accuracy: number;
+}
+
+export interface StepCallbackParameters {
+  iteration: number;
+}
+
 export abstract class AbstractTrainer {
   network: Network = null;
   optimizer: AbstractOptimizer = null;
-  regularization: number = 0;
-  iterations: number = 1000;
-  learningRate: number = 0.1;
-  verbose: boolean = true;
-  verboseStep: number = 1;
-  stepCallback: Function = () => null;
+  regularization = 0;
+  iterations = 1000;
+  learningRate = 0.1;
+  verbose = true;
+  verboseStep = 1;
+  stepCallback = Function;
 
   constructor(network: Network, optimizer: AbstractOptimizer) {
     this.network = network;
@@ -42,12 +51,14 @@ export abstract class AbstractTrainer {
     return this;
   }
 
-  setStepCallback(stepCallback: Function): AbstractTrainer {
+  setStepCallback(
+    stepCallback: (data: StepCallbackParameters) => void
+  ): AbstractTrainer {
     this.stepCallback = stepCallback;
     return this;
   }
 
-  cost(inputDataset: Dataset, outputDataset: Dataset) {
+  cost(inputDataset: Dataset, outputDataset: Dataset): CostResult {
     const batchSize = 100;
     const numberOfExamples = inputDataset.getNumberOfExamples();
     const numBatches = Math.ceil(numberOfExamples / batchSize);
@@ -72,8 +83,8 @@ export abstract class AbstractTrainer {
 
       const miniBatchSize = correctOutput.cols;
 
-      let loss = this.network.loss(correctOutput, predictedOutput);
-      let error = this.network.error(miniBatchSize);
+      const loss = this.network.loss(correctOutput, predictedOutput);
+      const error = this.network.error(miniBatchSize);
 
       cost +=
         (error * loss +

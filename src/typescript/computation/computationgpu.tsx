@@ -25,7 +25,6 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
 export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
-      // @ts-ignore
       return a[this.thread.x][this.thread.y] / this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])
@@ -288,7 +287,6 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
 export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   const kernel = gpu
     .createKernel(function () {
-      // @ts-ignore
       return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
     })
     .setOutput([m1.rows, m1.cols])
@@ -337,7 +335,6 @@ export const elementWiseMultiply = (m1: Matrix, m2: Matrix): Matrix => {
 export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
-      // @ts-ignore
       return a[this.thread.x][this.thread.y] * this.constants.number;
     })
     .setOutput([m1.rows, m1.cols])

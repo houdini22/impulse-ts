@@ -15,9 +15,9 @@ abstract class AbstractLayer {
   public vb: Matrix;
   public cb: Matrix;
 
-  protected width: number = 0;
-  protected height: number = 0;
-  protected depth: number = 0;
+  protected width = 0;
+  protected height = 0;
+  protected depth = 0;
   protected previousLayer: Layers = null;
   protected backPropagation: AbstractBackPropagation = null;
 
@@ -53,37 +53,43 @@ abstract class AbstractLayer {
     return this.A;
   }
 
-  setWidth(value: number) {
+  setWidth(value: number): AbstractLayer {
     this.width = value;
+
+    return this;
   }
 
   getWidth(): number {
     return this.width;
   }
 
-  setHeight(value: number) {
+  setHeight(value: number): AbstractLayer {
     this.height = value;
+
+    return this;
   }
 
   getHeight(): number {
     return this.height;
   }
 
-  setDepth(value: number) {
+  setDepth(value: number): AbstractLayer {
     this.depth = value;
+
+    return this;
   }
 
   getDepth(): number {
     return this.depth;
   }
 
-  abstract getOutputWidth();
+  abstract getOutputWidth(): number;
 
-  abstract getOutputHeight();
+  abstract getOutputHeight(): number;
 
-  abstract getOutputDepth();
+  abstract getOutputDepth(): number;
 
-  abstract configure();
+  abstract configure(): number;
 
   abstract is1D(): boolean;
 
@@ -94,15 +100,15 @@ abstract class AbstractLayer {
     return this;
   }
 
-  abstract setSize(dimension: Dimension);
+  abstract setSize(dimension: Dimension): AbstractLayer;
 
-  abstract getSize();
+  abstract getSize(): number;
 
   abstract activation(value: Matrix): Matrix;
 
   abstract derivative(value: Matrix): Matrix;
 
-  abstract getType();
+  abstract getType(): string;
 
   abstract loss(output: Matrix, predictions: Matrix): number;
 

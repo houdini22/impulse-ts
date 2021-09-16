@@ -8,7 +8,7 @@ class MaxPoolLayer extends AbstractLayer3D {
   filterSize: number;
   stride: number;
 
-  configure() {
+  configure(): void {
     this.backPropagation = new BackpropagationToMaxPool(
       this,
       this.previousLayer

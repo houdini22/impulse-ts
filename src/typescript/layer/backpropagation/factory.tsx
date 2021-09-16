@@ -3,9 +3,10 @@ import { Backpropagation1Dto1D } from "./backpropagation1dto1d";
 import { Backpropagation3Dto1D } from "./backpropagationto3dto1d";
 import { BackpropagationToMaxPool } from "./backpropagationtomaxpool";
 import { BackpropagationToConv } from "./backpropagationtoconv";
+import { AbstractBackPropagation } from "./abstract";
 
 export class BackpropagationFactory {
-  static create(previousLayer: Layers, layer: Layers) {
+  static create(previousLayer: Layers, layer: Layers): AbstractBackPropagation {
     if (previousLayer == null) {
       if (layer.is1D()) {
         return new Backpropagation1Dto1D(layer, previousLayer);

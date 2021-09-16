@@ -2,7 +2,7 @@ import { Dimension, LayerType } from "../types";
 import { ConvLayer } from "./conv";
 
 class FullyConnectedLayer extends ConvLayer {
-  configure() {
+  configure(): void {
     // do nothing
   }
 

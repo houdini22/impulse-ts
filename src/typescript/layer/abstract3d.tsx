@@ -2,7 +2,7 @@ import { AbstractLayer } from "./abstract";
 import { Dimension } from "../types";
 
 abstract class AbstractLayer3D extends AbstractLayer {
-  configure() {
+  configure(): void {
     // do nothing
   }
 
@@ -28,10 +28,12 @@ abstract class AbstractLayer3D extends AbstractLayer {
     return this;
   }
 
-  setSize(dimension: Dimension) {
+  setSize(dimension: Dimension): AbstractLayer3D {
     this.setWidth(dimension[0]);
     this.setHeight(dimension[1]);
     this.setDepth(dimension[2]);
+
+    return this;
   }
 
   getSize(): Dimension {

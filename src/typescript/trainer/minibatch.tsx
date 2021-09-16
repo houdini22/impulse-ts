@@ -2,14 +2,14 @@ import { AbstractTrainer } from "./abstract";
 import { Dataset } from "../dataset/dataset";
 
 export class MiniBatchTrainer extends AbstractTrainer {
-  batchSize: number = 100;
+  batchSize = 100;
 
   setBatchSize(batchSize: number): MiniBatchTrainer {
     this.batchSize = batchSize;
     return this;
   }
 
-  train(inputDataset: Dataset, outputDataset: Dataset) {
+  train(inputDataset: Dataset, outputDataset: Dataset): void {
     const numberOfExamples = inputDataset.getNumberOfExamples();
     const startTime = new Date().getTime();
 

@@ -11,7 +11,7 @@ export class AbstractComputation {
   execute(
     name: string,
     ...args: [Matrix, Matrix] | [Matrix, number] | [Matrix]
-  ) {
+  ): Matrix {
     return this.kernels[name].apply(null, args);
   }
 }

@@ -8,7 +8,10 @@
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
     "@types/node": "^14.17.12",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
     "babel-loader": "^8.2.2",
+    "eslint": "^7.32.0",
     "node-loader": "^2.0.0",
     "prettier": "^2.3.2",
     "typescript": "^4.4.2",
@@ -21,7 +24,9 @@
     "prettier-write": "prettier --write \"src/typescript/**/*.tsx\" && prettier --write \"examples/**/*.js\"",
     "preinstall": "node-gyp clean || true; node-gyp --debug configure build",
     "install": "node-gyp rebuild --debug",
-    "clean-dist": "rm -f -r -d ./dist/*"
+    "clean-dist": "rm -f -r -d ./dist/*",
+    "lint": "eslint . --ext .tsx",
+    "lint-fix": "eslint . --ext .tsx --fix"
   },
   "license": "Copyright Michał Baniowski",
   "dependencies": {

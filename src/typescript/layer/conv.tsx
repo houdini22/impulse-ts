@@ -5,12 +5,12 @@ import { AbstractLayer3D } from "./abstract3d";
 import { getCurrentComputation } from "../computation/utils";
 
 class ConvLayer extends AbstractLayer3D {
-  protected numFilters: number = 32;
-  protected filterSize: number = 4;
-  protected padding: number = 1;
-  protected stride: number = 1;
+  protected numFilters = 32;
+  protected filterSize = 4;
+  protected padding = 1;
+  protected stride = 1;
 
-  configure() {
+  configure(): void {
     this.W.resize(
       this.numFilters,
       this.filterSize * this.filterSize * this.depth

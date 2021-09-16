@@ -5,16 +5,18 @@ import { getCurrentComputation } from "./computation/utils";
 
 class Network {
   private dimensions: Dimension = null;
-  private size: number = 0;
+  private size = 0;
   private layers: Layers[] = [];
 
   constructor(dimensions: Dimension) {
     this.dimensions = dimensions;
   }
 
-  addLayer(layer: Layers) {
+  addLayer(layer: Layers): Network {
     this.size++;
     this.layers.push(layer);
+
+    return this;
   }
 
   getLayers(): Layers[] {
@@ -31,7 +33,12 @@ class Network {
     return output;
   }
 
-  backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number) {
+  backward(
+    X: Matrix,
+    Y: Matrix,
+    predictions: Matrix,
+    regularization: number
+  ): void {
     const m = X.cols;
 
     let delta = getCurrentComputation().execute(
@@ -47,11 +54,11 @@ class Network {
     }
   }
 
-  loss(output: Matrix, predictions: Matrix) {
+  loss(output: Matrix, predictions: Matrix): number {
     return this.layers[this.layers.length - 1].loss(output, predictions);
   }
 
-  error(m: number) {
+  error(m: number): number {
     return this.layers[this.layers.length - 1].error(m);
   }
 

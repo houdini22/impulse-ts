@@ -3,7 +3,7 @@ import { AbstractDatasetModifier } from "./abstract";
 export class CallbackDatabaseModifier extends AbstractDatasetModifier {
   protected callback: Function = (example) => example;
 
-  applyToExample(example: number) {
+  applyToExample(example: number): void {
     for (
       let exampleIndex = 0;
       exampleIndex < this.dataset.getNumberOfExamples();

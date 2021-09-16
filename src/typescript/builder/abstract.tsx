@@ -1,6 +1,7 @@
 import { Dimension, Layers } from "../types";
 import Network from "../network";
 import { BackpropagationFactory } from "../layer/backpropagation/factory";
+import { AbstractLayer } from "../layer";
 
 abstract class AbstractBuilder {
   protected dimensions: Dimension = null;
@@ -12,8 +13,10 @@ abstract class AbstractBuilder {
     this.network = new Network(dimension);
   }
 
-  createLayer(type: Layers, callback: Function) {
-    // @ts-ignore
+  createLayer(
+    type: Layers,
+    callback: (layer: AbstractLayer) => void = null
+  ): AbstractBuilder {
     const layer = new type();
 
     if (typeof callback === "function") {
@@ -33,13 +36,15 @@ abstract class AbstractBuilder {
 
     this.network.addLayer(layer);
     this.lastLayer = layer;
+
+    return this;
   }
 
   getNetwork(): Network {
     return this.network;
   }
 
-  abstract firstLayerTransition(layer: Layers);
+  abstract firstLayerTransition(layer: Layers): void;
 }
 
 export { AbstractBuilder };

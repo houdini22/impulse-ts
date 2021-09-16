@@ -42,8 +42,8 @@ var AbstractBuilder = /*#__PURE__*/function () {
 
   _createClass(AbstractBuilder, [{
     key: "createLayer",
-    value: function createLayer(type, callback) {
-      // @ts-ignore
+    value: function createLayer(type) {
+      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var layer = new type();
 
       if (typeof callback === "function") {
@@ -60,6 +60,7 @@ var AbstractBuilder = /*#__PURE__*/function () {
       layer.setBackPropagation(_layer_backpropagation_factory__WEBPACK_IMPORTED_MODULE_1__.BackpropagationFactory.create(this.lastLayer, layer));
       this.network.addLayer(layer);
       this.lastLayer = layer;
+      return this;
     }
   }, {
     key: "getNetwork",
@@ -299,7 +300,7 @@ var Builder3D = /*#__PURE__*/function (_AbstractBuilder) {
               });
             } else if (layerData["type"] === "fullyconnected") {
               layerClass = _layer_maxpool__WEBPACK_IMPORTED_MODULE_4__.MaxPoolLayer;
-              builder.createLayer(layerClass, function (layer) {});
+              builder.createLayer(layerClass);
             }
           });
           var network = builder.getNetwork();
@@ -447,7 +448,6 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
 };
 var elementWiseDivideNumber = function elementWiseDivideNumber(m1, num) {
   var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
     return a[this.thread.x][this.thread.y] / this.constants.number;
   }).setOutput([m1.rows, m1.cols]).setConstants({
     number: num
@@ -599,7 +599,6 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
 };
 var fillRandom = function fillRandom(m1, parameter) {
   var kernel = gpu.createKernel(function () {
-    // @ts-ignore
     return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
   }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
@@ -634,7 +633,6 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
 };
 var elementWiseMultiplyNumber = function elementWiseMultiplyNumber(m1, num) {
   var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
     return a[this.thread.x][this.thread.y] * this.constants.number;
   }).setOutput([m1.rows, m1.cols]).setConstants({
     number: num
@@ -1042,7 +1040,6 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
       }
 
       var kernel = _computation_computationgpu__WEBPACK_IMPORTED_MODULE_1__.gpu.createKernel(function (a) {
-        // @ts-ignore
         return (a[this.thread.x][this.thread.y] - this.constants.min) / (this.constants.max - this.constants.min);
       }).setOutput([this.dataset.data.data.rows, this.dataset.data.data.cols]).setConstants({
         min: min,
@@ -1234,6 +1231,7 @@ var AbstractLayer = /*#__PURE__*/function () {
     key: "setWidth",
     value: function setWidth(value) {
       this.width = value;
+      return this;
     }
   }, {
     key: "getWidth",
@@ -1244,6 +1242,7 @@ var AbstractLayer = /*#__PURE__*/function () {
     key: "setHeight",
     value: function setHeight(value) {
       this.height = value;
+      return this;
     }
   }, {
     key: "getHeight",
@@ -1254,6 +1253,7 @@ var AbstractLayer = /*#__PURE__*/function () {
     key: "setDepth",
     value: function setDepth(value) {
       this.depth = value;
+      return this;
     }
   }, {
     key: "getDepth",
@@ -1391,6 +1391,7 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
     key: "setSize",
     value: function setSize(value) {
       this.setHeight(value[0]);
+      return this;
     }
   }, {
     key: "getSize",
@@ -1502,6 +1503,7 @@ var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
       this.setWidth(dimension[0]);
       this.setHeight(dimension[1]);
       this.setDepth(dimension[2]);
+      return this;
     }
   }, {
     key: "getSize",
@@ -3290,6 +3292,7 @@ var Network = /*#__PURE__*/function () {
     value: function addLayer(layer) {
       this.size++;
       this.layers.push(layer);
+      return this;
     }
   }, {
     key: "getLayers",
@@ -3400,9 +3403,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
     _defineProperty(this, "verboseStep", 1);
 
-    _defineProperty(this, "stepCallback", function () {
-      return null;
-    });
+    _defineProperty(this, "stepCallback", Function);
 
     this.network = network;
     this.optimizer = optimizer;
@@ -3715,7 +3716,6 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
     value: function adam(layer, learningRate, t) {
       var beta1 = 0.9;
       var beta2 = 0.999;
-      var epsilon = 1e-8;
       layer.vW = (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseAdd", (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseMultiplyNumber", layer.vW, beta1), (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseMultiplyNumber", layer.gW, 1 - beta1));
       var wCorrected = (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseDivideNumber", layer.vW, 1 - Math.pow(beta1, t));
       layer.cW = (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseAdd", (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseMultiplyNumber", layer.cW, beta1), (0,_computation_utils__WEBPACK_IMPORTED_MODULE_1__.getCurrentComputation)().execute("elementWiseMultiplyNumber", layer.gW, 1 - beta1));
