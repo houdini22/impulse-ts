@@ -1,10 +1,10 @@
-import { SoftmaxLayer, LogisticLayer, TanhLayer, ReluLayer, SoftplusLayer, AbstractLayer } from "./layer";
-import { ConvLayer } from "./layer/";
-import { MaxPoolLayer } from "./layer/";
-import { FullyConnectedLayer } from "./layer/";
-import { PurelinLayer } from "./layer/Purelin";
-import { AbstractLayer3D } from "./layer/AbstractLayer3D";
-import { AbstractLayer1D } from "./layer/AbstractLayer1D";
+import { SoftmaxLayer, LogisticLayer, TanhLayer, ReluLayer, SoftplusLayer, AbstractLayer } from "./Layer";
+import { ConvLayer } from "./Layer/";
+import { MaxPoolLayer } from "./Layer/";
+import { FullyConnectedLayer } from "./Layer/";
+import { PurelinLayer } from "./Layer/Purelin";
+import { AbstractLayer3D } from "./Layer/AbstractLayer3D";
+import { AbstractLayer1D } from "./Layer/AbstractLayer1D";
 
 export type Dimension = [number] | [number, number, number];
 

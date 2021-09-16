@@ -1,4 +1,4 @@
-import { NetworkBuilder1D, NetworkBuilder3D } from "./network-builder";
+import { NetworkBuilder1D, NetworkBuilder3D } from "./NetworkBuilder";
 import {
   SoftmaxLayer,
   LogisticLayer,
@@ -8,17 +8,18 @@ import {
   ConvLayer,
   FullyConnectedLayer,
   MaxPoolLayer,
-} from "./layer";
-import { Matrix } from "./math/Matrix";
-import { DatasetBuilder as DatasetBuilderBuilder, Dataset as DatasetDataset } from "./dataset";
-import { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta } from "./trainer/optimizer";
-import { MiniBatchTrainer } from "./trainer";
+} from "./Layer";
+import { Matrix } from "./Math/Matrix";
+import { Dataset as DatasetDataset } from "./Dataset";
+import { DatasetBuilder as DatasetBuilderBuilder } from "./DatasetBuilder";
+import { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta } from "./Trainer/optimizer";
+import { MiniBatchTrainer } from "./Trainer";
 import {
   CallbackDatabaseModifier,
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
-} from "./dataset/datasetmodifier";
-import { ComputationCPU, ComputationGPU, setComputation } from "./computation";
+} from "./Dataset/datasetmodifier";
+import { ComputationCPU, ComputationGPU, setComputation } from "./Computation";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
 const Math = {

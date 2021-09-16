@@ -1,7 +1,7 @@
 import { Dimension, Layers } from "./types";
-import { Matrix } from "./math/Matrix";
+import { Matrix } from "./Math/Matrix";
 import * as fs from "fs";
-import { getComputation } from "./computation/utils";
+import { getComputation } from "./Computation/utils";
 
 class Network {
   private readonly dimensions: Dimension | null = null;
