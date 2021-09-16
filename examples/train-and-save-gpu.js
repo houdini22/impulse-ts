@@ -11,15 +11,19 @@ const path = require("path");
 setComputation(new ComputationGPU());
 
 const builder = new Builder1D([400]);
-builder.createLayer(LogisticLayer, (layer) => {
-  layer.setSize([1000]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([500]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([200]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([10]);
-});
+builder
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([1000]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([500]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([200]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([10]);
+  });
 
 const network = builder.getNetwork();
 

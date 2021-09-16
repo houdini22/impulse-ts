@@ -1,25 +1,38 @@
 const {
-  Builders: { Builder1D },
+  Builders: { Builder1D, Builder3D },
   Dataset: { DatasetBuilder },
-  Layers: { LogisticLayer, SoftmaxLayer },
+  Layers: {
+    LogisticLayer,
+    ConvLayer,
+    FullyConnectedLayer,
+    MaxPoolLayer,
+    PurelinLayer,
+    ReluLayer,
+    SoftmaxLayer,
+    TanhLayer,
+  },
   Optimizers: { OptimizerGradientDescent, OptimizerAdam },
   Trainers: { MiniBatchTrainer },
-  Computations: { ComputationCPU, setComputation },
+  Computations: { ComputationCPU, ComputationGPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
 setComputation(new ComputationCPU());
 
 const builder = new Builder1D([400]);
-builder.createLayer(LogisticLayer, (layer) => {
-  layer.setSize([1000]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([500]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([200]);
-}).createLayer(LogisticLayer, (layer) => {
-  layer.setSize([10]);
-});
+builder
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([1000]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([500]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([200]);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize([10]);
+  });
 
 const network = builder.getNetwork();
 
