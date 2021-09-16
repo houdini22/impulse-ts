@@ -7,7 +7,9 @@ class MaxPoolLayer extends AbstractLayer3D {
   filterSize = 0;
   stride = 0;
 
-  configure(): void {}
+  configure(): void {
+    // do nothing
+  }
 
   getOutputHeight(): number {
     return (this.height - this.filterSize) / this.stride + 1;

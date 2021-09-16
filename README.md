@@ -17,6 +17,7 @@ const {
   },
   Dataset: { Dataset },
   DatasetBuilder: { DatasetBuilder },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
   Optimizer: { 
     OptimizerGradientDescent, 
     OptimizerAdam,

@@ -1,6 +1,6 @@
 import * as csvtojson from "csvtojson";
 import { Dataset } from "../Dataset";
-import { AbstractDatasetBuilderSource } from "./DocumentBuilderSource/AbstractDocumentBuilderSource";
+import { AbstractDatasetBuilderSource } from "./DatasetBuilderSource/AbstractDocumentBuilderSource";
 
 export class DatasetBuilder {
   static fromCSV(csvPath: string): Promise<Dataset> {
@@ -20,7 +20,17 @@ export class DatasetBuilder {
     });
   }
 
-  static fromSource(source: AbstractDatasetBuilderSource): Promise<Dataset> {
-    return new Promise((resolve) => {});
+  static fromSource(sourcePromise: Promise<AbstractDatasetBuilderSource>): Promise<Dataset> {
+    return new Promise((resolve) => {
+      sourcePromise.then((source) => {
+        const matrix = source.parse();
+        console.log(matrix);
+        const numberOfExamples = matrix.cols;
+        const exampleSize = matrix.rows;
+
+        const dataset = new Dataset(exampleSize, numberOfExamples, matrix.data);
+        resolve(dataset);
+      });
+    });
   }
 }

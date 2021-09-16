@@ -5,7 +5,7 @@ export class Matrix {
   public cols = 0;
   public data: number[][] | null = null;
 
-  constructor(rows = 0, cols = 0, data: number[][] | null = null) {
+  constructor(rows = 0, cols = 0, data: number[][] | string[][] | null = null) {
     this.resize(rows, cols);
     if (data) {
       this.generateData(data);
@@ -23,7 +23,7 @@ export class Matrix {
     return this;
   }
 
-  generateData(arr: number[][]): Matrix {
+  generateData(arr: number[][] | string[][] | null): Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = new Array(this.cols);

@@ -1,6 +1,6 @@
 import { Dimension, Layers } from "../types";
 import Network from "../Network";
-import { BackpropagationFactory } from "../Layer/backpropagation/BackpropagationFactory";
+import { BackpropagationFactory } from "../Layer/Backpropagation/BackpropagationFactory";
 
 abstract class AbstractNetworkBuilder {
   protected dimensions: Dimension | null = null;

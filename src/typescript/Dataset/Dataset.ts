@@ -26,15 +26,15 @@ export class Dataset {
   }
 
   exampleAt(index: number): Matrix | null {
-    if (this.data) {
-      return this.data.col(index);
-    }
-
-    return null;
+    return this.data.col(index);
   }
 
   getNumberOfExamples(): number {
     return this.numberOfExamples;
+  }
+
+  getExampleSize(): number {
+    return this.exampleSize;
   }
 
   getBatch(offset: number, batchSize: number): Dataset {

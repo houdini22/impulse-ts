@@ -5,7 +5,7 @@ const {
   Optimizer: { OptimizerAdam },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
-  DatasetModifier: { MinMaxScalingDatabaseModifier },
+  DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -34,6 +34,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inpu
   DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(async (outputDataset) => {
     console.log("Loaded mnist_y.csv");
 
+    inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
     const trainer = new MiniBatchTrainer(network, new OptimizerAdam());

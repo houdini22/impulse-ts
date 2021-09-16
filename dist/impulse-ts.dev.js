@@ -1087,16 +1087,17 @@ var Dataset = /*#__PURE__*/function () {
   _createClass(Dataset, [{
     key: "exampleAt",
     value: function exampleAt(index) {
-      if (this.data) {
-        return this.data.col(index);
-      }
-
-      return null;
+      return this.data.col(index);
     }
   }, {
     key: "getNumberOfExamples",
     value: function getNumberOfExamples() {
       return this.numberOfExamples;
+    }
+  }, {
+    key: "getExampleSize",
+    value: function getExampleSize() {
+      return this.exampleSize;
     }
   }, {
     key: "getBatch",
@@ -1115,9 +1116,9 @@ var Dataset = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts":
+/***/ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts":
 /*!***************************************************************************!*\
-  !*** ./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts ***!
+  !*** ./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts ***!
   \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1139,9 +1140,9 @@ var AbstractDatasetModifier = function AbstractDatasetModifier(dataset) {
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/datasetmodifier/Callback.ts":
+/***/ "./src/typescript/Dataset/DatasetModifier/Callback.ts":
 /*!************************************************************!*\
-  !*** ./src/typescript/Dataset/datasetmodifier/Callback.ts ***!
+  !*** ./src/typescript/Dataset/DatasetModifier/Callback.ts ***!
   \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1149,7 +1150,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CallbackDatabaseModifier": () => (/* binding */ CallbackDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1226,9 +1227,9 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/datasetmodifier/MinMaxScaling.ts":
+/***/ "./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts":
 /*!*****************************************************************!*\
-  !*** ./src/typescript/Dataset/datasetmodifier/MinMaxScaling.ts ***!
+  !*** ./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts ***!
   \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1236,7 +1237,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* binding */ MinMaxScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1308,9 +1309,9 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/datasetmodifier/MissingData.ts":
+/***/ "./src/typescript/Dataset/DatasetModifier/MissingData.ts":
 /*!***************************************************************!*\
-  !*** ./src/typescript/Dataset/datasetmodifier/MissingData.ts ***!
+  !*** ./src/typescript/Dataset/DatasetModifier/MissingData.ts ***!
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1318,7 +1319,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* binding */ MissingDataScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/datasetmodifier/AbstractDatasetModifier.ts");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1378,17 +1379,15 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
       for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
         var example = this.dataset.exampleAt(exampleIndex);
 
-        if (example && example.data) {
-          for (var row = 0; row < example.rows; row += 1) {
-            if (isNaN(example.data[row][0])) {
-              rowsToFill.push({
-                row: row,
-                col: example
-              });
-            } else {
-              sum += example.data[row][0];
-              correctExamplesCount++;
-            }
+        for (var row = 0; row < this.dataset.getExampleSize(); row += 1) {
+          if (isNaN(example.data[row][0]) || typeof example.data[row][0] === "undefined") {
+            rowsToFill.push({
+              row: row,
+              col: example
+            });
+          } else {
+            sum += example.data[row][0];
+            correctExamplesCount++;
           }
         }
       }
@@ -1420,9 +1419,9 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/datasetmodifier/index.ts":
+/***/ "./src/typescript/Dataset/DatasetModifier/index.ts":
 /*!*********************************************************!*\
-  !*** ./src/typescript/Dataset/datasetmodifier/index.ts ***!
+  !*** ./src/typescript/Dataset/DatasetModifier/index.ts ***!
   \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1432,9 +1431,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* reexport safe */ _MissingData__WEBPACK_IMPORTED_MODULE_2__.MissingDataScalingDatabaseModifier),
 /* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* reexport safe */ _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__.MinMaxScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/Dataset/datasetmodifier/Callback.ts");
-/* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/Dataset/datasetmodifier/MinMaxScaling.ts");
-/* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/Dataset/datasetmodifier/MissingData.ts");
+/* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/Dataset/DatasetModifier/Callback.ts");
+/* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts");
+/* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/Dataset/DatasetModifier/MissingData.ts");
 
 
 
@@ -1501,13 +1500,245 @@ var DatasetBuilder = /*#__PURE__*/function () {
     }
   }, {
     key: "fromSource",
-    value: function fromSource(source) {
-      return new Promise(function (resolve) {});
+    value: function fromSource(sourcePromise) {
+      return new Promise(function (resolve) {
+        sourcePromise.then(function (source) {
+          var matrix = source.parse();
+          console.log(matrix);
+          var numberOfExamples = matrix.cols;
+          var exampleSize = matrix.rows;
+          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, matrix.data);
+          resolve(dataset);
+        });
+      });
     }
   }]);
 
   return DatasetBuilder;
 }();
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts":
+/*!*********************************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractDatasetBuilderSource": () => (/* binding */ AbstractDatasetBuilderSource)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AbstractDatasetBuilderSource = function AbstractDatasetBuilderSource() {
+  _classCallCheck(this, AbstractDatasetBuilderSource);
+};
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts":
+/*!***************************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetBuilderSourceCSV": () => (/* binding */ DatasetBuilderSourceCSV)
+/* harmony export */ });
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractDocumentBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var CSVState;
+
+(function (CSVState) {
+  CSVState[CSVState["UnquotedField"] = 0] = "UnquotedField";
+  CSVState[CSVState["QuotedField"] = 1] = "QuotedField";
+  CSVState[CSVState["QuotedQuote"] = 2] = "QuotedQuote";
+})(CSVState || (CSVState = {}));
+
+var DatasetBuilderSourceCSV = /*#__PURE__*/function (_AbstractDatasetBuild) {
+  _inherits(DatasetBuilderSourceCSV, _AbstractDatasetBuild);
+
+  var _super = _createSuper(DatasetBuilderSourceCSV);
+
+  function DatasetBuilderSourceCSV(contentStr) {
+    var _this;
+
+    _classCallCheck(this, DatasetBuilderSourceCSV);
+
+    _this = _super.call(this);
+
+    _defineProperty(_assertThisInitialized(_this), "contentStr", "");
+
+    _defineProperty(_assertThisInitialized(_this), "matrixData", null);
+
+    _this.contentStr = contentStr;
+    return _this;
+  }
+
+  _createClass(DatasetBuilderSourceCSV, [{
+    key: "parse",
+    value: function parse() {
+      var _this2 = this;
+
+      this.matrixData = [];
+      var lines = this.contentStr.trim().split(/\n+/);
+      lines.forEach(function (line, i) {
+        return _this2.parseLine(line.trim(), i);
+      });
+      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);
+    }
+  }, {
+    key: "parseLine",
+    value: function parseLine(line, exampleIndexCol) {
+      var _this3 = this;
+
+      var state = CSVState.UnquotedField;
+      var fields = [];
+      var i = 0;
+
+      for (var j = 0; j < line.length; j += 1) {
+        var c = line.at(j);
+
+        switch (state) {
+          case CSVState.UnquotedField:
+            switch (c) {
+              case ",":
+                // end of field
+                fields.push("");
+                i++;
+                break;
+
+              case '"':
+                state = CSVState.QuotedField;
+                break;
+
+              default:
+                fields[i] += c;
+                break;
+            }
+
+            break;
+
+          case CSVState.QuotedField:
+            switch (c) {
+              case '"':
+                state = CSVState.QuotedQuote;
+                break;
+
+              default:
+                fields[i] += c;
+                break;
+            }
+
+            break;
+
+          case CSVState.QuotedQuote:
+            switch (c) {
+              case ",":
+                // , after closing quote
+                fields.push("");
+                i++;
+                state = CSVState.UnquotedField;
+                break;
+
+              case '"':
+                // "" -> "
+                fields[i] += '"';
+                state = CSVState.QuotedField;
+                break;
+
+              default:
+                // end of quote
+                state = CSVState.UnquotedField;
+                break;
+            }
+
+            break;
+        }
+
+        fields.forEach(function (value, row) {
+          if (value.length === 0) {
+            value = NaN;
+          }
+
+          value = parseFloat(value);
+
+          if (!_this3.matrixData[row]) {
+            _this3.matrixData[row] = [];
+          }
+
+          _this3.matrixData[row][exampleIndexCol] = value;
+        });
+      }
+    }
+  }], [{
+    key: "fromLocalFile",
+    value: function fromLocalFile(path) {
+      return new Promise(function (resolve, reject) {
+        fs__WEBPACK_IMPORTED_MODULE_0__.readFile(path, function (err, buffer) {
+          console.log("first");
+
+          if (err) {
+            console.log(err);
+            reject();
+          } else {
+            var instance = new DatasetBuilderSourceCSV(buffer.toString("utf-8"));
+            resolve(instance);
+          }
+        });
+      });
+    }
+  }]);
+
+  return DatasetBuilderSourceCSV;
+}(_AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_1__.AbstractDatasetBuilderSource);
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts":
+/*!*********************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetBuilderSourceCSV": () => (/* reexport safe */ _DatasetBuilderSourceCSV__WEBPACK_IMPORTED_MODULE_0__.DatasetBuilderSourceCSV)
+/* harmony export */ });
+/* harmony import */ var _DatasetBuilderSourceCSV__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetBuilderSourceCSV */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts");
+
+
 
 /***/ }),
 
@@ -1883,6 +2114,498 @@ var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
 }(_AbstractLayer__WEBPACK_IMPORTED_MODULE_0__.AbstractLayer);
 
 
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts":
+/*!*************************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractBackPropagation": () => (/* binding */ AbstractBackPropagation)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AbstractBackPropagation = function AbstractBackPropagation(layer, previousLayer) {
+  _classCallCheck(this, AbstractBackPropagation);
+
+  _defineProperty(this, "layer", null);
+
+  _defineProperty(this, "previousLayer", null);
+
+  this.layer = layer;
+  this.previousLayer = previousLayer;
+};
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/Backpropagation1Dto1D.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/Backpropagation1Dto1D.ts ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Backpropagation1Dto1D": () => (/* binding */ Backpropagation1Dto1D)
+/* harmony export */ });
+/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
+  _inherits(Backpropagation1Dto1D, _AbstractBackPropagat);
+
+  var _super = _createSuper(Backpropagation1Dto1D);
+
+  function Backpropagation1Dto1D() {
+    _classCallCheck(this, Backpropagation1Dto1D);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Backpropagation1Dto1D, [{
+    key: "propagate",
+    value: function propagate(input, numberOfExamples, regularization, sigma) {
+      if (this.layer) {
+        var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
+        var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose().conjugate());
+        this.layer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
+        this.layer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum(), numberOfExamples);
+
+        if (this.previousLayer !== null) {
+          return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
+        }
+      }
+
+      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    }
+  }]);
+
+  return Backpropagation1Dto1D;
+}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/Backpropagation3Dto1D.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/Backpropagation3Dto1D.ts ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Backpropagation3Dto1D": () => (/* binding */ Backpropagation3Dto1D)
+/* harmony export */ });
+/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+var Backpropagation3Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
+  _inherits(Backpropagation3Dto1D, _AbstractBackPropagat);
+
+  var _super = _createSuper(Backpropagation3Dto1D);
+
+  function Backpropagation3Dto1D() {
+    _classCallCheck(this, Backpropagation3Dto1D);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Backpropagation3Dto1D, [{
+    key: "propagate",
+    value: function propagate(input, numberOfExamples, regularization, sigma) {
+      return sigma;
+    }
+  }]);
+
+  return Backpropagation3Dto1D;
+}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/BackpropagationFactory.ts":
+/*!************************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/BackpropagationFactory.ts ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BackpropagationFactory": () => (/* binding */ BackpropagationFactory)
+/* harmony export */ });
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../types */ "./src/typescript/types.ts");
+/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/Layer/Backpropagation/Backpropagation1Dto1D.ts");
+/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/Layer/Backpropagation/Backpropagation3Dto1D.ts");
+/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/Layer/Backpropagation/BackpropagationToMaxPool.ts");
+/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/Layer/Backpropagation/BackpropagationToConv.ts");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+
+var BackpropagationFactory = /*#__PURE__*/function () {
+  function BackpropagationFactory() {
+    _classCallCheck(this, BackpropagationFactory);
+  }
+
+  _createClass(BackpropagationFactory, null, [{
+    key: "create",
+    value: function create(previousLayer, layer) {
+      if (previousLayer == null) {
+        if (layer.is1D()) {
+          return new _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__.Backpropagation1Dto1D(layer, previousLayer);
+        } else if (layer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.conv) {
+          return new _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__.Backpropagation3Dto1D(layer, previousLayer);
+        }
+      } else {
+        if (previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.maxpool) {
+          return new _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__.BackpropagationToMaxPool(layer, previousLayer);
+        } else if (previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.conv) {
+          return new _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__.BackpropagationToConv(layer, previousLayer);
+        } else if (previousLayer.is1D() || previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.fullyconnected) {
+          return new _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__.Backpropagation1Dto1D(layer, previousLayer);
+        }
+      }
+
+      return null;
+    }
+  }]);
+
+  return BackpropagationFactory;
+}();
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/BackpropagationToConv.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/BackpropagationToConv.ts ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BackpropagationToConv": () => (/* binding */ BackpropagationToConv)
+/* harmony export */ });
+/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
+  _inherits(BackpropagationToConv, _AbstractBackPropagat);
+
+  var _super = _createSuper(BackpropagationToConv);
+
+  function BackpropagationToConv() {
+    var _this;
+
+    _classCallCheck(this, BackpropagationToConv);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
+
+    return _this;
+  }
+
+  _createClass(BackpropagationToConv, [{
+    key: "propagate",
+    value: function propagate(input, numberOfExamples, regularization, sigma) {
+      var previousLayer = this.previousLayer;
+
+      if (previousLayer) {
+        var padding = previousLayer.getPadding();
+        var stride = previousLayer.getStride();
+        var filterSize = previousLayer.getFilterSize();
+        var outputWidth = previousLayer.getOutputWidth();
+        var outputHeight = previousLayer.getOutputHeight();
+        var outputDepth = previousLayer.getOutputDepth();
+        var inputWidth = previousLayer.getWidth();
+        var inputHeight = previousLayer.getHeight();
+        var inputDepth = previousLayer.getDepth();
+        var tmpResult = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix((inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth, numberOfExamples));
+        var result = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(inputWidth * inputHeight * inputDepth, numberOfExamples);
+        var aPrev = previousLayer.derivative(previousLayer.A);
+        previousLayer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", previousLayer.gW);
+        previousLayer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", previousLayer.gb);
+
+        for (var m = 0; m < numberOfExamples; m++) {
+          for (var c = 0; c < outputDepth; c++) {
+            for (var h = 0; h < outputHeight; h++) {
+              for (var w = 0; w < outputWidth; w++) {
+                var vertStart = stride * h;
+                var vertEnd = vertStart + filterSize;
+                var horizStart = stride * w;
+                var horizEnd = horizStart + filterSize; // filter loop
+
+                for (var d = 0; d < inputDepth; d++) {
+                  for (var y = 0, vertical = vertStart, verticalPad = -padding; y < filterSize; y++, vertical++, verticalPad++) {
+                    for (var x = 0, horizontal = horizStart, horizontalPad = -padding; x < filterSize; x++, horizontal++, horizontalPad++) {
+                      if (previousLayer.W.data && tmpResult.data && sigma.data) {
+                        tmpResult.data[d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + vertical * (inputWidth + 2 * padding) + horizontal][m] += previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] * sigma.data[c * outputWidth * outputHeight + h * outputWidth + w][m];
+                      }
+
+                      var z = 0;
+
+                      if (padding == 0) {
+                        if (previousLayer.Z.data) {
+                          z = previousLayer.Z.data[d * inputWidth * inputHeight + vertical * inputWidth + horizontal][m];
+                        }
+                      } else {
+                        if (verticalPad >= 0 && horizontalPad >= 0 && verticalPad < inputHeight && horizontalPad < inputWidth) {
+                          if (previousLayer.Z.data) {
+                            z = previousLayer.Z.data[d * inputWidth * inputHeight + verticalPad * inputWidth + horizontalPad][m];
+                          }
+                        }
+                      }
+
+                      if (previousLayer.gW.data && sigma.data) {
+                        previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] += z * sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+                      }
+                    }
+                  }
+                }
+
+                if (previousLayer.gb.data && sigma.data) {
+                  previousLayer.gb.data[c][0] += sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
+                }
+              }
+            }
+          }
+
+          if (padding > 0) {
+            // unpad
+            for (var _c = 0; _c < inputDepth; _c++) {
+              for (var _h = -padding, _y = 0; _h < inputHeight + padding; _h++, _y++) {
+                for (var _w = -padding, _x = 0; _w < inputWidth + padding; _w++, _x++) {
+                  if (_w >= 0 && _h >= 0 && _w < inputWidth && _h < inputHeight && result.data && tmpResult.data) {
+                    result.data[_c * inputWidth * inputHeight + _h * inputWidth + _w][m] = tmpResult.data[_c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + _y * (inputWidth + 2 * padding) + _x][m];
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (padding > 0) {
+          return result;
+        }
+
+        return tmpResult;
+      }
+    }
+  }]);
+
+  return BackpropagationToConv;
+}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Backpropagation/BackpropagationToMaxPool.ts":
+/*!**************************************************************************!*\
+  !*** ./src/typescript/Layer/Backpropagation/BackpropagationToMaxPool.ts ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BackpropagationToMaxPool": () => (/* binding */ BackpropagationToMaxPool)
+/* harmony export */ });
+/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
+  _inherits(BackpropagationToMaxPool, _AbstractBackPropagat);
+
+  var _super = _createSuper(BackpropagationToMaxPool);
+
+  function BackpropagationToMaxPool() {
+    var _this;
+
+    _classCallCheck(this, BackpropagationToMaxPool);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
+
+    return _this;
+  }
+
+  _createClass(BackpropagationToMaxPool, [{
+    key: "propagate",
+    value: function propagate(input, numberOfExamples, regularization, sigma) {
+      var prevLayer = this.previousLayer;
+
+      if (prevLayer) {
+        var result = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(prevLayer.Z.rows, prevLayer.Z.cols));
+        var filterSize = prevLayer.getFilterSize();
+        var stride = prevLayer.getStride();
+        var inputWidth = prevLayer.getWidth();
+        var inputHeight = prevLayer.getHeight();
+        var inputDepth = prevLayer.getDepth();
+        var outputWidth = prevLayer.getOutputWidth();
+        var outputHeight = prevLayer.getOutputHeight();
+        var outputDepth = prevLayer.getOutputDepth();
+
+        for (var m = 0; m < numberOfExamples; m++) {
+          for (var c = 0; c < outputDepth; c++) {
+            for (var h = 0; h < outputHeight; h++) {
+              for (var w = 0; w < outputWidth; w++) {
+                var vertStart = stride * h;
+                var vertEnd = vertStart + filterSize;
+                var horizStart = stride * w;
+                var horizEnd = horizStart + filterSize;
+
+                var _max = -Infinity;
+
+                var inputOffset = inputHeight * inputWidth * c;
+                var outputOffset = outputHeight * outputWidth * c;
+                var maxX = 0;
+                var maxY = 0;
+
+                for (var y = 0, vStart = vertStart; y < filterSize; y++, vStart++) {
+                  for (var x = 0, hStart = horizStart; x < filterSize; x++, hStart++) {
+                    if (prevLayer.Z.data && _max < prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m]) {
+                      _max = prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m];
+                      maxX = hStart;
+                      maxY = vStart;
+                    }
+                  }
+                }
+
+                if (result.data && sigma.data) {
+                  result.data[inputOffset + maxY * inputWidth + maxX][m] = sigma.data[outputOffset + h * outputWidth + w][m];
+                }
+              }
+            }
+          }
+        }
+
+        return result;
+      }
+
+      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    }
+  }]);
+
+  return BackpropagationToMaxPool;
+}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
 
 /***/ }),
 
@@ -2357,7 +3080,8 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
   _createClass(MaxPoolLayer, [{
     key: "configure",
-    value: function configure() {}
+    value: function configure() {// do nothing
+    }
   }, {
     key: "getOutputHeight",
     value: function getOutputHeight() {
@@ -2784,498 +3508,6 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts":
-/*!*************************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AbstractBackPropagation": () => (/* binding */ AbstractBackPropagation)
-/* harmony export */ });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var AbstractBackPropagation = function AbstractBackPropagation(layer, previousLayer) {
-  _classCallCheck(this, AbstractBackPropagation);
-
-  _defineProperty(this, "layer", null);
-
-  _defineProperty(this, "previousLayer", null);
-
-  this.layer = layer;
-  this.previousLayer = previousLayer;
-};
-
-/***/ }),
-
-/***/ "./src/typescript/Layer/backpropagation/Backpropagation1Dto1D.ts":
-/*!***********************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/Backpropagation1Dto1D.ts ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Backpropagation1Dto1D": () => (/* binding */ Backpropagation1Dto1D)
-/* harmony export */ });
-/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-
-var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
-  _inherits(Backpropagation1Dto1D, _AbstractBackPropagat);
-
-  var _super = _createSuper(Backpropagation1Dto1D);
-
-  function Backpropagation1Dto1D() {
-    _classCallCheck(this, Backpropagation1Dto1D);
-
-    return _super.apply(this, arguments);
-  }
-
-  _createClass(Backpropagation1Dto1D, [{
-    key: "propagate",
-    value: function propagate(input, numberOfExamples, regularization, sigma) {
-      if (this.layer) {
-        var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-        var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose().conjugate());
-        this.layer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
-        this.layer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum(), numberOfExamples);
-
-        if (this.previousLayer !== null) {
-          return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
-        }
-      }
-
-      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
-    }
-  }]);
-
-  return Backpropagation1Dto1D;
-}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
-
-/***/ }),
-
-/***/ "./src/typescript/Layer/backpropagation/Backpropagation3Dto1D.ts":
-/*!***********************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/Backpropagation3Dto1D.ts ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Backpropagation3Dto1D": () => (/* binding */ Backpropagation3Dto1D)
-/* harmony export */ });
-/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-var Backpropagation3Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
-  _inherits(Backpropagation3Dto1D, _AbstractBackPropagat);
-
-  var _super = _createSuper(Backpropagation3Dto1D);
-
-  function Backpropagation3Dto1D() {
-    _classCallCheck(this, Backpropagation3Dto1D);
-
-    return _super.apply(this, arguments);
-  }
-
-  _createClass(Backpropagation3Dto1D, [{
-    key: "propagate",
-    value: function propagate(input, numberOfExamples, regularization, sigma) {
-      return sigma;
-    }
-  }]);
-
-  return Backpropagation3Dto1D;
-}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
-
-/***/ }),
-
-/***/ "./src/typescript/Layer/backpropagation/BackpropagationFactory.ts":
-/*!************************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/BackpropagationFactory.ts ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BackpropagationFactory": () => (/* binding */ BackpropagationFactory)
-/* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../types */ "./src/typescript/types.ts");
-/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/Layer/backpropagation/Backpropagation1Dto1D.ts");
-/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/Layer/backpropagation/Backpropagation3Dto1D.ts");
-/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/Layer/backpropagation/BackpropagationToMaxPool.ts");
-/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/Layer/backpropagation/BackpropagationToConv.ts");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-
-var BackpropagationFactory = /*#__PURE__*/function () {
-  function BackpropagationFactory() {
-    _classCallCheck(this, BackpropagationFactory);
-  }
-
-  _createClass(BackpropagationFactory, null, [{
-    key: "create",
-    value: function create(previousLayer, layer) {
-      if (previousLayer == null) {
-        if (layer.is1D()) {
-          return new _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__.Backpropagation1Dto1D(layer, previousLayer);
-        } else if (layer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.conv) {
-          return new _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__.Backpropagation3Dto1D(layer, previousLayer);
-        }
-      } else {
-        if (previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.maxpool) {
-          return new _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__.BackpropagationToMaxPool(layer, previousLayer);
-        } else if (previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.conv) {
-          return new _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__.BackpropagationToConv(layer, previousLayer);
-        } else if (previousLayer.is1D() || previousLayer.getType() == _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.fullyconnected) {
-          return new _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__.Backpropagation1Dto1D(layer, previousLayer);
-        }
-      }
-
-      return null;
-    }
-  }]);
-
-  return BackpropagationFactory;
-}();
-
-/***/ }),
-
-/***/ "./src/typescript/Layer/backpropagation/BackpropagationToConv.ts":
-/*!***********************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/BackpropagationToConv.ts ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BackpropagationToConv": () => (/* binding */ BackpropagationToConv)
-/* harmony export */ });
-/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-
-
-var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
-  _inherits(BackpropagationToConv, _AbstractBackPropagat);
-
-  var _super = _createSuper(BackpropagationToConv);
-
-  function BackpropagationToConv() {
-    var _this;
-
-    _classCallCheck(this, BackpropagationToConv);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
-
-    return _this;
-  }
-
-  _createClass(BackpropagationToConv, [{
-    key: "propagate",
-    value: function propagate(input, numberOfExamples, regularization, sigma) {
-      var previousLayer = this.previousLayer;
-
-      if (previousLayer) {
-        var padding = previousLayer.getPadding();
-        var stride = previousLayer.getStride();
-        var filterSize = previousLayer.getFilterSize();
-        var outputWidth = previousLayer.getOutputWidth();
-        var outputHeight = previousLayer.getOutputHeight();
-        var outputDepth = previousLayer.getOutputDepth();
-        var inputWidth = previousLayer.getWidth();
-        var inputHeight = previousLayer.getHeight();
-        var inputDepth = previousLayer.getDepth();
-        var tmpResult = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix((inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth, numberOfExamples));
-        var result = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(inputWidth * inputHeight * inputDepth, numberOfExamples);
-        var aPrev = previousLayer.derivative(previousLayer.A);
-        previousLayer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", previousLayer.gW);
-        previousLayer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", previousLayer.gb);
-
-        for (var m = 0; m < numberOfExamples; m++) {
-          for (var c = 0; c < outputDepth; c++) {
-            for (var h = 0; h < outputHeight; h++) {
-              for (var w = 0; w < outputWidth; w++) {
-                var vertStart = stride * h;
-                var vertEnd = vertStart + filterSize;
-                var horizStart = stride * w;
-                var horizEnd = horizStart + filterSize; // filter loop
-
-                for (var d = 0; d < inputDepth; d++) {
-                  for (var y = 0, vertical = vertStart, verticalPad = -padding; y < filterSize; y++, vertical++, verticalPad++) {
-                    for (var x = 0, horizontal = horizStart, horizontalPad = -padding; x < filterSize; x++, horizontal++, horizontalPad++) {
-                      if (previousLayer.W.data && tmpResult.data && sigma.data) {
-                        tmpResult.data[d * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + vertical * (inputWidth + 2 * padding) + horizontal][m] += previousLayer.W.data[c][d * filterSize * filterSize + y * filterSize + x] * sigma.data[c * outputWidth * outputHeight + h * outputWidth + w][m];
-                      }
-
-                      var z = 0;
-
-                      if (padding == 0) {
-                        if (previousLayer.Z.data) {
-                          z = previousLayer.Z.data[d * inputWidth * inputHeight + vertical * inputWidth + horizontal][m];
-                        }
-                      } else {
-                        if (verticalPad >= 0 && horizontalPad >= 0 && verticalPad < inputHeight && horizontalPad < inputWidth) {
-                          if (previousLayer.Z.data) {
-                            z = previousLayer.Z.data[d * inputWidth * inputHeight + verticalPad * inputWidth + horizontalPad][m];
-                          }
-                        }
-                      }
-
-                      if (previousLayer.gW.data && sigma.data) {
-                        previousLayer.gW.data[c][d * filterSize * filterSize + y * filterSize + x] += z * sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
-                      }
-                    }
-                  }
-                }
-
-                if (previousLayer.gb.data && sigma.data) {
-                  previousLayer.gb.data[c][0] += sigma.data[c * (outputWidth * outputHeight) + h * outputWidth + w][m] / numberOfExamples;
-                }
-              }
-            }
-          }
-
-          if (padding > 0) {
-            // unpad
-            for (var _c = 0; _c < inputDepth; _c++) {
-              for (var _h = -padding, _y = 0; _h < inputHeight + padding; _h++, _y++) {
-                for (var _w = -padding, _x = 0; _w < inputWidth + padding; _w++, _x++) {
-                  if (_w >= 0 && _h >= 0 && _w < inputWidth && _h < inputHeight && result.data && tmpResult.data) {
-                    result.data[_c * inputWidth * inputHeight + _h * inputWidth + _w][m] = tmpResult.data[_c * (inputWidth + 2 * padding) * (inputHeight + 2 * padding) + _y * (inputWidth + 2 * padding) + _x][m];
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        if (padding > 0) {
-          return result;
-        }
-
-        return tmpResult;
-      }
-    }
-  }]);
-
-  return BackpropagationToConv;
-}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
-
-/***/ }),
-
-/***/ "./src/typescript/Layer/backpropagation/BackpropagationToMaxPool.ts":
-/*!**************************************************************************!*\
-  !*** ./src/typescript/Layer/backpropagation/BackpropagationToMaxPool.ts ***!
-  \**************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BackpropagationToMaxPool": () => (/* binding */ BackpropagationToMaxPool)
-/* harmony export */ });
-/* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/backpropagation/AbstractBackpropagation.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-
-
-var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
-  _inherits(BackpropagationToMaxPool, _AbstractBackPropagat);
-
-  var _super = _createSuper(BackpropagationToMaxPool);
-
-  function BackpropagationToMaxPool() {
-    var _this;
-
-    _classCallCheck(this, BackpropagationToMaxPool);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty(_assertThisInitialized(_this), "previousLayer", null);
-
-    return _this;
-  }
-
-  _createClass(BackpropagationToMaxPool, [{
-    key: "propagate",
-    value: function propagate(input, numberOfExamples, regularization, sigma) {
-      var prevLayer = this.previousLayer;
-
-      if (prevLayer) {
-        var result = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("fillZeros", new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(prevLayer.Z.rows, prevLayer.Z.cols));
-        var filterSize = prevLayer.getFilterSize();
-        var stride = prevLayer.getStride();
-        var inputWidth = prevLayer.getWidth();
-        var inputHeight = prevLayer.getHeight();
-        var inputDepth = prevLayer.getDepth();
-        var outputWidth = prevLayer.getOutputWidth();
-        var outputHeight = prevLayer.getOutputHeight();
-        var outputDepth = prevLayer.getOutputDepth();
-
-        for (var m = 0; m < numberOfExamples; m++) {
-          for (var c = 0; c < outputDepth; c++) {
-            for (var h = 0; h < outputHeight; h++) {
-              for (var w = 0; w < outputWidth; w++) {
-                var vertStart = stride * h;
-                var vertEnd = vertStart + filterSize;
-                var horizStart = stride * w;
-                var horizEnd = horizStart + filterSize;
-
-                var _max = -Infinity;
-
-                var inputOffset = inputHeight * inputWidth * c;
-                var outputOffset = outputHeight * outputWidth * c;
-                var maxX = 0;
-                var maxY = 0;
-
-                for (var y = 0, vStart = vertStart; y < filterSize; y++, vStart++) {
-                  for (var x = 0, hStart = horizStart; x < filterSize; x++, hStart++) {
-                    if (prevLayer.Z.data && _max < prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m]) {
-                      _max = prevLayer.Z.data[inputOffset + vStart * inputWidth + hStart][m];
-                      maxX = hStart;
-                      maxY = vStart;
-                    }
-                  }
-                }
-
-                if (result.data && sigma.data) {
-                  result.data[inputOffset + maxY * inputWidth + maxX][m] = sigma.data[outputOffset + h * outputWidth + w][m];
-                }
-              }
-            }
-          }
-        }
-
-        return result;
-      }
-
-      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
-    }
-  }]);
-
-  return BackpropagationToMaxPool;
-}(_AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__.AbstractBackPropagation);
-
-/***/ }),
-
 /***/ "./src/typescript/Layer/index.ts":
 /*!***************************************!*\
   !*** ./src/typescript/Layer/index.ts ***!
@@ -3403,9 +3635,7 @@ var Matrix = /*#__PURE__*/function () {
 
       for (var row = 0; row < this.rows; row += 1) {
         for (var col = 0; col < this.cols; col += 1) {
-          if (!isNaN(this.data[row][col]) && isFinite(this.data[row][col])) {
-            sum += this.data[row][col];
-          }
+          sum += this.data[row][col];
         }
       }
 
@@ -3420,9 +3650,7 @@ var Matrix = /*#__PURE__*/function () {
         var sum = 0.0;
 
         for (var row = 0; row < this.rows; row += 1) {
-          if (!isNaN(this.data[row][col]) && isFinite(this.data[row][col])) {
-            sum += this.data[row][col];
-          }
+          sum += this.data[row][col];
         }
 
         data[col] = [sum];
@@ -3791,7 +4019,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractNetworkBuilder": () => (/* binding */ AbstractNetworkBuilder)
 /* harmony export */ });
 /* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Network */ "./src/typescript/Network.ts");
-/* harmony import */ var _Layer_backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layer/backpropagation/BackpropagationFactory */ "./src/typescript/Layer/backpropagation/BackpropagationFactory.ts");
+/* harmony import */ var _Layer_Backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layer/Backpropagation/BackpropagationFactory */ "./src/typescript/Layer/Backpropagation/BackpropagationFactory.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3839,7 +4067,7 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
 
         _layer.configure();
 
-        _layer.setBackPropagation(_Layer_backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__.BackpropagationFactory.create(this.lastLayer, _layer));
+        _layer.setBackPropagation(_Layer_Backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__.BackpropagationFactory.create(this.lastLayer, _layer));
 
         this.network.addLayer(_layer);
         this.lastLayer = _layer;
@@ -4833,7 +5061,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Optimizer": () => (/* binding */ Optimizer),
 /* harmony export */   "Trainer": () => (/* binding */ Trainer),
 /* harmony export */   "DatasetModifier": () => (/* binding */ DatasetModifier),
-/* harmony export */   "Computation": () => (/* binding */ Computation)
+/* harmony export */   "Computation": () => (/* binding */ Computation),
+/* harmony export */   "DatasetBuilderSource": () => (/* binding */ DatasetBuilderSource)
 /* harmony export */ });
 /* harmony import */ var _NetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NetworkBuilder */ "./src/typescript/NetworkBuilder/index.ts");
 /* harmony import */ var _Layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Layer */ "./src/typescript/Layer/index.ts");
@@ -4842,8 +5071,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/DatasetBuilder/index.ts");
 /* harmony import */ var _Trainer_optimizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Trainer/optimizer */ "./src/typescript/Trainer/optimizer/index.ts");
 /* harmony import */ var _Trainer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Trainer */ "./src/typescript/Trainer/index.ts");
-/* harmony import */ var _Dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Dataset/datasetmodifier */ "./src/typescript/Dataset/datasetmodifier/index.ts");
+/* harmony import */ var _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Dataset/DatasetModifier */ "./src/typescript/Dataset/DatasetModifier/index.ts");
 /* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Computation */ "./src/typescript/Computation/index.ts");
+/* harmony import */ var _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./DatasetBuilder/DatasetBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts");
+
 
 
 
@@ -4882,9 +5113,9 @@ var Trainer = {
   MiniBatchTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.MiniBatchTrainer
 };
 var DatasetModifier = {
-  CallbackDatabaseModifier: _Dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_7__.CallbackDatabaseModifier,
-  MinMaxScalingDatabaseModifier: _Dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_7__.MinMaxScalingDatabaseModifier,
-  MissingDataScalingDatabaseModifier: _Dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_7__.MissingDataScalingDatabaseModifier
+  CallbackDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.CallbackDatabaseModifier,
+  MinMaxScalingDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MinMaxScalingDatabaseModifier,
+  MissingDataScalingDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MissingDataScalingDatabaseModifier
 };
 var Computation = {
   ComputationCPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationCPU,
@@ -4893,6 +5124,9 @@ var Computation = {
 };
 var Dataset = {
   Dataset: _Dataset__WEBPACK_IMPORTED_MODULE_3__.Dataset
+};
+var DatasetBuilderSource = {
+  DatasetBuilderSourceCSV: _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__.DatasetBuilderSourceCSV
 };
 
 })();

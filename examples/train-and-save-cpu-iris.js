@@ -5,6 +5,7 @@ const {
   Optimizer: { OptimizerGradientDescent },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

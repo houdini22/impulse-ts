@@ -1,6 +1,6 @@
 import { Matrix } from "../Math/Matrix";
 import { Dimension, Layers } from "../types";
-import { AbstractBackPropagation } from "./backpropagation/AbstractBackpropagation";
+import { AbstractBackPropagation } from "./Backpropagation/AbstractBackpropagation";
 import { getComputation } from "../Computation/utils";
 
 abstract class AbstractLayer {

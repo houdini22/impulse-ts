@@ -18,8 +18,9 @@ import {
   CallbackDatabaseModifier,
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
-} from "./Dataset/datasetmodifier";
+} from "./Dataset/DatasetModifier";
 import { ComputationCPU, ComputationGPU, setComputation } from "./Computation";
+import { DatasetBuilderSourceCSV } from "./DatasetBuilder/DatasetBuilderSource";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
 const Math = {
@@ -59,5 +60,19 @@ const Computation = {
 const Dataset = {
   Dataset: DatasetDataset,
 };
+const DatasetBuilderSource = {
+  DatasetBuilderSourceCSV,
+};
 
-export { NetworkBuilder, Math, Layer, Dataset, DatasetBuilder, Optimizer, Trainer, DatasetModifier, Computation };
+export {
+  NetworkBuilder,
+  Math,
+  Layer,
+  Dataset,
+  DatasetBuilder,
+  Optimizer,
+  Trainer,
+  DatasetModifier,
+  Computation,
+  DatasetBuilderSource,
+};
