@@ -11,15 +11,6 @@ import {
   MaxPoolLayer,
 } from "./layer";
 import { Matrix } from "./math/matrix";
-import {
-  multiply as matrixMultiply,
-  sum as matrixSum,
-  fillRandom as matrixFillRandom,
-  elementWiseMultiply as matrixElementWiseMultiply,
-  elementWiseDivide as matrixElementWiseDivide,
-  elementWiseAdd as matrixElementWiseAdd,
-  elementWiseSubtract as matrixElementWiseSubtract,
-} from "./math/matrix";
 import { DatasetBuilder } from "./dataset/datasetbuilder";
 import { OptimizerAdam } from "./trainer/optimizer/adam";
 import { OptimizerGradientDescent } from "./trainer/optimizer/gradientdescent";
@@ -31,13 +22,6 @@ import { MissingDataScalingDatabaseModifier } from "./dataset/datasetmodifier/mi
 const Builders = { Builder1D, Builder3D };
 const Math = {
   Matrix,
-  matrixMultiply,
-  matrixSum,
-  matrixFillRandom,
-  matrixElementWiseMultiply,
-  matrixElementWiseDivide,
-  matrixElementWiseAdd,
-  matrixElementWiseSubtract,
 };
 const Layers = {
   SoftmaxLayer,

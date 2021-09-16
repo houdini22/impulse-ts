@@ -1,14 +1,6 @@
 import { AbstractOptimizer } from "./abstract";
 import { Layers } from "../../types";
-import {
-  elementWiseAdd,
-  elementWiseDivide,
-  elementWiseDivideNumber,
-  elementWiseMultiply,
-  elementWiseMultiplyNumber,
-  elementWiseSubtract,
-  sqrt,
-} from "../../math/matrix";
+import { getCurrentComputation } from "../../computation/utils";
 
 export class OptimizerAdam extends AbstractOptimizer {
   optimize(layer: Layers) {
@@ -20,54 +12,115 @@ export class OptimizerAdam extends AbstractOptimizer {
     const beta2 = 0.999;
     const epsilon = 1e-8;
 
-    layer.vW = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.vW, beta1),
-      elementWiseMultiplyNumber(layer.gW, 1 - beta1)
+    layer.vW = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.vW,
+        beta1
+      ),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gW,
+        1 - beta1
+      )
     );
-    const wCorrected = elementWiseDivideNumber(
+    const wCorrected = getCurrentComputation().execute(
+      "elementWiseDivideNumber",
       layer.vW,
       1 - Math.pow(beta1, t)
     );
 
-    layer.cW = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.cW, beta1),
-      elementWiseMultiplyNumber(layer.gW, 1 - beta1)
+    layer.cW = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.cW,
+        beta1
+      ),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gW,
+        1 - beta1
+      )
     );
-    const sCorrected = sqrt(
-      elementWiseMultiplyNumber(layer.cW, 1 - Math.pow(beta2, t))
+    const sCorrected = getCurrentComputation().execute(
+      "sqrt",
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.cW,
+        1 - Math.pow(beta2, t)
+      )
     );
 
-    layer.W = elementWiseSubtract(
+    layer.W = getCurrentComputation().execute(
+      "elementWiseSubtract",
       layer.W,
-      elementWiseMultiplyNumber(
-        elementWiseMultiply(wCorrected, sCorrected),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        getCurrentComputation().execute(
+          "elementWiseMultiply",
+          wCorrected,
+          sCorrected
+        ),
         learningRate
       )
     );
 
-    layer.vb = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.vb, beta1),
-      elementWiseMultiplyNumber(layer.gb, 1 - beta1)
+    layer.vb = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.vb,
+        beta1
+      ),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.gb,
+        1 - beta1
+      )
     );
-    const wCorrected2 = elementWiseDivideNumber(
+    const wCorrected2 = getCurrentComputation().execute(
+      "elementWiseDivideNumber",
       layer.vb,
       1 - Math.pow(beta1, t)
     );
-    layer.cb = elementWiseAdd(
-      elementWiseMultiplyNumber(layer.cb, beta2),
-      elementWiseMultiplyNumber(
-        elementWiseMultiply(layer.gb, layer.gb),
+    layer.cb = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        layer.cb,
+        beta2
+      ),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        getCurrentComputation().execute(
+          "elementWiseMultiply",
+          layer.gb,
+          layer.gb
+        ),
         1 - beta2
       )
     );
-    const sCorrected2 = sqrt(
-      elementWiseDivideNumber(layer.cb, 1 - Math.pow(beta2, t))
+    const sCorrected2 = getCurrentComputation().execute(
+      "sqrt",
+      getCurrentComputation().execute(
+        "elementWiseDivideNumber",
+        layer.cb,
+        1 - Math.pow(beta2, t)
+      )
     );
 
-    layer.b = elementWiseSubtract(
+    layer.b = getCurrentComputation().execute(
+      "elementWiseSubtract",
       layer.b,
-      elementWiseMultiplyNumber(
-        elementWiseDivide(wCorrected2, sCorrected2),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        getCurrentComputation().execute(
+          "elementWiseDivide",
+          wCorrected2,
+          sCorrected2
+        ),
         learningRate
       )
     );

@@ -1,6 +1,7 @@
-import { Matrix, purelinLoss, setOnes } from "../math/matrix";
+import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
+import { getCurrentComputation } from "../computation/utils";
 
 class PurelinLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
@@ -8,7 +9,7 @@ class PurelinLayer extends AbstractLayer1D {
   }
 
   derivative(m: Matrix): Matrix {
-    return setOnes(this.Z);
+    return getCurrentComputation().execute("setOnes", this.Z);
   }
 
   getType(): LayerType {
@@ -16,7 +17,7 @@ class PurelinLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return purelinLoss(output, predictions);
+    return getCurrentComputation().execute("purelinLoss", output, predictions);
   }
 
   error(m: number): number {

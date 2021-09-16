@@ -1,7 +1,7 @@
 import { Dimension, Layers } from "./types";
-import { cols, Matrix, elementWiseSubtract } from "./math/matrix";
+import { Matrix } from "./math/matrix";
 import * as fs from "fs";
-import { Dataset } from "./dataset/dataset";
+import { getCurrentComputation } from "./computation/utils";
 
 class Network {
   private dimensions: Dimension = null;
@@ -32,12 +32,18 @@ class Network {
   }
 
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number) {
-    const m = cols(X);
+    const m = X.cols;
 
-    let delta = elementWiseSubtract(predictions, Y);
+    let delta = getCurrentComputation().execute(
+      "elementWiseSubtract",
+      predictions,
+      Y
+    );
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-      delta = this.layers[layer].getBackPropagation().propagate(X, m, regularization, delta);
+      delta = this.layers[layer]
+        .getBackPropagation()
+        .propagate(X, m, regularization, delta);
     }
   }
 

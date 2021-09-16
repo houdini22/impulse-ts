@@ -1,10 +1,11 @@
-import { Matrix, softmaxActivation, softmaxLoss } from "../math/matrix";
+import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
+import { getCurrentComputation } from "../computation/utils";
 
 class SoftmaxLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return softmaxActivation(m);
+    return getCurrentComputation().execute("softmaxActivation", m);
   }
 
   derivative(m: Matrix): Matrix {
@@ -16,7 +17,7 @@ class SoftmaxLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return softmaxLoss(output, predictions);
+    return getCurrentComputation().execute("softmaxLoss", output, predictions);
   }
 
   error(m: number): number {

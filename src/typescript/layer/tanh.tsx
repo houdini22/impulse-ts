@@ -1,14 +1,15 @@
-import { Matrix, tanhActivation, tanhDerivative } from "../math/matrix";
+import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
+import { getCurrentComputation } from "../computation/utils";
 
 class TanhLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return tanhActivation(m);
+    return getCurrentComputation().execute("tanhActivation", m);
   }
 
   derivative(m: Matrix): Matrix {
-    return tanhDerivative(m);
+    return getCurrentComputation().execute("tanhDerivative", m);
   }
 
   getType(): LayerType {

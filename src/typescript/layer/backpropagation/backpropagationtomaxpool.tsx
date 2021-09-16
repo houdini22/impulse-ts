@@ -1,6 +1,7 @@
 import { AbstractBackPropagation } from "./abstract";
-import { Matrix, setZeros } from "../../math/matrix";
+import { Matrix } from "../../math/matrix";
 import { Layers3D } from "../../types";
+import { getCurrentComputation } from "../../computation/utils";
 
 export class BackpropagationToMaxPool extends AbstractBackPropagation {
   protected previousLayer: Layers3D = null;
@@ -12,7 +13,10 @@ export class BackpropagationToMaxPool extends AbstractBackPropagation {
     sigma: Matrix
   ): Matrix {
     const prevLayer = this.previousLayer;
-    const result = setZeros(new Matrix(prevLayer.Z.rows, prevLayer.Z.cols));
+    const result = getCurrentComputation().execute(
+      "setZeros",
+      new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)
+    );
 
     const filterSize = prevLayer.getFilterSize();
     const stride = prevLayer.getStride();

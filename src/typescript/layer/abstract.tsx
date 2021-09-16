@@ -1,6 +1,7 @@
-import { elementWiseAdd, Matrix, multiply, penalty } from "../math/matrix";
+import { Matrix } from "../math/matrix";
 import { Dimension, Layers } from "../types";
 import { AbstractBackPropagation } from "./backpropagation/abstract";
+import { getCurrentComputation } from "../computation/utils";
 
 abstract class AbstractLayer {
   public W: Matrix;
@@ -43,8 +44,9 @@ abstract class AbstractLayer {
   }
 
   forward(input: Matrix): Matrix {
-    this.Z = elementWiseAdd(
-      multiply(this.W, input),
+    this.Z = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute("multiply", this.W, input),
       this.b.replicate(1, input.cols)
     );
     this.A = this.activation(this.Z);
@@ -107,7 +109,7 @@ abstract class AbstractLayer {
   abstract error(m: number): number;
 
   penalty(): number {
-    return penalty(this.W);
+    return getCurrentComputation().execute("penalty", this.W);
   }
 }
 

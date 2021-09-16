@@ -1,5 +1,5 @@
 import { AbstractDatasetModifier } from "./abstract";
-import { gpu } from "../../math/matrix";
+import { gpu } from "../../computation/computationgpu";
 
 export class MinMaxScalingDatabaseModifier extends AbstractDatasetModifier {
   applyToExample(example: number) {

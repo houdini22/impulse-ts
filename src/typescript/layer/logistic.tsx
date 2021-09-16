@@ -1,19 +1,15 @@
-import {
-  logisticActivation,
-  logisticDerivative,
-  Matrix,
-  logisticLoss,
-} from "../math/matrix";
+import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
+import { getCurrentComputation } from "../computation/utils";
 
 class LogisticLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return logisticActivation(m);
+    return getCurrentComputation().execute("logisticActivation", m);
   }
 
   derivative(m: Matrix): Matrix {
-    return logisticDerivative(m);
+    return getCurrentComputation().execute("logisticDerivative", m);
   }
 
   getType(): LayerType {
@@ -21,7 +17,7 @@ class LogisticLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return logisticLoss(output, predictions);
+    return getCurrentComputation().execute("logisticLoss", output, predictions);
   }
 
   error(m: number): number {

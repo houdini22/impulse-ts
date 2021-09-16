@@ -1,12 +1,6 @@
 import { AbstractBackPropagation } from "./abstract";
-import {
-  elementWiseAdd,
-  elementWiseMultiply,
-  elementWiseMultiplyNumber,
-  Matrix,
-  multiply,
-} from "../../math/matrix";
-import { elementWiseDivideNumber } from "../../math/matrix";
+import { Matrix } from "../../math/matrix";
+import { getCurrentComputation } from "../../computation/utils";
 
 export class Backpropagation1Dto1D extends AbstractBackPropagation {
   propagate(
@@ -17,18 +11,37 @@ export class Backpropagation1Dto1D extends AbstractBackPropagation {
   ): Matrix {
     const previousActivations =
       this.previousLayer !== null ? this.previousLayer.A : input;
-    const delta = multiply(sigma, previousActivations.transpose().conjugate());
-    this.layer.gW = elementWiseAdd(
-      elementWiseDivideNumber(delta, numberOfExamples),
-      elementWiseMultiplyNumber(this.layer.W, regularization / numberOfExamples)
+    const delta = getCurrentComputation().execute(
+      "multiply",
+      sigma,
+      previousActivations.transpose().conjugate()
     );
-    this.layer.gb = elementWiseDivideNumber(
+    this.layer.gW = getCurrentComputation().execute(
+      "elementWiseAdd",
+      getCurrentComputation().execute(
+        "elementWiseDivideNumber",
+        delta,
+        numberOfExamples
+      ),
+      getCurrentComputation().execute(
+        "elementWiseMultiplyNumber",
+        this.layer.W,
+        regularization / numberOfExamples
+      )
+    );
+    this.layer.gb = getCurrentComputation().execute(
+      "elementWiseDivideNumber",
       sigma.rowwiseSum(),
       numberOfExamples
     );
     if (this.previousLayer !== null) {
-      return elementWiseMultiply(
-        multiply(this.layer.W.transpose(), sigma),
+      return getCurrentComputation().execute(
+        "elementWiseMultiply",
+        getCurrentComputation().execute(
+          "multiply",
+          this.layer.W.transpose(),
+          sigma
+        ),
         this.previousLayer.derivative(this.previousLayer.A)
       );
     }

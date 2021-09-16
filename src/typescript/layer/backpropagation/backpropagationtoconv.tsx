@@ -1,6 +1,7 @@
 import { AbstractBackPropagation } from "./abstract";
-import { Matrix, setZeros } from "../../math/matrix";
+import { Matrix } from "../../math/matrix";
 import { Layers3D } from "../../types";
+import { getCurrentComputation } from "../../computation/utils";
 
 export class BackpropagationToConv extends AbstractBackPropagation {
   protected previousLayer: Layers3D = null;
@@ -23,7 +24,8 @@ export class BackpropagationToConv extends AbstractBackPropagation {
     const inputHeight = previousLayer.getHeight();
     const inputDepth = previousLayer.getDepth();
 
-    const tmpResult = setZeros(
+    const tmpResult = getCurrentComputation().execute(
+      "setZeros",
       new Matrix(
         (inputWidth + 2 * padding) * (inputHeight + 2 * padding) * inputDepth,
         numberOfExamples
@@ -37,8 +39,14 @@ export class BackpropagationToConv extends AbstractBackPropagation {
 
     const aPrev = previousLayer.derivative(previousLayer.A);
 
-    previousLayer.gW = setZeros(previousLayer.gW);
-    previousLayer.gb = setZeros(previousLayer.gb);
+    previousLayer.gW = getCurrentComputation().execute(
+      "setZeros",
+      previousLayer.gW
+    );
+    previousLayer.gb = getCurrentComputation().execute(
+      "setZeros",
+      previousLayer.gb
+    );
 
     for (let m = 0; m < numberOfExamples; m++) {
       for (let c = 0; c < outputDepth; c++) {
