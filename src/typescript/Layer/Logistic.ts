@@ -21,7 +21,7 @@ class LogisticLayer extends AbstractLayer1D {
   }
 
   error(m: number): number {
-    return -1.0 / m;
+    return 1.0 / m;
   }
 }
 

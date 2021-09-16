@@ -27,10 +27,10 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
-  console.log("Loaded mnist_x.csv");
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then((outputDataset) => {
-    console.log("Loaded mnist_y.csv");
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+  console.log("Loaded mnist_20x20_x.csv");
+  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then((outputDataset) => {
+    console.log("Loaded mnist_20x20_y.csv");
     const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
     trainer.train(inputDataset, outputDataset);
   });

@@ -107,11 +107,11 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
-    console.log("Loaded mnist_x.csv");
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+    console.log("Loaded mnist_20x20_x.csv");
 
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(async (outputDataset) => {
-        console.log("Loaded mnist_y.csv");
+    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then(async (outputDataset) => {
+        console.log("Loaded mnist_20x20_y.csv");
 
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
@@ -140,10 +140,10 @@ const timeStart = new Date().getTime();
 
 NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
     (network) => {
-        DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
+        DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then(
             (inputDataset) => {
                 DatasetBuilder.fromCSV(
-                    path.resolve(__dirname, "./data/mnist_y.csv")
+                    path.resolve(__dirname, "./data/mnist_20x20_y.csv")
                 ).then(async (outputDataset) => {
                     const result = network.forward(inputDataset.exampleAt(0));
                     console.log("forward", result);

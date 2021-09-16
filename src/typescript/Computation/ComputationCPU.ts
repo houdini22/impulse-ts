@@ -51,11 +51,12 @@ export const softmaxActivation = (m: Matrix): Matrix => {
 
 export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
   const data = [];
+  const epsilon = 1e-8;
 
   for (let row = 0; row < predictions.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = Math.log(predictions.data[row][col]);
+      data[row][col] = Math.log(predictions.data[row][col] + epsilon);
     }
   }
 
@@ -128,7 +129,10 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   }
   const logSubMatrix = new Matrix(predictions.rows, predictions.cols, data);
 
-  return add(elementWiseMultiply(output, logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
+  return subtract(
+    elementWiseMultiply(multiplyNumber(output, -1), logMatrix),
+    elementWiseMultiply(subMatrix, logSubMatrix)
+  ).sum();
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {

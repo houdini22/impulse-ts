@@ -2,7 +2,7 @@ const {
   NetworkBuilder: { NetworkBuilder1D },
   Layer: { LogisticLayer },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerAdam },
+  Optimizer: { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
   DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
@@ -28,17 +28,19 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
-  console.log("Loaded mnist_x.csv");
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then(async (inputDataset) => {
+  console.log("Loaded mnist_20x20_x.csv");
 
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(async (outputDataset) => {
-    console.log("Loaded mnist_y.csv");
+  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then(async (outputDataset) => {
+    console.log("Loaded mnist_20x20_y.csv");
 
     inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-    const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
+    const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
     trainer.setIterations(3);
+    trainer.setLearningRate(0.1);
+    trainer.setBatchSize(100);
     trainer.train(inputDataset, outputDataset);
 
     await network.save(path.resolve(__dirname, "./data/mnist.json"));

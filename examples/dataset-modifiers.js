@@ -8,7 +8,7 @@ const path = require("path");
 
 setComputation(new ComputationCPU());
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
   for (let row = 0; row < inputDataset.getExampleSize(); row += 1) {
     for (let col = 0; col < inputDataset.getNumberOfExamples(); col += 1) {
       if (Number.isNaN(inputDataset.data.data[row][col]) || typeof inputDataset.data.data[row][col] === "undefined") {

@@ -158,12 +158,13 @@ var softmaxActivation = function softmaxActivation(m) {
 };
 var softmaxLoss = function softmaxLoss(output, predictions) {
   var data = [];
+  var epsilon = 1e-8;
 
   for (var row = 0; row < predictions.rows; row += 1) {
     data[row] = [];
 
     for (var col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = Math.log(predictions.data[row][col]);
+      data[row][col] = Math.log(predictions.data[row][col] + epsilon);
     }
   }
 
@@ -236,7 +237,7 @@ var logisticLoss = function logisticLoss(output, predictions) {
   }
 
   var logSubMatrix = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(predictions.rows, predictions.cols, data);
-  return add(elementWiseMultiply(output, logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
+  return subtract(elementWiseMultiply(multiplyNumber(output, -1), logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
 };
 var tanhActivation = function tanhActivation(m) {
   var data = [];
@@ -1070,13 +1071,21 @@ var Dataset = /*#__PURE__*/function () {
     this.numberOfExamples = numberOfExamples;
     var data = [];
 
-    for (var col = 0; col < numberOfExamples; col += 1) {
-      data[col] = [];
+    for (var row = 0; row < numberOfExamples; row += 1) {
+      for (var col = 0; col < exampleSize; col += 1) {
+        if (!data[col]) {
+          data[col] = new Array(exampleSize);
+        }
 
-      for (var row = 0; row < exampleSize; row += 1) {
+        if (!arr[row]) {
+          console.log(row, col, arr.length, arr[0].length);
+          console.trace();
+          process.exit();
+        }
+
         if (typeof arr[row][col] === "string") {
           // @ts-ignore
-          data[col][row] = Number(arr[row][col].length ? arr[row][col] : 0);
+          data[col][row] = arr[row][col].length ? Number(arr[row][col]) : NaN;
         } else if (typeof arr[row][col] === "number") {
           data[col][row] = arr[row][col];
         }
@@ -1104,12 +1113,8 @@ var Dataset = /*#__PURE__*/function () {
   }, {
     key: "getBatch",
     value: function getBatch(offset, batchSize) {
-      if (this.data) {
-        var data = this.data.block(0, offset, this.data.rows, batchSize);
-        return new Dataset(data.rows, data.cols, data.data);
-      }
-
-      return new Dataset(0, 0, [[]]);
+      var data = this.data.block(0, offset, this.data.rows, batchSize);
+      return new Dataset(data.rows, data.cols, data.transpose().data);
     }
   }]);
 
@@ -2198,15 +2203,13 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
   _createClass(Backpropagation1Dto1D, [{
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
-      if (this.layer) {
-        var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-        var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose().conjugate());
-        this.layer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
-        this.layer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum(), numberOfExamples);
+      var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
+      var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose().conjugate());
+      this.layer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
+      this.layer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum(), numberOfExamples);
 
-        if (this.previousLayer !== null) {
-          return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
-        }
+      if (this.previousLayer !== null) {
+        return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
       }
 
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
@@ -3003,7 +3006,7 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "error",
     value: function error(m) {
-      return -1.0 / m;
+      return 1.0 / m;
     }
   }]);
 
@@ -3668,10 +3671,8 @@ var Matrix = /*#__PURE__*/function () {
       for (var row = 0; row < this.rows; row += 1) {
         var sum = 0.0;
 
-        for (var col = 0; col < this.rows; col += 1) {
-          if (this.data) {
-            sum += this.data[row][col];
-          }
+        for (var col = 0; col < this.cols; col += 1) {
+          sum += this.data[row][col];
         }
 
         data[row] = [sum];
@@ -3746,12 +3747,10 @@ var Matrix = /*#__PURE__*/function () {
       var data = [];
 
       for (var row = startRow, newRow = 0; row < this.rows && row < startRow + blockRows; row += 1, newRow += 1) {
-        data[row] = new Array(blockCols);
+        data[newRow] = new Array(blockCols);
 
         for (var col = startCol, newCol = 0; col < this.cols && col < startCol + blockCols; col += 1, newCol += 1) {
-          if (this.data) {
-            data[newRow][newCol] = this.data[row][col];
-          }
+          data[newRow][newCol] = this.data[row][col];
         }
       }
 
@@ -3763,9 +3762,7 @@ var Matrix = /*#__PURE__*/function () {
       var data = [];
 
       for (var row = 0; row < this.rows; row += 1) {
-        if (this.data) {
-          data[row] = [this.data[row][_col]];
-        }
+        data[row] = [this.data[row][_col]];
       }
 
       return new Matrix(this.rows, 1, data);
@@ -3815,7 +3812,8 @@ var Matrix = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "im2col": () => (/* binding */ im2col),
-/* harmony export */   "maxpool": () => (/* binding */ maxpool)
+/* harmony export */   "maxpool": () => (/* binding */ maxpool),
+/* harmony export */   "round": () => (/* binding */ round)
 /* harmony export */ });
 /* harmony import */ var _Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Matrix */ "./src/typescript/Math/Matrix.ts");
 /* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
@@ -3884,6 +3882,9 @@ var maxpool = function maxpool(input, channels, height, width, kernel_h, kernel_
   }
 
   return new _Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
+};
+var round = function round(num, decimalPlaces) {
+  return Math.round((num + Number.EPSILON) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
 };
 
 /***/ }),
@@ -4396,7 +4397,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
     _defineProperty(this, "optimizer", null);
 
-    _defineProperty(this, "regularization", 0);
+    _defineProperty(this, "regularization", 1e-8);
 
     _defineProperty(this, "iterations", 1000);
 
@@ -4506,6 +4507,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MiniBatchTrainer": () => (/* binding */ MiniBatchTrainer)
 /* harmony export */ });
 /* harmony import */ var _AbstractTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractTrainer */ "./src/typescript/Trainer/AbstractTrainer.ts");
+/* harmony import */ var _Math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Math/math */ "./src/typescript/Math/math.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4529,6 +4531,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
@@ -4566,47 +4569,41 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
       var numberOfExamples = inputDataset.getNumberOfExamples();
       var startTime = new Date().getTime();
       var t = 0;
+      this.optimizer.setBatchSize(this.batchSize);
+      this.optimizer.setLearningRate(this.learningRate);
 
-      if (this.optimizer && this.network) {
-        this.optimizer.setBatchSize(this.batchSize);
+      for (var i = 0; i < this.iterations; i += 1) {
+        var startIterationTime = new Date().getTime();
 
-        for (var i = 0; i < this.iterations; i += 1) {
-          var startIterationTime = new Date().getTime();
-
-          for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
-            var startIterationTime2 = new Date().getTime();
-            var input = inputDataset.getBatch(offset, this.batchSize);
-            var output = outputDataset.getBatch(offset, this.batchSize);
-            var forward = this.network.forward(input.data);
-            this.network.backward(input.data, output.data, forward, this.regularization);
-            this.network.getLayers().forEach(function (layer) {
-              if (_this2.optimizer) {
-                _this2.optimizer.setT(++t);
-
-                _this2.optimizer.optimize(layer);
-              }
-            });
-
-            if (this.verbose) {
-              var cost = this.cost(input, output);
-              var endIterationTime = new Date().getTime();
-              console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Cost: ").concat(cost.cost, " | Batch time: ").concat(endIterationTime - startIterationTime2, " ms | Time from start: ").concat((endIterationTime - startIterationTime) / 1000, " s."));
-            }
-          }
+        for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
+          var startIterationTime2 = new Date().getTime();
+          var input = inputDataset.getBatch(offset, this.batchSize);
+          var output = outputDataset.getBatch(offset, this.batchSize);
+          var forward = this.network.forward(input.data);
+          this.network.backward(input.data, output.data, forward, this.regularization);
+          this.optimizer.setT(++t);
+          this.network.getLayers().forEach(function (layer) {
+            _this2.optimizer.optimize(layer);
+          });
 
           if (this.verbose) {
-            if ((i + 1) % this.verboseStep === 0) {
-              var endTime = new Date().getTime();
-              var currentResult = this.cost(inputDataset, outputDataset);
-              console.log("Iteration: ".concat(i + 1, " | Cost: ").concat(currentResult.cost, " | Accuracy: ").concat(currentResult.accuracy, "% | Time: ").concat((endTime - startTime) / 100, " s."));
-            }
+            var endIterationTime = new Date().getTime();
+            console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Batch time: ").concat(endIterationTime - startIterationTime2, "ms | Time from start: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)((endIterationTime - startIterationTime) / 1000, 1), "s."));
           }
+        }
 
-          if (typeof this.stepCallback === "function") {
-            this.stepCallback.call(null, {
-              iteration: i
-            });
+        if (this.verbose) {
+          if ((i + 1) % this.verboseStep === 0) {
+            var endTime = new Date().getTime();
+            var currentResult = this.cost(inputDataset, outputDataset);
+            console.log("Iteration: ".concat(i + 1, " | Cost: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(currentResult.cost, 5), " | Accuracy: ").concat(currentResult.accuracy, "% | Time: ").concat((endTime - startTime) / 100, " s."));
           }
+        }
+
+        if (typeof this.stepCallback === "function") {
+          this.stepCallback.call(null, {
+            iteration: i
+          });
         }
       }
 
@@ -4619,25 +4616,9 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
 
 /***/ }),
 
-/***/ "./src/typescript/Trainer/index.ts":
-/*!*****************************************!*\
-  !*** ./src/typescript/Trainer/index.ts ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MiniBatchTrainer": () => (/* reexport safe */ _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__.MiniBatchTrainer)
-/* harmony export */ });
-/* harmony import */ var _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MiniBatchTrainer */ "./src/typescript/Trainer/MiniBatchTrainer.ts");
-
-
-
-/***/ }),
-
-/***/ "./src/typescript/Trainer/optimizer/AbstractOptimizer.ts":
+/***/ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts":
 /*!***************************************************************!*\
-  !*** ./src/typescript/Trainer/optimizer/AbstractOptimizer.ts ***!
+  !*** ./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts ***!
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4689,9 +4670,9 @@ var AbstractOptimizer = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/Trainer/optimizer/OptimizerAdadelta.ts":
+/***/ "./src/typescript/Trainer/Optimizer/OptimizerAdadelta.ts":
 /*!***************************************************************!*\
-  !*** ./src/typescript/Trainer/optimizer/OptimizerAdadelta.ts ***!
+  !*** ./src/typescript/Trainer/Optimizer/OptimizerAdadelta.ts ***!
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4699,7 +4680,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerAdadelta": () => (/* binding */ OptimizerAdadelta)
 /* harmony export */ });
-/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
 /* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4761,9 +4742,9 @@ var OptimizerAdadelta = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
-/***/ "./src/typescript/Trainer/optimizer/OptimizerAdam.ts":
+/***/ "./src/typescript/Trainer/Optimizer/OptimizerAdam.ts":
 /*!***********************************************************!*\
-  !*** ./src/typescript/Trainer/optimizer/OptimizerAdam.ts ***!
+  !*** ./src/typescript/Trainer/Optimizer/OptimizerAdam.ts ***!
   \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4771,7 +4752,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerAdam": () => (/* binding */ OptimizerAdam)
 /* harmony export */ });
-/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
 /* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4836,9 +4817,9 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
-/***/ "./src/typescript/Trainer/optimizer/OptimizerGradientDescent.ts":
+/***/ "./src/typescript/Trainer/Optimizer/OptimizerGradientDescent.ts":
 /*!**********************************************************************!*\
-  !*** ./src/typescript/Trainer/optimizer/OptimizerGradientDescent.ts ***!
+  !*** ./src/typescript/Trainer/Optimizer/OptimizerGradientDescent.ts ***!
   \**********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4846,7 +4827,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerGradientDescent": () => (/* binding */ OptimizerGradientDescent)
 /* harmony export */ });
-/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
 /* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4901,9 +4882,9 @@ var OptimizerGradientDescent = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
-/***/ "./src/typescript/Trainer/optimizer/index.ts":
+/***/ "./src/typescript/Trainer/Optimizer/index.ts":
 /*!***************************************************!*\
-  !*** ./src/typescript/Trainer/optimizer/index.ts ***!
+  !*** ./src/typescript/Trainer/Optimizer/index.ts ***!
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4913,11 +4894,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "OptimizerGradientDescent": () => (/* reexport safe */ _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__.OptimizerGradientDescent),
 /* harmony export */   "OptimizerAdadelta": () => (/* reexport safe */ _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__.OptimizerAdadelta)
 /* harmony export */ });
-/* harmony import */ var _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OptimizerAdam */ "./src/typescript/Trainer/optimizer/OptimizerAdam.ts");
-/* harmony import */ var _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptimizerGradientDescent */ "./src/typescript/Trainer/optimizer/OptimizerGradientDescent.ts");
-/* harmony import */ var _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./OptimizerAdadelta */ "./src/typescript/Trainer/optimizer/OptimizerAdadelta.ts");
+/* harmony import */ var _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OptimizerAdam */ "./src/typescript/Trainer/Optimizer/OptimizerAdam.ts");
+/* harmony import */ var _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptimizerGradientDescent */ "./src/typescript/Trainer/Optimizer/OptimizerGradientDescent.ts");
+/* harmony import */ var _OptimizerAdadelta__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./OptimizerAdadelta */ "./src/typescript/Trainer/Optimizer/OptimizerAdadelta.ts");
 
 
+
+
+
+/***/ }),
+
+/***/ "./src/typescript/Trainer/index.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/Trainer/index.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MiniBatchTrainer": () => (/* reexport safe */ _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__.MiniBatchTrainer)
+/* harmony export */ });
+/* harmony import */ var _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MiniBatchTrainer */ "./src/typescript/Trainer/MiniBatchTrainer.ts");
 
 
 
@@ -5071,7 +5068,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Math/Matrix */ "./src/typescript/Math/Matrix.ts");
 /* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/Dataset/index.ts");
 /* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/DatasetBuilder/index.ts");
-/* harmony import */ var _Trainer_optimizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Trainer/optimizer */ "./src/typescript/Trainer/optimizer/index.ts");
+/* harmony import */ var _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Trainer/Optimizer */ "./src/typescript/Trainer/Optimizer/index.ts");
 /* harmony import */ var _Trainer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Trainer */ "./src/typescript/Trainer/index.ts");
 /* harmony import */ var _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Dataset/DatasetModifier */ "./src/typescript/Dataset/DatasetModifier/index.ts");
 /* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Computation */ "./src/typescript/Computation/index.ts");
@@ -5107,9 +5104,9 @@ var DatasetBuilder = {
   DatasetBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder
 };
 var Optimizer = {
-  OptimizerAdam: _Trainer_optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
-  OptimizerGradientDescent: _Trainer_optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerGradientDescent,
-  OptimizerAdadelta: _Trainer_optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdadelta
+  OptimizerAdam: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
+  OptimizerGradientDescent: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerGradientDescent,
+  OptimizerAdadelta: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdadelta
 };
 var Trainer = {
   MiniBatchTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.MiniBatchTrainer

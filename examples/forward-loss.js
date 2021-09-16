@@ -22,10 +22,10 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
-  console.log("Loaded mnist_x.csv");
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then((outputDataset) => {
-    console.log("Loaded mnist_y.csv");
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+  console.log("Loaded mnist_20x20_x.csv");
+  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then((outputDataset) => {
+    console.log("Loaded mnist_20x20_y.csv");
     let timeStart = new Date().getTime();
     const result = network.forward(inputDataset.exampleAt(0));
     console.log("forward propagation", result);

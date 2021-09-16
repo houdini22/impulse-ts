@@ -82,3 +82,7 @@ export const maxpool = (
   }
   return new Matrix();
 };
+
+export const round = (num: number, decimalPlaces: number): number => {
+  return Math.round((num + Number.EPSILON) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+};

@@ -1,6 +1,7 @@
 import * as csvtojson from "csvtojson";
 import { Dataset } from "../Dataset";
 import { AbstractDatasetBuilderSource } from "./DatasetBuilderSource/AbstractDocumentBuilderSource";
+import { Matrix } from "../Math/Matrix";
 
 export class DatasetBuilder {
   static fromCSV(csvPath: string): Promise<Dataset> {

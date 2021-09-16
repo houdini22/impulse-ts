@@ -71,10 +71,8 @@ export class Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
       let sum = 0.0;
-      for (let col = 0; col < this.rows; col += 1) {
-        if (this.data) {
-          sum += this.data[row][col];
-        }
+      for (let col = 0; col < this.cols; col += 1) {
+        sum += this.data[row][col];
       }
       data[row] = [sum];
     }
@@ -135,11 +133,9 @@ export class Matrix {
     const data = [];
 
     for (let row = startRow, newRow = 0; row < this.rows && row < startRow + blockRows; row += 1, newRow += 1) {
-      data[row] = new Array(blockCols);
+      data[newRow] = new Array(blockCols);
       for (let col = startCol, newCol = 0; col < this.cols && col < startCol + blockCols; col += 1, newCol += 1) {
-        if (this.data) {
-          data[newRow][newCol] = this.data[row][col];
-        }
+        data[newRow][newCol] = this.data[row][col];
       }
     }
 
@@ -149,9 +145,7 @@ export class Matrix {
   col(col: number): Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
-      if (this.data) {
-        data[row] = [this.data[row][col]];
-      }
+      data[row] = [this.data[row][col]];
     }
     return new Matrix(this.rows, 1, data);
   }

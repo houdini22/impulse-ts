@@ -1,5 +1,5 @@
 import Network from "../Network";
-import { AbstractOptimizer } from "./optimizer/AbstractOptimizer";
+import { AbstractOptimizer } from "./Optimizer/AbstractOptimizer";
 import { Dataset } from "../Dataset";
 
 export interface CostResult {
@@ -14,7 +14,7 @@ export interface StepCallbackParameters {
 export abstract class AbstractTrainer {
   network: Network | null = null;
   optimizer: AbstractOptimizer | null = null;
-  regularization = 0;
+  regularization = 1e-8;
   iterations = 1000;
   learningRate = 0.01;
   verbose = true;
