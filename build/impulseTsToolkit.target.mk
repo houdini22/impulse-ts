@@ -144,9 +144,7 @@ LDFLAGS_Release := \
 	-m64 \
 	-L/usr/local/lib
 
-LIBS := \
-	-lcuda \
-	-lcudart
+LIBS :=
 
 $(obj).target/impulseTsToolkit.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
 $(obj).target/impulseTsToolkit.node: LIBS := $(LIBS)

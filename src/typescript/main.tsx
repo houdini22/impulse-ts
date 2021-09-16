@@ -1,5 +1,4 @@
-import { Builder1D } from "./builder/builder1d";
-import { Builder3D } from "./builder/builder3d";
+import { Builder3D, Builder1D } from "./builder";
 import {
   SoftmaxLayer,
   LogisticLayer,
@@ -11,13 +10,14 @@ import {
   MaxPoolLayer,
 } from "./layer";
 import { Matrix } from "./math/matrix";
-import { DatasetBuilder } from "./dataset/datasetbuilder";
-import { OptimizerAdam } from "./trainer/optimizer/adam";
-import { OptimizerGradientDescent } from "./trainer/optimizer/gradientdescent";
-import { MiniBatchTrainer } from "./trainer/minibatch";
-import { CallbackDatabaseModifier } from "./dataset/datasetmodifier/callback";
-import { MinMaxScalingDatabaseModifier } from "./dataset/datasetmodifier/minmaxscaling";
-import { MissingDataScalingDatabaseModifier } from "./dataset/datasetmodifier/missingdata";
+import { DatasetBuilder } from "./dataset";
+import { OptimizerAdam, OptimizerGradientDescent } from "./trainer/optimizer";
+import { MiniBatchTrainer } from "./trainer";
+import {
+  CallbackDatabaseModifier,
+  MinMaxScalingDatabaseModifier,
+  MissingDataScalingDatabaseModifier,
+} from "./dataset/datasetmodifier";
 
 const Builders = { Builder1D, Builder3D };
 const Math = {

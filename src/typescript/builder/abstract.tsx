@@ -48,4 +48,3 @@ abstract class AbstractBuilder {
 }
 
 export { AbstractBuilder };
-export default AbstractBuilder;

@@ -9,8 +9,8 @@ import {
   SoftplusLayer,
   TanhLayer,
 } from "../layer/";
-import { ConvLayer } from "../layer/conv";
-import { MaxPoolLayer } from "../layer/maxpool";
+import { ConvLayer } from "../layer/";
+import { MaxPoolLayer } from "../layer/";
 
 class Builder3D extends AbstractBuilder {
   firstLayerTransition(layer: Layers): void {
