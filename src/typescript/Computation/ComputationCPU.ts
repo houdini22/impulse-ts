@@ -310,7 +310,7 @@ export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   for (let row = 0; row < m1.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m1.cols; col += 1) {
-      data[row][col] = (Math.random() - 0.5) * 0.1;
+      data[row][col] = (Math.random() - 0.1);
     }
   }
   return new Matrix(m1.rows, m1.cols, data);

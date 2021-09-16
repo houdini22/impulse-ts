@@ -448,7 +448,7 @@ var fillRandom = function fillRandom(m1, parameter) {
     data[row] = [];
 
     for (var col = 0; col < m1.cols; col += 1) {
-      data[row][col] = (Math.random() - 0.5) * 0.1;
+      data[row][col] = Math.random() - 0.1;
     }
   }
 
