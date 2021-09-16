@@ -17,7 +17,6 @@ Builder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
           path.resolve(__dirname, "./data/mnist_y.csv")
         ).then(async (outputDataset) => {
           console.log("Loaded mnist_y.csv");
-
           let timeStart = new Date().getTime();
           const result = network.forward(inputDataset.exampleAt(0));
           console.log("forward", result);
