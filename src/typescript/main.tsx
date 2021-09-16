@@ -1,4 +1,4 @@
-import { Builder3D, Builder1D } from "./builder";
+import { Builder1D, Builder3D } from "./builder";
 import {
   SoftmaxLayer,
   LogisticLayer,

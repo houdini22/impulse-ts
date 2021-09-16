@@ -10,7 +10,7 @@ module.exports = {
     libraryTarget: "commonjs2",
   },
   resolve: {
-    extensions: [".index.tsx"],
+    extensions: [".tsx"],
     alias: {
       "impulseTsToolkit": path.resolve(__dirname, '../build/Debug/impulseTsToolkit.node')
     }
