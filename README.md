@@ -5,6 +5,35 @@
 ## Documentation
 Full API documentation available at [https://houdini22.github.io/impulse-ts/](https://houdini22.github.io/impulse-ts/).
 
+### Supported learning optimizers:
+```
+OptimizerGradientDescent
+```
+
+### Supported dataset modifiers:
+```
+MissingDataScalingDatabaseModifier
+MinMaxScalingDatabaseModifier
+```
+
+### Supported network builders:
+```
+NetworkBuilder1D
+```
+
+### Supported layers:
+```
+LogisticLayer
+PurelinLayer
+```
+
+### Supported trainers:
+```
+MiniBatchTrainer
+```
+
+There are no errors using above.
+
 ## Examples
 
 ### Exports
@@ -73,7 +102,7 @@ const {
         DatasetBuilder
     },
     Optimizer: {
-        OptimizerAdam
+        OptimizerGradientDescent
     },
     Trainer: {
         MiniBatchTrainer
@@ -115,8 +144,11 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then
 
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-        const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
-        trainer.setIterations(3);
+        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+        trainer.setIterations(5);
+        trainer.setLearningRate(0.05);
+        trainer.setBatchSize(100);
+        trainer.setRegularization(0.1);
         trainer.train(inputDataset, outputDataset);
 
         await network.save(path.resolve(__dirname, "./data/mnist.json"));

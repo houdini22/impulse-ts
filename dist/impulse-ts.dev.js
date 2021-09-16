@@ -1896,7 +1896,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractLayer1D": () => (/* binding */ AbstractLayer1D)
 /* harmony export */ });
 /* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1953,21 +1953,21 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
     key: "configure",
     value: function configure() {
       this.W.resize(this.height, this.width);
-      this.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.W, this.width);
+      this.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.W, this.width);
       this.b.resize(this.height, 1);
-      this.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.b, this.width);
+      this.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.b, this.width);
       this.gW.resize(this.height, this.width);
-      this.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gW);
+      this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gW);
       this.gb.resize(this.height, 1);
-      this.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gb);
+      this.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gb);
       this.cW.resize(this.height, this.width);
-      this.cW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cW);
+      this.cW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cW);
       this.cb.resize(this.height, 1);
-      this.cb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
+      this.cb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
       this.vW.resize(this.height, this.width);
-      this.vW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.vW);
+      this.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.vW);
       this.vb.resize(this.height, 1);
-      this.vb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
+      this.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.cb);
     }
   }, {
     key: "is1D",

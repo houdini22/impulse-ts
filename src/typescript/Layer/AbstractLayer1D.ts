@@ -1,6 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer";
 import { Layers } from "../types";
-import { getComputation } from "../Computation/utils";
+import { getComputation } from "../Computation";
 import { Matrix } from "../Math/Matrix";
 
 abstract class AbstractLayer1D extends AbstractLayer {
