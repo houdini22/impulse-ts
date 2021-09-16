@@ -2,7 +2,7 @@ const {
   Builders: { Builder1D },
   Dataset: { DatasetBuilder },
   Layers: { LogisticLayer, SoftmaxLayer },
-  Optimizers: { OptimizerGradientDescent },
+  Optimizers: { OptimizerGradientDescent, OptimizerAdam },
   Trainers: { MiniBatchTrainer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
@@ -17,7 +17,7 @@ builder.createLayer(LogisticLayer, (layer) => {
 builder.createLayer(LogisticLayer, (layer) => {
   layer.setSize([200]);
 });
-builder.createLayer(SoftmaxLayer, (layer) => {
+builder.createLayer(LogisticLayer, (layer) => {
   layer.setSize([10]);
 });
 
@@ -31,7 +31,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
         console.log("Loaded mnist_y.csv");
         const trainer = new MiniBatchTrainer(
           network,
-          new OptimizerGradientDescent()
+          new OptimizerAdam()
         );
         trainer.train(inputDataset, outputDataset);
       }
