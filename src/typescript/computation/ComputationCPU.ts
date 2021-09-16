@@ -371,6 +371,19 @@ export const elementWiseMultiplyNumber = (m1: Matrix, num: number): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
+export const pow = (m1: Matrix, pow: number): Matrix => {
+  const data = [];
+  for (let row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = Math.pow(m1.data[row][col], pow);
+      }
+    }
+  }
+  return new Matrix(m1.rows, m1.cols, data);
+};
+
 export const transpose = (m: Matrix): Matrix => {
   const data = [];
   for (let col = 0; col < m.cols; col += 1) {
@@ -412,5 +425,6 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("sqrt", sqrt);
     this.addKernel("purelinLoss", purelinLoss);
     this.addKernel("transpose", transpose);
+    this.addKernel("pow", pow);
   }
 }
