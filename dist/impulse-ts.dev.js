@@ -756,7 +756,7 @@ var fillRandom = function fillRandom(m1, parameter) {
     data[row] = [];
 
     for (var col = 0; col < m1.cols; col += 1) {
-      data[row][col] = (Math.random() - 0.5) * Math.sqrt(2.0 / parameter);
+      data[row][col] = Math.random() - 0.5;
     }
   }
 
@@ -1133,7 +1133,7 @@ var elementWiseSubtract = function elementWiseSubtract(m1, m2) {
 };
 var fillRandom = function fillRandom(m1, parameter) {
   var kernel = gpu.createKernel(function () {
-    return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
+    return Math.random() - 0.5;
   }).setOutput([m1.rows, m1.cols]).setConstants({
     parameter: parameter
   });

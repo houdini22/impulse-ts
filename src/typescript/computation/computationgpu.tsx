@@ -282,7 +282,7 @@ export const elementWiseSubtract = (m1: Matrix, m2: Matrix): Matrix => {
 export const fillRandom = (m1: Matrix, parameter: number): Matrix => {
   const kernel = gpu
     .createKernel(function () {
-      return (Math.random() - 0.5) * Math.sqrt(2.0 / this.constants.parameter);
+      return Math.random() - 0.5;
     })
     .setOutput([m1.rows, m1.cols])
     .setConstants({
