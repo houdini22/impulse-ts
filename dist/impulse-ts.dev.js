@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/typescript/Network.tsx":
-/*!************************************!*\
-  !*** ./src/typescript/Network.tsx ***!
-  \************************************/
+/***/ "./src/typescript/Network.ts":
+/*!***********************************!*\
+  !*** ./src/typescript/Network.ts ***!
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -15,7 +15,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./computation/utils */ "./src/typescript/computation/utils.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -120,10 +120,10 @@ var Network = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/computation/AbstractComputation.tsx":
-/*!************************************************************!*\
-  !*** ./src/typescript/computation/AbstractComputation.tsx ***!
-  \************************************************************/
+/***/ "./src/typescript/computation/AbstractComputation.ts":
+/*!***********************************************************!*\
+  !*** ./src/typescript/computation/AbstractComputation.ts ***!
+  \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -167,10 +167,10 @@ var AbstractComputation = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/computation/ComputationCPU.tsx":
-/*!*******************************************************!*\
-  !*** ./src/typescript/computation/ComputationCPU.tsx ***!
-  \*******************************************************/
+/***/ "./src/typescript/computation/ComputationCPU.ts":
+/*!******************************************************!*\
+  !*** ./src/typescript/computation/ComputationCPU.ts ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -202,8 +202,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "transpose": () => (/* binding */ transpose),
 /* harmony export */   "ComputationCPU": () => (/* binding */ ComputationCPU)
 /* harmony export */ });
-/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
+/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -682,10 +682,10 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
 /***/ }),
 
-/***/ "./src/typescript/computation/ComputationGPU.tsx":
-/*!*******************************************************!*\
-  !*** ./src/typescript/computation/ComputationGPU.tsx ***!
-  \*******************************************************/
+/***/ "./src/typescript/computation/ComputationGPU.ts":
+/*!******************************************************!*\
+  !*** ./src/typescript/computation/ComputationGPU.ts ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -718,8 +718,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "transpose": () => (/* binding */ transpose),
 /* harmony export */   "ComputationGPU": () => (/* binding */ ComputationGPU)
 /* harmony export */ });
-/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
+/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! gpu.js */ "gpu.js");
 /* harmony import */ var gpu_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(gpu_js__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1026,10 +1026,10 @@ var ComputationGPU = /*#__PURE__*/function (_AbstractComputation) {
 
 /***/ }),
 
-/***/ "./src/typescript/computation/index.tsx":
-/*!**********************************************!*\
-  !*** ./src/typescript/computation/index.tsx ***!
-  \**********************************************/
+/***/ "./src/typescript/computation/index.ts":
+/*!*********************************************!*\
+  !*** ./src/typescript/computation/index.ts ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1039,10 +1039,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ComputationCPU": () => (/* reexport safe */ _ComputationCPU__WEBPACK_IMPORTED_MODULE_2__.ComputationCPU),
 /* harmony export */   "setComputation": () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_3__.setComputation)
 /* harmony export */ });
-/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.tsx");
-/* harmony import */ var _ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ComputationGPU */ "./src/typescript/computation/ComputationGPU.tsx");
-/* harmony import */ var _ComputationCPU__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ComputationCPU */ "./src/typescript/computation/ComputationCPU.tsx");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _AbstractComputation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractComputation */ "./src/typescript/computation/AbstractComputation.ts");
+/* harmony import */ var _ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ComputationGPU */ "./src/typescript/computation/ComputationGPU.ts");
+/* harmony import */ var _ComputationCPU__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ComputationCPU */ "./src/typescript/computation/ComputationCPU.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/typescript/computation/utils.ts");
 
 
 
@@ -1051,10 +1051,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/typescript/computation/utils.tsx":
-/*!**********************************************!*\
-  !*** ./src/typescript/computation/utils.tsx ***!
-  \**********************************************/
+/***/ "./src/typescript/computation/utils.ts":
+/*!*********************************************!*\
+  !*** ./src/typescript/computation/utils.ts ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1062,7 +1062,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setComputation": () => (/* binding */ setComputation),
 /* harmony export */   "getComputation": () => (/* binding */ getComputation)
 /* harmony export */ });
-/* harmony import */ var _ComputationCPU__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ComputationCPU */ "./src/typescript/computation/ComputationCPU.tsx");
+/* harmony import */ var _ComputationCPU__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ComputationCPU */ "./src/typescript/computation/ComputationCPU.ts");
 
 var currentComputation = new _ComputationCPU__WEBPACK_IMPORTED_MODULE_0__.ComputationCPU();
 var setComputation = function setComputation(type) {
@@ -1074,17 +1074,17 @@ var getComputation = function getComputation() {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/Dataset.tsx":
-/*!********************************************!*\
-  !*** ./src/typescript/dataset/Dataset.tsx ***!
-  \********************************************/
+/***/ "./src/typescript/dataset/Dataset.ts":
+/*!*******************************************!*\
+  !*** ./src/typescript/dataset/Dataset.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Dataset": () => (/* binding */ Dataset)
 /* harmony export */ });
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1141,10 +1141,10 @@ var Dataset = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/DatasetBuilder.tsx":
-/*!***************************************************!*\
-  !*** ./src/typescript/dataset/DatasetBuilder.tsx ***!
-  \***************************************************/
+/***/ "./src/typescript/dataset/DatasetBuilder.ts":
+/*!**************************************************!*\
+  !*** ./src/typescript/dataset/DatasetBuilder.ts ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1153,7 +1153,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! csvtojson */ "csvtojson");
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.tsx");
+/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1189,10 +1189,10 @@ var DatasetBuilder = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.tsx":
-/*!****************************************************************************!*\
-  !*** ./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.tsx ***!
-  \****************************************************************************/
+/***/ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.ts":
+/*!***************************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.ts ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1232,17 +1232,17 @@ var AbstractDatasetModifier = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/datasetmodifier/Callback.tsx":
-/*!*************************************************************!*\
-  !*** ./src/typescript/dataset/datasetmodifier/Callback.tsx ***!
-  \*************************************************************/
+/***/ "./src/typescript/dataset/datasetmodifier/Callback.ts":
+/*!************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/Callback.ts ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CallbackDatabaseModifier": () => (/* binding */ CallbackDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.tsx");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1315,18 +1315,18 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/datasetmodifier/MinMaxScaling.tsx":
-/*!******************************************************************!*\
-  !*** ./src/typescript/dataset/datasetmodifier/MinMaxScaling.tsx ***!
-  \******************************************************************/
+/***/ "./src/typescript/dataset/datasetmodifier/MinMaxScaling.ts":
+/*!*****************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/MinMaxScaling.ts ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* binding */ MinMaxScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.tsx");
-/* harmony import */ var _computation_ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/ComputationGPU */ "./src/typescript/computation/ComputationGPU.tsx");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.ts");
+/* harmony import */ var _computation_ComputationGPU__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/ComputationGPU */ "./src/typescript/computation/ComputationGPU.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1392,17 +1392,17 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/datasetmodifier/MissingData.tsx":
-/*!****************************************************************!*\
-  !*** ./src/typescript/dataset/datasetmodifier/MissingData.tsx ***!
-  \****************************************************************/
+/***/ "./src/typescript/dataset/datasetmodifier/MissingData.ts":
+/*!***************************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/MissingData.ts ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* binding */ MissingDataScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.tsx");
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/dataset/datasetmodifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1498,10 +1498,10 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/datasetmodifier/index.tsx":
-/*!**********************************************************!*\
-  !*** ./src/typescript/dataset/datasetmodifier/index.tsx ***!
-  \**********************************************************/
+/***/ "./src/typescript/dataset/datasetmodifier/index.ts":
+/*!*********************************************************!*\
+  !*** ./src/typescript/dataset/datasetmodifier/index.ts ***!
+  \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1510,9 +1510,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* reexport safe */ _MissingData__WEBPACK_IMPORTED_MODULE_2__.MissingDataScalingDatabaseModifier),
 /* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* reexport safe */ _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__.MinMaxScalingDatabaseModifier)
 /* harmony export */ });
-/* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/dataset/datasetmodifier/Callback.tsx");
-/* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/dataset/datasetmodifier/MinMaxScaling.tsx");
-/* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/dataset/datasetmodifier/MissingData.tsx");
+/* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/dataset/datasetmodifier/Callback.ts");
+/* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/dataset/datasetmodifier/MinMaxScaling.ts");
+/* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/dataset/datasetmodifier/MissingData.ts");
 
 
 
@@ -1520,10 +1520,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/typescript/dataset/index.tsx":
-/*!******************************************!*\
-  !*** ./src/typescript/dataset/index.tsx ***!
-  \******************************************/
+/***/ "./src/typescript/dataset/index.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/dataset/index.ts ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1531,26 +1531,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Dataset": () => (/* reexport safe */ _Dataset__WEBPACK_IMPORTED_MODULE_0__.Dataset),
 /* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _DatasetBuilder__WEBPACK_IMPORTED_MODULE_1__.DatasetBuilder)
 /* harmony export */ });
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.tsx");
-/* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.tsx");
+/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/dataset/Dataset.ts");
+/* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/dataset/DatasetBuilder.ts");
 
 
 
 
 /***/ }),
 
-/***/ "./src/typescript/layer/AbstractLayer.tsx":
-/*!************************************************!*\
-  !*** ./src/typescript/layer/AbstractLayer.tsx ***!
-  \************************************************/
+/***/ "./src/typescript/layer/AbstractLayer.ts":
+/*!***********************************************!*\
+  !*** ./src/typescript/layer/AbstractLayer.ts ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer": () => (/* binding */ AbstractLayer)
 /* harmony export */ });
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1659,18 +1659,18 @@ var AbstractLayer = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/AbstractLayer1D.tsx":
-/*!**************************************************!*\
-  !*** ./src/typescript/layer/AbstractLayer1D.tsx ***!
-  \**************************************************/
+/***/ "./src/typescript/layer/AbstractLayer1D.ts":
+/*!*************************************************!*\
+  !*** ./src/typescript/layer/AbstractLayer1D.ts ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer1D": () => (/* binding */ AbstractLayer1D)
 /* harmony export */ });
-/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1801,17 +1801,17 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/AbstractLayer3D.tsx":
-/*!**************************************************!*\
-  !*** ./src/typescript/layer/AbstractLayer3D.tsx ***!
-  \**************************************************/
+/***/ "./src/typescript/layer/AbstractLayer3D.ts":
+/*!*************************************************!*\
+  !*** ./src/typescript/layer/AbstractLayer3D.ts ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer3D": () => (/* binding */ AbstractLayer3D)
 /* harmony export */ });
-/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.tsx");
+/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1898,21 +1898,21 @@ var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Conv.tsx":
-/*!***************************************!*\
-  !*** ./src/typescript/layer/Conv.tsx ***!
-  \***************************************/
+/***/ "./src/typescript/layer/Conv.ts":
+/*!**************************************!*\
+  !*** ./src/typescript/layer/Conv.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ConvLayer": () => (/* binding */ ConvLayer)
 /* harmony export */ });
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.tsx");
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/layer/AbstractLayer3D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.ts");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/layer/AbstractLayer3D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2098,18 +2098,18 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/FullyConnected.tsx":
-/*!*************************************************!*\
-  !*** ./src/typescript/layer/FullyConnected.tsx ***!
-  \*************************************************/
+/***/ "./src/typescript/layer/FullyConnected.ts":
+/*!************************************************!*\
+  !*** ./src/typescript/layer/FullyConnected.ts ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "FullyConnectedLayer": () => (/* binding */ FullyConnectedLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Conv */ "./src/typescript/layer/Conv.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Conv */ "./src/typescript/layer/Conv.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2220,19 +2220,19 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Logistic.tsx":
-/*!*******************************************!*\
-  !*** ./src/typescript/layer/Logistic.tsx ***!
-  \*******************************************/
+/***/ "./src/typescript/layer/Logistic.ts":
+/*!******************************************!*\
+  !*** ./src/typescript/layer/Logistic.ts ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LogisticLayer": () => (/* binding */ LogisticLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2304,21 +2304,21 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/MaxPool.tsx":
-/*!******************************************!*\
-  !*** ./src/typescript/layer/MaxPool.tsx ***!
-  \******************************************/
+/***/ "./src/typescript/layer/MaxPool.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/layer/MaxPool.ts ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MaxPoolLayer": () => (/* binding */ MaxPoolLayer)
 /* harmony export */ });
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.tsx");
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/layer/AbstractLayer3D.tsx");
-/* harmony import */ var _backpropagation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backpropagation */ "./src/typescript/layer/backpropagation/index.tsx");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.ts");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/layer/AbstractLayer3D.ts");
+/* harmony import */ var _backpropagation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backpropagation */ "./src/typescript/layer/backpropagation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2448,19 +2448,19 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Relu.tsx":
-/*!***************************************!*\
-  !*** ./src/typescript/layer/Relu.tsx ***!
-  \***************************************/
+/***/ "./src/typescript/layer/Relu.ts":
+/*!**************************************!*\
+  !*** ./src/typescript/layer/Relu.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ReluLayer": () => (/* binding */ ReluLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2532,19 +2532,19 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Softmax.tsx":
-/*!******************************************!*\
-  !*** ./src/typescript/layer/Softmax.tsx ***!
-  \******************************************/
+/***/ "./src/typescript/layer/Softmax.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/layer/Softmax.ts ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SoftmaxLayer": () => (/* binding */ SoftmaxLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2616,19 +2616,19 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Softplus.tsx":
-/*!*******************************************!*\
-  !*** ./src/typescript/layer/Softplus.tsx ***!
-  \*******************************************/
+/***/ "./src/typescript/layer/Softplus.ts":
+/*!******************************************!*\
+  !*** ./src/typescript/layer/Softplus.ts ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SoftplusLayer": () => (/* binding */ SoftplusLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2700,19 +2700,19 @@ var SoftplusLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/Tanh.tsx":
-/*!***************************************!*\
-  !*** ./src/typescript/layer/Tanh.tsx ***!
-  \***************************************/
+/***/ "./src/typescript/layer/Tanh.ts":
+/*!**************************************!*\
+  !*** ./src/typescript/layer/Tanh.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "TanhLayer": () => (/* binding */ TanhLayer)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/layer/AbstractLayer1D.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2784,19 +2784,19 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.tsx":
-/*!************************************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/Backpropagation1Dto1D.tsx ***!
-  \************************************************************************/
+/***/ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/Backpropagation1Dto1D.ts ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Backpropagation1Dto1D": () => (/* binding */ Backpropagation1Dto1D)
 /* harmony export */ });
-/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2854,17 +2854,17 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.tsx":
-/*!************************************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/Backpropagation3Dto1D.tsx ***!
-  \************************************************************************/
+/***/ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/Backpropagation3Dto1D.ts ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Backpropagation3Dto1D": () => (/* binding */ Backpropagation3Dto1D)
 /* harmony export */ });
-/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2911,21 +2911,21 @@ var Backpropagation3Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/BackpropagationFactory.tsx":
-/*!*************************************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/BackpropagationFactory.tsx ***!
-  \*************************************************************************/
+/***/ "./src/typescript/layer/backpropagation/BackpropagationFactory.ts":
+/*!************************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/BackpropagationFactory.ts ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BackpropagationFactory": () => (/* binding */ BackpropagationFactory)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../types */ "./src/typescript/types.tsx");
-/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.tsx");
-/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.tsx");
-/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.tsx");
-/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/layer/backpropagation/BackpropagationToConv.tsx");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../types */ "./src/typescript/types.ts");
+/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.ts");
+/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.ts");
+/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.ts");
+/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/layer/backpropagation/BackpropagationToConv.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -2970,19 +2970,19 @@ var BackpropagationFactory = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/BackpropagationToConv.tsx":
-/*!************************************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/BackpropagationToConv.tsx ***!
-  \************************************************************************/
+/***/ "./src/typescript/layer/backpropagation/BackpropagationToConv.ts":
+/*!***********************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/BackpropagationToConv.ts ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BackpropagationToConv": () => (/* binding */ BackpropagationToConv)
 /* harmony export */ });
-/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3110,19 +3110,19 @@ var BackpropagationToConv = /*#__PURE__*/function (_AbstractBackPropagat) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.tsx":
-/*!***************************************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/BackpropagationToMaxPool.tsx ***!
-  \***************************************************************************/
+/***/ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.ts":
+/*!**************************************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/BackpropagationToMaxPool.ts ***!
+  \**************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BackpropagationToMaxPool": () => (/* binding */ BackpropagationToMaxPool)
 /* harmony export */ });
-/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _abstract__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract */ "./src/typescript/layer/backpropagation/abstract.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3226,10 +3226,10 @@ var BackpropagationToMaxPool = /*#__PURE__*/function (_AbstractBackPropagat) {
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/abstract.tsx":
-/*!***********************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/abstract.tsx ***!
-  \***********************************************************/
+/***/ "./src/typescript/layer/backpropagation/abstract.ts":
+/*!**********************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/abstract.ts ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3253,10 +3253,10 @@ var AbstractBackPropagation = function AbstractBackPropagation(layer, previousLa
 
 /***/ }),
 
-/***/ "./src/typescript/layer/backpropagation/index.tsx":
-/*!********************************************************!*\
-  !*** ./src/typescript/layer/backpropagation/index.tsx ***!
-  \********************************************************/
+/***/ "./src/typescript/layer/backpropagation/index.ts":
+/*!*******************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/index.ts ***!
+  \*******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3266,10 +3266,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "BackpropagationToConv": () => (/* reexport safe */ _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_1__.BackpropagationToConv),
 /* harmony export */   "Backpropagation1Dto1D": () => (/* reexport safe */ _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_0__.Backpropagation1Dto1D)
 /* harmony export */ });
-/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.tsx");
-/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/layer/backpropagation/BackpropagationToConv.tsx");
-/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.tsx");
-/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.tsx");
+/* harmony import */ var _Backpropagation1Dto1D__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Backpropagation1Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation1Dto1D.ts");
+/* harmony import */ var _BackpropagationToConv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BackpropagationToConv */ "./src/typescript/layer/backpropagation/BackpropagationToConv.ts");
+/* harmony import */ var _BackpropagationToMaxPool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BackpropagationToMaxPool */ "./src/typescript/layer/backpropagation/BackpropagationToMaxPool.ts");
+/* harmony import */ var _Backpropagation3Dto1D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Backpropagation3Dto1D */ "./src/typescript/layer/backpropagation/Backpropagation3Dto1D.ts");
 
 
 
@@ -3278,10 +3278,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/typescript/layer/index.tsx":
-/*!****************************************!*\
-  !*** ./src/typescript/layer/index.tsx ***!
-  \****************************************/
+/***/ "./src/typescript/layer/index.ts":
+/*!***************************************!*\
+  !*** ./src/typescript/layer/index.ts ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3296,15 +3296,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "FullyConnectedLayer": () => (/* reexport safe */ _FullyConnected__WEBPACK_IMPORTED_MODULE_7__.FullyConnectedLayer),
 /* harmony export */   "MaxPoolLayer": () => (/* reexport safe */ _MaxPool__WEBPACK_IMPORTED_MODULE_8__.MaxPoolLayer)
 /* harmony export */ });
-/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.tsx");
-/* harmony import */ var _Softmax__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Softmax */ "./src/typescript/layer/Softmax.tsx");
-/* harmony import */ var _Logistic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Logistic */ "./src/typescript/layer/Logistic.tsx");
-/* harmony import */ var _Tanh__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Tanh */ "./src/typescript/layer/Tanh.tsx");
-/* harmony import */ var _Relu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Relu */ "./src/typescript/layer/Relu.tsx");
-/* harmony import */ var _Softplus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Softplus */ "./src/typescript/layer/Softplus.tsx");
-/* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conv */ "./src/typescript/layer/Conv.tsx");
-/* harmony import */ var _FullyConnected__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FullyConnected */ "./src/typescript/layer/FullyConnected.tsx");
-/* harmony import */ var _MaxPool__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MaxPool */ "./src/typescript/layer/MaxPool.tsx");
+/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/layer/AbstractLayer.ts");
+/* harmony import */ var _Softmax__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Softmax */ "./src/typescript/layer/Softmax.ts");
+/* harmony import */ var _Logistic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Logistic */ "./src/typescript/layer/Logistic.ts");
+/* harmony import */ var _Tanh__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Tanh */ "./src/typescript/layer/Tanh.ts");
+/* harmony import */ var _Relu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Relu */ "./src/typescript/layer/Relu.ts");
+/* harmony import */ var _Softplus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Softplus */ "./src/typescript/layer/Softplus.ts");
+/* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conv */ "./src/typescript/layer/Conv.ts");
+/* harmony import */ var _FullyConnected__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FullyConnected */ "./src/typescript/layer/FullyConnected.ts");
+/* harmony import */ var _MaxPool__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MaxPool */ "./src/typescript/layer/MaxPool.ts");
 
 
 
@@ -3318,10 +3318,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/typescript/math/Matrix.tsx":
-/*!****************************************!*\
-  !*** ./src/typescript/math/Matrix.tsx ***!
-  \****************************************/
+/***/ "./src/typescript/math/Matrix.ts":
+/*!***************************************!*\
+  !*** ./src/typescript/math/Matrix.ts ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3329,7 +3329,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Matrix": () => (/* binding */ Matrix),
 /* harmony export */   "cols": () => (/* binding */ cols)
 /* harmony export */ });
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3577,10 +3577,10 @@ var cols = function cols(m) {
 
 /***/ }),
 
-/***/ "./src/typescript/math/math.tsx":
-/*!**************************************!*\
-  !*** ./src/typescript/math/math.tsx ***!
-  \**************************************/
+/***/ "./src/typescript/math/math.ts":
+/*!*************************************!*\
+  !*** ./src/typescript/math/math.ts ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3588,8 +3588,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "im2col": () => (/* binding */ im2col),
 /* harmony export */   "maxpool": () => (/* binding */ maxpool)
 /* harmony export */ });
-/* harmony import */ var _Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../computation/utils */ "./src/typescript/computation/utils.ts");
 
 
 var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
@@ -3655,18 +3655,18 @@ var maxpool = function maxpool(input, channels, height, width, kernel_h, kernel_
 
 /***/ }),
 
-/***/ "./src/typescript/network-builder/AbstractNetworkBuilder.tsx":
-/*!*******************************************************************!*\
-  !*** ./src/typescript/network-builder/AbstractNetworkBuilder.tsx ***!
-  \*******************************************************************/
+/***/ "./src/typescript/network-builder/AbstractNetworkBuilder.ts":
+/*!******************************************************************!*\
+  !*** ./src/typescript/network-builder/AbstractNetworkBuilder.ts ***!
+  \******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractNetworkBuilder": () => (/* binding */ AbstractNetworkBuilder)
 /* harmony export */ });
-/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Network */ "./src/typescript/Network.tsx");
-/* harmony import */ var _layer_backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layer/backpropagation/BackpropagationFactory */ "./src/typescript/layer/backpropagation/BackpropagationFactory.tsx");
+/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Network */ "./src/typescript/Network.ts");
+/* harmony import */ var _layer_backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layer/backpropagation/BackpropagationFactory */ "./src/typescript/layer/backpropagation/BackpropagationFactory.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3728,21 +3728,21 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/network-builder/NetworkBuilder1D.tsx":
-/*!*************************************************************!*\
-  !*** ./src/typescript/network-builder/NetworkBuilder1D.tsx ***!
-  \*************************************************************/
+/***/ "./src/typescript/network-builder/NetworkBuilder1D.ts":
+/*!************************************************************!*\
+  !*** ./src/typescript/network-builder/NetworkBuilder1D.ts ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "NetworkBuilder1D": () => (/* binding */ NetworkBuilder1D)
 /* harmony export */ });
-/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.tsx");
+/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.ts");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _layer___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer/ */ "./src/typescript/layer/index.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.tsx");
+/* harmony import */ var _layer___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer/ */ "./src/typescript/layer/index.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../math/Matrix */ "./src/typescript/math/Matrix.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3835,20 +3835,20 @@ var NetworkBuilder1D = /*#__PURE__*/function (_AbstractNetworkBuild) {
 
 /***/ }),
 
-/***/ "./src/typescript/network-builder/NetworkBuilder3D.tsx":
-/*!*************************************************************!*\
-  !*** ./src/typescript/network-builder/NetworkBuilder3D.tsx ***!
-  \*************************************************************/
+/***/ "./src/typescript/network-builder/NetworkBuilder3D.ts":
+/*!************************************************************!*\
+  !*** ./src/typescript/network-builder/NetworkBuilder3D.ts ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "NetworkBuilder3D": () => (/* binding */ NetworkBuilder3D)
 /* harmony export */ });
-/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.tsx");
+/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.ts");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _layer___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer/ */ "./src/typescript/layer/index.tsx");
+/* harmony import */ var _layer___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer/ */ "./src/typescript/layer/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3972,10 +3972,10 @@ var NetworkBuilder3D = /*#__PURE__*/function (_AbstractNetworkBuild) {
 
 /***/ }),
 
-/***/ "./src/typescript/network-builder/index.tsx":
-/*!**************************************************!*\
-  !*** ./src/typescript/network-builder/index.tsx ***!
-  \**************************************************/
+/***/ "./src/typescript/network-builder/index.ts":
+/*!*************************************************!*\
+  !*** ./src/typescript/network-builder/index.ts ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3984,9 +3984,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "NetworkBuilder1D": () => (/* reexport safe */ _NetworkBuilder1D__WEBPACK_IMPORTED_MODULE_1__.NetworkBuilder1D),
 /* harmony export */   "NetworkBuilder3D": () => (/* reexport safe */ _NetworkBuilder3D__WEBPACK_IMPORTED_MODULE_2__.NetworkBuilder3D)
 /* harmony export */ });
-/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.tsx");
-/* harmony import */ var _NetworkBuilder1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NetworkBuilder1D */ "./src/typescript/network-builder/NetworkBuilder1D.tsx");
-/* harmony import */ var _NetworkBuilder3D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NetworkBuilder3D */ "./src/typescript/network-builder/NetworkBuilder3D.tsx");
+/* harmony import */ var _AbstractNetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractNetworkBuilder */ "./src/typescript/network-builder/AbstractNetworkBuilder.ts");
+/* harmony import */ var _NetworkBuilder1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NetworkBuilder1D */ "./src/typescript/network-builder/NetworkBuilder1D.ts");
+/* harmony import */ var _NetworkBuilder3D__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NetworkBuilder3D */ "./src/typescript/network-builder/NetworkBuilder3D.ts");
 
 
 
@@ -3994,10 +3994,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/AbstractTrainer.tsx":
-/*!****************************************************!*\
-  !*** ./src/typescript/trainer/AbstractTrainer.tsx ***!
-  \****************************************************/
+/***/ "./src/typescript/trainer/AbstractTrainer.ts":
+/*!***************************************************!*\
+  !*** ./src/typescript/trainer/AbstractTrainer.ts ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -4117,17 +4117,17 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/MiniBatchTrainer.tsx":
-/*!*****************************************************!*\
-  !*** ./src/typescript/trainer/MiniBatchTrainer.tsx ***!
-  \*****************************************************/
+/***/ "./src/typescript/trainer/MiniBatchTrainer.ts":
+/*!****************************************************!*\
+  !*** ./src/typescript/trainer/MiniBatchTrainer.ts ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MiniBatchTrainer": () => (/* binding */ MiniBatchTrainer)
 /* harmony export */ });
-/* harmony import */ var _AbstractTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractTrainer */ "./src/typescript/trainer/AbstractTrainer.tsx");
+/* harmony import */ var _AbstractTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractTrainer */ "./src/typescript/trainer/AbstractTrainer.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4235,26 +4235,26 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/index.tsx":
-/*!******************************************!*\
-  !*** ./src/typescript/trainer/index.tsx ***!
-  \******************************************/
+/***/ "./src/typescript/trainer/index.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/trainer/index.ts ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MiniBatchTrainer": () => (/* reexport safe */ _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__.MiniBatchTrainer)
 /* harmony export */ });
-/* harmony import */ var _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MiniBatchTrainer */ "./src/typescript/trainer/MiniBatchTrainer.tsx");
+/* harmony import */ var _MiniBatchTrainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MiniBatchTrainer */ "./src/typescript/trainer/MiniBatchTrainer.ts");
 
 
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/optimizer/AbstractOptimizer.tsx":
-/*!****************************************************************!*\
-  !*** ./src/typescript/trainer/optimizer/AbstractOptimizer.tsx ***!
-  \****************************************************************/
+/***/ "./src/typescript/trainer/optimizer/AbstractOptimizer.ts":
+/*!***************************************************************!*\
+  !*** ./src/typescript/trainer/optimizer/AbstractOptimizer.ts ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -4305,18 +4305,18 @@ var AbstractOptimizer = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/optimizer/OptimizerAdam.tsx":
-/*!************************************************************!*\
-  !*** ./src/typescript/trainer/optimizer/OptimizerAdam.tsx ***!
-  \************************************************************/
+/***/ "./src/typescript/trainer/optimizer/OptimizerAdam.ts":
+/*!***********************************************************!*\
+  !*** ./src/typescript/trainer/optimizer/OptimizerAdam.ts ***!
+  \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerAdam": () => (/* binding */ OptimizerAdam)
 /* harmony export */ });
-/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/trainer/optimizer/AbstractOptimizer.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/trainer/optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4380,18 +4380,18 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/optimizer/OptimizerGradientDescent.tsx":
-/*!***********************************************************************!*\
-  !*** ./src/typescript/trainer/optimizer/OptimizerGradientDescent.tsx ***!
-  \***********************************************************************/
+/***/ "./src/typescript/trainer/optimizer/OptimizerGradientDescent.ts":
+/*!**********************************************************************!*\
+  !*** ./src/typescript/trainer/optimizer/OptimizerGradientDescent.ts ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OptimizerGradientDescent": () => (/* binding */ OptimizerGradientDescent)
 /* harmony export */ });
-/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/trainer/optimizer/AbstractOptimizer.tsx");
-/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.tsx");
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/trainer/optimizer/AbstractOptimizer.ts");
+/* harmony import */ var _computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../computation/utils */ "./src/typescript/computation/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4445,10 +4445,10 @@ var OptimizerGradientDescent = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
-/***/ "./src/typescript/trainer/optimizer/index.tsx":
-/*!****************************************************!*\
-  !*** ./src/typescript/trainer/optimizer/index.tsx ***!
-  \****************************************************/
+/***/ "./src/typescript/trainer/optimizer/index.ts":
+/*!***************************************************!*\
+  !*** ./src/typescript/trainer/optimizer/index.ts ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -4456,18 +4456,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "OptimizerAdam": () => (/* reexport safe */ _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__.OptimizerAdam),
 /* harmony export */   "OptimizerGradientDescent": () => (/* reexport safe */ _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__.OptimizerGradientDescent)
 /* harmony export */ });
-/* harmony import */ var _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OptimizerAdam */ "./src/typescript/trainer/optimizer/OptimizerAdam.tsx");
-/* harmony import */ var _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptimizerGradientDescent */ "./src/typescript/trainer/optimizer/OptimizerGradientDescent.tsx");
+/* harmony import */ var _OptimizerAdam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OptimizerAdam */ "./src/typescript/trainer/optimizer/OptimizerAdam.ts");
+/* harmony import */ var _OptimizerGradientDescent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptimizerGradientDescent */ "./src/typescript/trainer/optimizer/OptimizerGradientDescent.ts");
 
 
 
 
 /***/ }),
 
-/***/ "./src/typescript/types.tsx":
-/*!**********************************!*\
-  !*** ./src/typescript/types.tsx ***!
-  \**********************************/
+/***/ "./src/typescript/types.ts":
+/*!*********************************!*\
+  !*** ./src/typescript/types.ts ***!
+  \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -4591,9 +4591,9 @@ module.exports = require("fs");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!*********************************!*\
-  !*** ./src/typescript/main.tsx ***!
-  \*********************************/
+/*!********************************!*\
+  !*** ./src/typescript/main.ts ***!
+  \********************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "NetworkBuilder": () => (/* binding */ NetworkBuilder),
@@ -4606,14 +4606,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DatasetModifier": () => (/* binding */ DatasetModifier),
 /* harmony export */   "Computation": () => (/* binding */ Computation)
 /* harmony export */ });
-/* harmony import */ var _network_builder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./network-builder */ "./src/typescript/network-builder/index.tsx");
-/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.tsx");
-/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/Matrix */ "./src/typescript/math/Matrix.tsx");
-/* harmony import */ var _dataset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dataset */ "./src/typescript/dataset/index.tsx");
-/* harmony import */ var _trainer_optimizer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./trainer/optimizer */ "./src/typescript/trainer/optimizer/index.tsx");
-/* harmony import */ var _trainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./trainer */ "./src/typescript/trainer/index.tsx");
-/* harmony import */ var _dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dataset/datasetmodifier */ "./src/typescript/dataset/datasetmodifier/index.tsx");
-/* harmony import */ var _computation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./computation */ "./src/typescript/computation/index.tsx");
+/* harmony import */ var _network_builder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./network-builder */ "./src/typescript/network-builder/index.ts");
+/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layer */ "./src/typescript/layer/index.ts");
+/* harmony import */ var _math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./math/Matrix */ "./src/typescript/math/Matrix.ts");
+/* harmony import */ var _dataset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dataset */ "./src/typescript/dataset/index.ts");
+/* harmony import */ var _trainer_optimizer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./trainer/optimizer */ "./src/typescript/trainer/optimizer/index.ts");
+/* harmony import */ var _trainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./trainer */ "./src/typescript/trainer/index.ts");
+/* harmony import */ var _dataset_datasetmodifier__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dataset/datasetmodifier */ "./src/typescript/dataset/datasetmodifier/index.ts");
+/* harmony import */ var _computation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./computation */ "./src/typescript/computation/index.ts");
 
 
 
