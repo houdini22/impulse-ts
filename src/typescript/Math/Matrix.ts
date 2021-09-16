@@ -57,26 +57,26 @@ export class Matrix {
 
   colwiseSum(): Matrix {
     const data = [];
-    for (let col = 0; col < this.cols; col += 1) {
-      let sum = 0.0;
-      for (let row = 0; row < this.rows; row += 1) {
-        sum += this.data[row][col];
+    const t = this.transpose();
+    for (let row = 0; row < t.rows; row += 1) {
+      data[row] = [0];
+      for (let col = 0; col < t.cols; col += 1) {
+        data[row][0] += t.data[row][col];
       }
-      data[col] = [sum];
     }
-    return new Matrix(1, this.cols, data);
+    return new Matrix(this.rows, 1, data);
   }
 
   rowwiseSum(): Matrix {
-    const data = [];
+    const data = [[]];
     for (let row = 0; row < this.rows; row += 1) {
       let sum = 0.0;
       for (let col = 0; col < this.cols; col += 1) {
         sum += this.data[row][col];
       }
-      data[row] = [sum];
+      data[0].push(sum);
     }
-    return new Matrix(this.rows, 1, data);
+    return new Matrix(1, this.rows, data);
   }
 
   replicate(rows: number, cols: number): Matrix {
@@ -109,10 +109,6 @@ export class Matrix {
 
   transpose(): Matrix {
     return getComputation().execute("transpose", this) as Matrix;
-  }
-
-  conjugate(): Matrix {
-    return this;
   }
 
   colMaxCoeffIndex(col: number): number {

@@ -2163,7 +2163,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2204,12 +2204,12 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-      var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose().conjugate());
-      this.layer.gW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
-      this.layer.gb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum(), numberOfExamples);
+      var delta = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose());
+      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", delta, numberOfExamples), (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.W, regularization / numberOfExamples));
+      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("divideNumber", sigma.rowwiseSum().transpose(), numberOfExamples);
 
       if (this.previousLayer !== null) {
-        return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
+        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("elementWiseMultiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma), this.previousLayer.derivative(this.previousLayer.A));
       }
 
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
@@ -3650,23 +3650,22 @@ var Matrix = /*#__PURE__*/function () {
     key: "colwiseSum",
     value: function colwiseSum() {
       var data = [];
+      var t = this.transpose();
 
-      for (var col = 0; col < this.cols; col += 1) {
-        var sum = 0.0;
+      for (var row = 0; row < t.rows; row += 1) {
+        data[row] = [0];
 
-        for (var row = 0; row < this.rows; row += 1) {
-          sum += this.data[row][col];
+        for (var col = 0; col < t.cols; col += 1) {
+          data[row][0] += t.data[row][col];
         }
-
-        data[col] = [sum];
       }
 
-      return new Matrix(1, this.cols, data);
+      return new Matrix(this.rows, 1, data);
     }
   }, {
     key: "rowwiseSum",
     value: function rowwiseSum() {
-      var data = [];
+      var data = [[]];
 
       for (var row = 0; row < this.rows; row += 1) {
         var sum = 0.0;
@@ -3675,10 +3674,10 @@ var Matrix = /*#__PURE__*/function () {
           sum += this.data[row][col];
         }
 
-        data[row] = [sum];
+        data[0].push(sum);
       }
 
-      return new Matrix(this.rows, 1, data);
+      return new Matrix(1, this.rows, data);
     }
   }, {
     key: "replicate",
@@ -3720,11 +3719,6 @@ var Matrix = /*#__PURE__*/function () {
     key: "transpose",
     value: function transpose() {
       return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("transpose", this);
-    }
-  }, {
-    key: "conjugate",
-    value: function conjugate() {
-      return this;
     }
   }, {
     key: "colMaxCoeffIndex",
