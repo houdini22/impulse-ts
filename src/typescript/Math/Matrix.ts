@@ -49,9 +49,7 @@ export class Matrix {
     let sum = 0.0;
     for (let row = 0; row < this.rows; row += 1) {
       for (let col = 0; col < this.cols; col += 1) {
-        if (this.data) {
-          sum += this.data[row][col];
-        }
+        sum += this.data[row][col];
       }
     }
     return sum;
@@ -62,9 +60,7 @@ export class Matrix {
     for (let col = 0; col < this.cols; col += 1) {
       let sum = 0.0;
       for (let row = 0; row < this.rows; row += 1) {
-        if (this.data) {
-          sum += this.data[row][col];
-        }
+        sum += this.data[row][col];
       }
       data[col] = [sum];
     }

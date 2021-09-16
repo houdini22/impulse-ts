@@ -3403,7 +3403,7 @@ var Matrix = /*#__PURE__*/function () {
 
       for (var row = 0; row < this.rows; row += 1) {
         for (var col = 0; col < this.cols; col += 1) {
-          if (this.data) {
+          if (!isNaN(this.data[row][col]) && isFinite(this.data[row][col])) {
             sum += this.data[row][col];
           }
         }
@@ -3420,7 +3420,7 @@ var Matrix = /*#__PURE__*/function () {
         var sum = 0.0;
 
         for (var row = 0; row < this.rows; row += 1) {
-          if (this.data) {
+          if (!isNaN(this.data[row][col]) && isFinite(this.data[row][col])) {
             sum += this.data[row][col];
           }
         }
