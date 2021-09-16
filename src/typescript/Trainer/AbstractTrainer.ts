@@ -67,37 +67,33 @@ export abstract class AbstractTrainer {
     let accuracy = 0;
     let penalty = 0;
 
-    if (this.network) {
-      this.network.getLayers().forEach((layer) => {
-        penalty += layer.penalty();
-      });
+    this.network.getLayers().forEach((layer) => {
+      penalty += layer.penalty();
+    });
 
-      for (let batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += 100) {
-        const inputBatch = inputDataset.getBatch(offset, batchSize).data;
-        const outputBatch = outputDataset.getBatch(offset, batchSize).data;
+    for (let batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += batchSize) {
+      const inputBatch = inputDataset.getBatch(offset, batchSize).data;
+      const outputBatch = outputDataset.getBatch(offset, batchSize).data;
 
-        if (inputBatch && outputBatch) {
-          const predictedOutput = this.network.forward(inputBatch);
-          const correctOutput = outputBatch;
+      const predictedOutput = this.network.forward(inputBatch);
+      const correctOutput = outputBatch;
 
-          const miniBatchSize = correctOutput.cols;
+      const miniBatchSize = correctOutput.cols;
 
-          const loss = this.network.loss(correctOutput, predictedOutput);
-          const error = this.network.error(miniBatchSize);
+      const loss = this.network.loss(correctOutput, predictedOutput);
+      const error = this.network.error(miniBatchSize);
 
-          cost +=
-            (error * loss + (this.regularization * penalty) / (2.0 * miniBatchSize)) /
-            // TODO: fix it
-            (numBatches * (miniBatchSize / batchSize));
+      cost +=
+        (error * loss + (this.regularization * penalty) / (2.0 * miniBatchSize)) /
+        // TODO: fix it
+        (numBatches * (miniBatchSize / batchSize));
 
-          for (let col = 0; col < predictedOutput.cols; col += 1) {
-            const index1 = predictedOutput.colMaxCoeffIndex(col);
-            const index2 = correctOutput.colMaxCoeffIndex(col);
+      for (let col = 0; col < predictedOutput.cols; col += 1) {
+        const index1 = predictedOutput.colMaxCoeffIndex(col);
+        const index2 = correctOutput.colMaxCoeffIndex(col);
 
-            if (index1 === index2) {
-              accuracy++;
-            }
-          }
+        if (index1 === index2) {
+          accuracy++;
         }
       }
     }

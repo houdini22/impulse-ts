@@ -4229,32 +4229,26 @@ var AbstractTrainer = /*#__PURE__*/function () {
       var cost = 0;
       var accuracy = 0;
       var penalty = 0;
+      this.network.getLayers().forEach(function (layer) {
+        penalty += layer.penalty();
+      });
 
-      if (this.network) {
-        this.network.getLayers().forEach(function (layer) {
-          penalty += layer.penalty();
-        });
+      for (var batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += batchSize) {
+        var inputBatch = inputDataset.getBatch(offset, batchSize).data;
+        var outputBatch = outputDataset.getBatch(offset, batchSize).data;
+        var predictedOutput = this.network.forward(inputBatch);
+        var correctOutput = outputBatch;
+        var miniBatchSize = correctOutput.cols;
+        var loss = this.network.loss(correctOutput, predictedOutput);
+        var error = this.network.error(miniBatchSize);
+        cost += (error * loss + this.regularization * penalty / (2.0 * miniBatchSize)) / (numBatches * (miniBatchSize / batchSize));
 
-        for (var batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += 100) {
-          var inputBatch = inputDataset.getBatch(offset, batchSize).data;
-          var outputBatch = outputDataset.getBatch(offset, batchSize).data;
+        for (var col = 0; col < predictedOutput.cols; col += 1) {
+          var index1 = predictedOutput.colMaxCoeffIndex(col);
+          var index2 = correctOutput.colMaxCoeffIndex(col);
 
-          if (inputBatch && outputBatch) {
-            var predictedOutput = this.network.forward(inputBatch);
-            var correctOutput = outputBatch;
-            var miniBatchSize = correctOutput.cols;
-            var loss = this.network.loss(correctOutput, predictedOutput);
-            var error = this.network.error(miniBatchSize);
-            cost += (error * loss + this.regularization * penalty / (2.0 * miniBatchSize)) / (numBatches * (miniBatchSize / batchSize));
-
-            for (var col = 0; col < predictedOutput.cols; col += 1) {
-              var index1 = predictedOutput.colMaxCoeffIndex(col);
-              var index2 = correctOutput.colMaxCoeffIndex(col);
-
-              if (index1 === index2) {
-                accuracy++;
-              }
-            }
+          if (index1 === index2) {
+            accuracy++;
           }
         }
       }
