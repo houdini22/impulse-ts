@@ -1281,27 +1281,21 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
         var example = this.dataset.exampleAt(col);
 
         for (var row = 0; row < example.rows; row += 1) {
-          if (min > example.data[row][col]) {
-            min = example.data[row][col];
+          if (min > example.data[row][0]) {
+            min = example.data[row][0];
           }
 
-          if (max < example.data[row][col]) {
-            max = example.data[row][col];
+          if (max < example.data[row][0]) {
+            max = example.data[row][0];
           }
-
-          console.log(example.data[row][col]);
         }
       }
-
-      console.log(min, max);
 
       for (var _col = 0; _col < this.dataset.getNumberOfExamples(); _col += 1) {
         var _example = this.dataset.exampleAt(_col);
 
         for (var _row = 0; _row < _example.rows; _row += 1) {
-          if (_example && _example.data) {
-            this.dataset.data.data[_row][_col] = (_example.data[_row][_col] - min) / (max - min);
-          }
+          this.dataset.data.data[_row][_col] = (_example.data[_row][0] - min) / (max - min);
         }
       }
 

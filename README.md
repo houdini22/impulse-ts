@@ -37,13 +37,12 @@ const {
 ```javascript
 const {
     NetworkBuilder: { NetworkBuilder1D },
-    Layer: {
-        LogisticLayer,
-    },
+    Layer: { LogisticLayer },
     DatasetBuilder: { DatasetBuilder },
     Optimizer: { OptimizerAdam },
     Trainer: { MiniBatchTrainer },
     Computation: { ComputationCPU, setComputation },
+    DatasetModifier: { MinMaxScalingDatabaseModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -66,18 +65,21 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
-    (inputDataset) => {
-        DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(
-            async (outputDataset) => {
-                const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
-                trainer.setIterations(1);
-                trainer.train(inputDataset, outputDataset);
-                await network.save(path.resolve(__dirname, "./data/mnist.json"));
-            }
-        );
-    }
-);
+DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inputDataset) => {
+    console.log("Loaded mnist_x.csv");
+
+    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_y.csv")).then(async (outputDataset) => {
+        console.log("Loaded mnist_y.csv");
+
+        inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
+
+        const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
+        trainer.setIterations(3);
+        trainer.train(inputDataset, outputDataset);
+
+        await network.save(path.resolve(__dirname, "./data/mnist.json"));
+    });
+});
 ```
 
 ### Restore network and predict
