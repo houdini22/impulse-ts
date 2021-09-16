@@ -1,5 +1,5 @@
 import { Matrix } from "./matrix";
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 export const im2col = (
   input: Matrix,
@@ -19,10 +19,7 @@ export const im2col = (
     ((height - kernel_h + 2 * pad_h) / stride_h + 1);
   let currentResultCol = 0;
 
-  const result = getCurrentComputation().execute(
-    "setZeros",
-    new Matrix(rows, cols)
-  );
+  const result = getComputation().execute("setZeros", new Matrix(rows, cols));
 
   for (
     let boundingY = -pad_h;
@@ -75,7 +72,7 @@ export const maxpool = (
   const resultDepth = channels;
 
   let currentResultCol = 0;
-  const result = getCurrentComputation().execute(
+  const result = getComputation().execute(
     "setZeros",
     new Matrix(resultWidth * resultHeight * resultDepth, 1)
   );

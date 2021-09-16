@@ -3,10 +3,10 @@ import { ComputationGPU } from "./computationgpu";
 
 let currentComputation: AbstractComputation = new ComputationGPU();
 
-export const setCurrentComputation = (type: AbstractComputation): void => {
+export const setComputation = (type: AbstractComputation): void => {
   currentComputation = type;
 };
 
-export const getCurrentComputation = (): AbstractComputation => {
+export const getComputation = (): AbstractComputation => {
   return currentComputation;
 };

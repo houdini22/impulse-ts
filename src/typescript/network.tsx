@@ -1,7 +1,7 @@
 import { Dimension, Layers } from "./types";
 import { Matrix } from "./math/matrix";
 import * as fs from "fs";
-import { getCurrentComputation } from "./computation/utils";
+import { getComputation } from "./computation/utils";
 
 class Network {
   private dimensions: Dimension = null;
@@ -41,11 +41,7 @@ class Network {
   ): void {
     const m = X.cols;
 
-    let delta = getCurrentComputation().execute(
-      "elementWiseSubtract",
-      predictions,
-      Y
-    );
+    let delta = getComputation().execute("elementWiseSubtract", predictions, Y);
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       delta = this.layers[layer]

@@ -1,34 +1,34 @@
 import { AbstractLayer } from "./abstract";
 import { Dimension, Layers } from "../types";
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;
 
   configure(): void {
     this.W.resize(this.height, this.width);
-    this.W = getCurrentComputation().execute("fillRandom", this.W, this.width);
+    this.W = getComputation().execute("fillRandom", this.W, this.width);
 
     this.b.resize(this.height, 1);
-    this.b = getCurrentComputation().execute("fillRandom", this.b, this.width);
+    this.b = getComputation().execute("fillRandom", this.b, this.width);
 
     this.gW.resize(this.height, this.width);
-    this.gW = getCurrentComputation().execute("setZeros", this.gW);
+    this.gW = getComputation().execute("setZeros", this.gW);
 
     this.gb.resize(this.height, 1);
-    this.gb = getCurrentComputation().execute("setZeros", this.gb);
+    this.gb = getComputation().execute("setZeros", this.gb);
 
     this.cW.resize(this.height, this.width);
-    this.cW = getCurrentComputation().execute("setZeros", this.cW);
+    this.cW = getComputation().execute("setZeros", this.cW);
 
     this.cb.resize(this.height, 1);
-    this.cb = getCurrentComputation().execute("setZeros", this.cb);
+    this.cb = getComputation().execute("setZeros", this.cb);
 
     this.vW.resize(this.height, this.width);
-    this.vW = getCurrentComputation().execute("setZeros", this.vW);
+    this.vW = getComputation().execute("setZeros", this.vW);
 
     this.vb.resize(this.height, 1);
-    this.vb = getCurrentComputation().execute("setZeros", this.cb);
+    this.vb = getComputation().execute("setZeros", this.cb);
   }
 
   is1D(): boolean {

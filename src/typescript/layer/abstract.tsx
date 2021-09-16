@@ -1,7 +1,7 @@
 import { Matrix } from "../math/matrix";
 import { Dimension, Layers } from "../types";
 import { AbstractBackPropagation } from "./backpropagation/abstract";
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 abstract class AbstractLayer {
   public W: Matrix;
@@ -44,9 +44,9 @@ abstract class AbstractLayer {
   }
 
   forward(input: Matrix): Matrix {
-    this.Z = getCurrentComputation().execute(
+    this.Z = getComputation().execute(
       "elementWiseAdd",
-      getCurrentComputation().execute("multiply", this.W, input),
+      getComputation().execute("multiply", this.W, input),
       this.b.replicate(1, input.cols)
     );
     this.A = this.activation(this.Z);
@@ -115,7 +115,7 @@ abstract class AbstractLayer {
   abstract error(m: number): number;
 
   penalty(): number {
-    return getCurrentComputation().execute("penalty", this.W);
+    return getComputation().execute("penalty", this.W);
   }
 }
 

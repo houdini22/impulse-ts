@@ -18,6 +18,7 @@ import {
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
 } from "./dataset/datasetmodifier";
+import { ComputationCPU, ComputationGPU, setComputation } from "./computation";
 
 const Builders = { Builder1D, Builder3D };
 const Math = {
@@ -48,6 +49,11 @@ const DatasetModifiers = {
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
 };
+const Computations = {
+  ComputationCPU,
+  ComputationGPU,
+  setComputation,
+};
 
 export {
   Builders,
@@ -57,4 +63,5 @@ export {
   Optimizers,
   Trainers,
   DatasetModifiers,
+  Computations,
 };

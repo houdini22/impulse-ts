@@ -4,20 +4,20 @@ const {
   Layers: { LogisticLayer, SoftmaxLayer },
   Optimizers: { OptimizerGradientDescent, OptimizerAdam },
   Trainers: { MiniBatchTrainer },
+  Computations: { ComputationGPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
+
+setComputation(new ComputationGPU());
 
 const builder = new Builder1D([400]);
 builder.createLayer(LogisticLayer, (layer) => {
   layer.setSize([1000]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([500]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([200]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([10]);
 });
 

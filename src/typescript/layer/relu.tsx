@@ -1,15 +1,15 @@
 import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 class ReluLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getCurrentComputation().execute("reluActivation", m);
+    return getComputation().execute("reluActivation", m);
   }
 
   derivative(m: Matrix): Matrix {
-    return getCurrentComputation().execute("reluDerivative", m);
+    return getComputation().execute("reluDerivative", m);
   }
 
   getType(): LayerType {

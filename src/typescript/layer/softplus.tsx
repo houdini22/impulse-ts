@@ -1,15 +1,15 @@
 import { Matrix } from "../math/matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./abstract1d";
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 class SoftplusLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getCurrentComputation().execute("softplusActivation", m);
+    return getComputation().execute("softplusActivation", m);
   }
 
   derivative(m: Matrix): Matrix {
-    return getCurrentComputation().execute("softplusDerivative", m);
+    return getComputation().execute("softplusDerivative", m);
   }
 
   getType(): LayerType {

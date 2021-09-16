@@ -1,4 +1,4 @@
-import { getCurrentComputation } from "../computation/utils";
+import { getComputation } from "../computation/utils";
 
 export class Matrix {
   public rows = 0;
@@ -114,7 +114,7 @@ export class Matrix {
   }
 
   transpose(): Matrix {
-    return getCurrentComputation().execute("transpose", this);
+    return getComputation().execute("transpose", this);
   }
 
   conjugate(): Matrix {

@@ -19,7 +19,7 @@ export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
     })
     .setOutput([m1.rows, m2.cols]);
 
-  return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);
+  return new Matrix(m1.rows, m1.cols, kernel(m1.data, m2.data) as number[][]);
 };
 
 export const elementWiseDivideNumber = (m1: Matrix, num: number): Matrix => {
