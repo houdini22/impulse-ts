@@ -1,4 +1,11 @@
+#impulse-ts
+
+## This project is under heavy development and learning doesn't works for now.
+
+## Documentation
 Full API documentation available at [https://houdini22.github.io/impulse-ts/](https://houdini22.github.io/impulse-ts/).
+
+## Examples
 
 ### Exports
 
@@ -63,7 +70,7 @@ const {
     Trainer: {MiniBatchTrainer},
     Computation: {ComputationCPU, setComputation},
     DatasetModifier: {MinMaxScalingDatabaseModifier},
-} = require("../dist/impulse-ts.dev");
+} = require("impulse-ts");
 const path = require("path");
 
 setComputation(new ComputationCPU());
@@ -108,7 +115,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then((inpu
 const {
     Builder: {NetworkBuilder1D},
     Dataset: {DatasetBuilder},
-} = require("../dist/impulse-ts.dev");
+} = require("impulse-ts");
 const path = require("path");
 const timeStart = new Date().getTime();
 
