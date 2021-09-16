@@ -58,7 +58,7 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
             });
           } else if (layerData["type"] === "conv") {
             layerClass = ConvLayer;
-            builder.createLayer(layerClass, (layer) => {
+            builder.createLayer(layerClass, (layer: ConvLayer) => {
               layer.setSize(layerData["dimensions"]);
               layer.setFilterSize(layerData["filterSize"]);
               layer.setStride(layerData["stride"]);
@@ -67,7 +67,7 @@ class NetworkBuilder3D extends AbstractNetworkBuilder {
             });
           } else if (layerData["type"] === "maxpool") {
             layerClass = MaxPoolLayer;
-            builder.createLayer(layerClass, (layer) => {
+            builder.createLayer(layerClass, (layer: MaxPoolLayer) => {
               layer.setSize(layerData["dimensions"]);
               layer.setFilterSize(layerData["filterSize"]);
               layer.setStride(layerData["stride"]);

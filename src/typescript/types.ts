@@ -31,7 +31,6 @@ export type Layers =
   | TanhLayer
   | ReluLayer
   | SoftplusLayer
-  | AbstractLayer
   | ConvLayer
   | MaxPoolLayer
   | FullyConnectedLayer

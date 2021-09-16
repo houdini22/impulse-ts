@@ -1,6 +1,7 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
 import { getComputation } from "../../computation/utils";
+import {Matrix} from "../../math/Matrix";
 
 export class OptimizerGradientDescent extends AbstractOptimizer {
   optimize(layer: Layers): void {
@@ -15,8 +16,8 @@ export class OptimizerGradientDescent extends AbstractOptimizer {
         "elementWiseMultiplyNumber",
         layer.gW,
         learningRate
-      )
-    );
+      ) as Matrix
+    ) as Matrix;
     layer.b = getComputation().execute(
       "elementWiseSubtract",
       layer.b,
@@ -24,7 +25,7 @@ export class OptimizerGradientDescent extends AbstractOptimizer {
         "elementWiseMultiplyNumber",
         layer.gb,
         learningRate
-      )
-    );
+      ) as Matrix
+    ) as Matrix;
   }
 }

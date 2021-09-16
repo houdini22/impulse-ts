@@ -46,9 +46,9 @@ abstract class AbstractLayer {
   forward(input: Matrix): Matrix {
     this.Z = getComputation().execute(
       "elementWiseAdd",
-      getComputation().execute("multiply", this.W, input),
+      getComputation().execute("multiply", this.W, input) as Matrix,
       this.b.replicate(1, input.cols)
-    );
+    ) as Matrix;
     this.A = this.activation(this.Z);
     return this.A;
   }
@@ -115,7 +115,7 @@ abstract class AbstractLayer {
   abstract error(m: number): number;
 
   penalty(): number {
-    return getComputation().execute("penalty", this.W);
+    return getComputation().execute("penalty", this.W) as number;
   }
 }
 

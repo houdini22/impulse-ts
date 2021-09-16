@@ -116,7 +116,7 @@ export class Matrix {
   }
 
   transpose(): Matrix {
-    return getComputation().execute("transpose", this);
+    return getComputation().execute("transpose", this) as Matrix;
   }
 
   conjugate(): Matrix {

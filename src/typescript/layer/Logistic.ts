@@ -5,11 +5,11 @@ import { getComputation } from "../computation/utils";
 
 class LogisticLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getComputation().execute("logisticActivation", m);
+    return getComputation().execute("logisticActivation", m) as Matrix;
   }
 
   derivative(m: Matrix): Matrix {
-    return getComputation().execute("logisticDerivative", m);
+    return getComputation().execute("logisticDerivative", m) as Matrix;
   }
 
   getType(): LayerType {
@@ -17,7 +17,7 @@ class LogisticLayer extends AbstractLayer1D {
   }
 
   loss(output: Matrix, predictions: Matrix): number {
-    return getComputation().execute("logisticLoss", output, predictions);
+    return getComputation().execute("logisticLoss", output, predictions) as number;
   }
 
   error(m: number): number {

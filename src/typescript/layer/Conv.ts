@@ -19,37 +19,37 @@ class ConvLayer extends AbstractLayer3D {
       "fillRandom",
       this.W,
       this.width * this.height * this.depth
-    );
+    ) as Matrix;
 
     this.b.resize(this.numFilters, 1);
-    this.b = getComputation().execute("fillRandom", this.b, 0.01);
+    this.b = getComputation().execute("fillRandom", this.b, 0.01) as Matrix;
 
     this.gW.resize(
       this.numFilters,
       this.filterSize * this.filterSize * this.depth
     );
-    this.gW = getComputation().execute("setZeros", this.gW);
+    this.gW = getComputation().execute("setZeros", this.gW) as Matrix;
 
     this.gb.resize(this.numFilters, 1);
-    this.gb = getComputation().execute("setZeros", this.gb);
+    this.gb = getComputation().execute("setZeros", this.gb) as Matrix;
 
     this.cW.resize(
       this.numFilters,
       this.filterSize * this.filterSize * this.depth
     );
-    this.cW = getComputation().execute("setZeros", this.gb);
+    this.cW = getComputation().execute("setZeros", this.gb) as Matrix;
 
     this.cb.resize(this.numFilters, 1);
-    this.cb = getComputation().execute("setZeros", this.cb);
+    this.cb = getComputation().execute("setZeros", this.cb) as Matrix;
 
     this.vW.resize(
       this.numFilters,
       this.filterSize * this.filterSize * this.depth
     );
-    this.vW = getComputation().execute("setZeros", this.vW);
+    this.vW = getComputation().execute("setZeros", this.vW) as Matrix;
 
     this.vb.resize(this.numFilters, 1);
-    this.vb = getComputation().execute("setZeros", this.vb);
+    this.vb = getComputation().execute("setZeros", this.vb) as Matrix;
   }
 
   getOutputHeight(): number {
@@ -122,7 +122,7 @@ class ConvLayer extends AbstractLayer3D {
       const tmp = (this.Z = getComputation()
         .execute(
           "elementWiseAdd",
-          getComputation().execute("multiply", this.W, conv),
+          getComputation().execute("multiply", this.W, conv) as Matrix,
           this.b.replicate(1, input.cols)
         )
         .rollToColMatrix());
@@ -137,11 +137,11 @@ class ConvLayer extends AbstractLayer3D {
   }
 
   activation(m: Matrix): Matrix {
-    return getComputation().execute("reluActivation", m);
+    return getComputation().execute("reluActivation", m) as Matrix;
   }
 
   derivative(m: Matrix): Matrix {
-    return getComputation().execute("reluDerivative", m);
+    return getComputation().execute("reluDerivative", m) as Matrix;
   }
 
   getType(): LayerType {
