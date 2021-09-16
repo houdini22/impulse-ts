@@ -9,6 +9,7 @@ import {
   SoftplusLayer,
   TanhLayer,
 } from "../layer/";
+import { Matrix } from "../math/matrix";
 
 class Builder1D extends AbstractBuilder {
   firstLayerTransition(layer: Layers): void {
@@ -42,15 +43,15 @@ class Builder1D extends AbstractBuilder {
           }
 
           builder.createLayer(layerClass, (layer) => {
-            layer.setSize(layerData["dimensions"]);
+            layer.setSize(layerData["size"]);
           });
         });
 
         const network = builder.getNetwork();
 
         network.getLayers().forEach((layer, i) => {
-          layer.W = json["layers"]["W"];
-          layer.b = json["layers"]["b"];
+          layer.W = new Matrix(json["layers"][i]['weights']["W"].length, json["layers"][i]['weights']["W"][0].length, json["layers"][i]['weights']["W"]);
+          layer.b = new Matrix(json["layers"][i]['weights']["b"].length, json["layers"][i]['weights']["b"][0].length, json["layers"][i]['weights']["b"]);
         });
 
         resolve(network);

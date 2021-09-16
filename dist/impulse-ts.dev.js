@@ -89,6 +89,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _layer___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer/ */ "./src/typescript/layer/index.tsx");
+/* harmony import */ var _math_matrix__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../math/matrix */ "./src/typescript/math/matrix.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -110,6 +111,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -159,13 +161,13 @@ var Builder1D = /*#__PURE__*/function (_AbstractBuilder) {
             }
 
             builder.createLayer(layerClass, function (layer) {
-              layer.setSize(layerData["dimensions"]);
+              layer.setSize(layerData["size"]);
             });
           });
           var network = builder.getNetwork();
           network.getLayers().forEach(function (layer, i) {
-            layer.W = json["layers"]["W"];
-            layer.b = json["layers"]["b"];
+            layer.W = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]['weights']["W"].length, json["layers"][i]['weights']["W"][0].length, json["layers"][i]['weights']["W"]);
+            layer.b = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]['weights']["b"].length, json["layers"][i]['weights']["b"][0].length, json["layers"][i]['weights']["b"]);
           });
           resolve(network);
         });
@@ -1282,9 +1284,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setComputation": () => (/* binding */ setComputation),
 /* harmony export */   "getComputation": () => (/* binding */ getComputation)
 /* harmony export */ });
-/* harmony import */ var _computationgpu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./computationgpu */ "./src/typescript/computation/computationgpu.tsx");
+/* harmony import */ var _computationcpu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./computationcpu */ "./src/typescript/computation/computationcpu.tsx");
 
-var currentComputation = new _computationgpu__WEBPACK_IMPORTED_MODULE_0__.ComputationGPU();
+var currentComputation = new _computationcpu__WEBPACK_IMPORTED_MODULE_0__.ComputationCPU();
 var setComputation = function setComputation(type) {
   currentComputation = type;
 };
@@ -3996,13 +3998,15 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
     _defineProperty(this, "iterations", 1000);
 
-    _defineProperty(this, "learningRate", 0.1);
+    _defineProperty(this, "learningRate", 0.01);
 
     _defineProperty(this, "verbose", true);
 
     _defineProperty(this, "verboseStep", 1);
 
-    _defineProperty(this, "stepCallback", Function);
+    _defineProperty(this, "stepCallback", function () {
+      return undefined;
+    });
 
     this.network = network;
     this.optimizer = optimizer;
@@ -4207,11 +4211,13 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
         }
 
         if (typeof this.stepCallback === "function") {
-          this.stepCallback({
+          this.stepCallback.call(null, {
             iteration: i
           });
         }
       }
+
+      return this;
     }
   }]);
 

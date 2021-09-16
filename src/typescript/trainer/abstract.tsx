@@ -16,15 +16,17 @@ export abstract class AbstractTrainer {
   optimizer: AbstractOptimizer = null;
   regularization = 0;
   iterations = 1000;
-  learningRate = 0.1;
+  learningRate = 0.01;
   verbose = true;
   verboseStep = 1;
-  stepCallback = Function;
+  stepCallback = () => undefined;
 
   constructor(network: Network, optimizer: AbstractOptimizer) {
     this.network = network;
     this.optimizer = optimizer;
   }
+
+  abstract train(inputDataset: Dataset, outputDataset: Dataset): AbstractTrainer;
 
   setRegularization(regularization: number): AbstractTrainer {
     this.regularization = regularization;

@@ -9,7 +9,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
     return this;
   }
 
-  train(inputDataset: Dataset, outputDataset: Dataset): void {
+  train(inputDataset: Dataset, outputDataset: Dataset): MiniBatchTrainer {
     const numberOfExamples = inputDataset.getNumberOfExamples();
     const startTime = new Date().getTime();
 
@@ -61,10 +61,12 @@ export class MiniBatchTrainer extends AbstractTrainer {
       }
 
       if (typeof this.stepCallback === "function") {
-        this.stepCallback({
+        this.stepCallback.call(null, {
           iteration: i,
         });
       }
     }
+
+    return this;
   }
 }

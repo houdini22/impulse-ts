@@ -8,14 +8,11 @@ const path = require("path");
 const builder = new Builder1D([400]);
 builder.createLayer(LogisticLayer, (layer) => {
   layer.setSize([1000]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([500]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([200]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([10]);
 });
 

@@ -14,24 +14,18 @@ const path = require("path");
 const builder = new Builder3D([20, 20, 1]);
 builder.createLayer(ConvLayer, (layer) => {
   layer.setFilterSize(4).setPadding(1).setStride(1).setNumFilters(32);
-});
-builder.createLayer(MaxPoolLayer, (layer) => {
+}).createLayer(MaxPoolLayer, (layer) => {
   layer.setFilterSize(2).setStride(2);
-});
-builder.createLayer(ConvLayer, (layer) => {
+}).createLayer(ConvLayer, (layer) => {
   layer.setFilterSize(3).setPadding(1).setStride(1).setNumFilters(64);
-});
-builder.createLayer(MaxPoolLayer, (layer) => {
+}).createLayer(MaxPoolLayer, (layer) => {
   layer.setFilterSize(2).setStride(2);
-});
-builder.createLayer(FullyConnectedLayer, (layer) => {});
-builder.createLayer(TanhLayer, (layer) => {
+}).createLayer(FullyConnectedLayer, (layer) => {})
+    .createLayer(TanhLayer, (layer) => {
   layer.setSize([1024]);
-});
-builder.createLayer(TanhLayer, (layer) => {
+}).createLayer(TanhLayer, (layer) => {
   layer.setSize([256]);
-});
-builder.createLayer(LogisticLayer, (layer) => {
+}).createLayer(LogisticLayer, (layer) => {
   layer.setSize([10]);
 });
 
