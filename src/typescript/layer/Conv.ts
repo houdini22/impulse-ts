@@ -100,8 +100,11 @@ export class ConvLayer extends AbstractLayer3D {
         this.stride,
         this.stride
       );
-      const tmp = getComputation()
-        .execute("add", getComputation().execute("multiply", this.W, conv) as Matrix, this.b.replicate(1, input.cols)) as Matrix;
+      const tmp = getComputation().execute(
+        "add",
+        getComputation().execute("multiply", this.W, conv) as Matrix,
+        this.b.replicate(1, input.cols)
+      ) as Matrix;
 
       result.setCol(i, tmp.rollToColMatrix());
     }

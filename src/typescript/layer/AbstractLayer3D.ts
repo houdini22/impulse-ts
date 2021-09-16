@@ -43,5 +43,4 @@ abstract class AbstractLayer3D extends AbstractLayer {
   abstract getFilterSize(): number;
 }
 
-
 export { AbstractLayer3D };

@@ -57,7 +57,10 @@ export const maxpool = (
   const resultDepth = channels;
 
   let currentResultCol = 0;
-  const result = getComputation().execute("fillZeros", new Matrix(resultWidth * resultHeight * resultDepth, 1)) as Matrix;
+  const result = getComputation().execute(
+    "fillZeros",
+    new Matrix(resultWidth * resultHeight * resultDepth, 1)
+  ) as Matrix;
 
   for (let boundingY = 0; boundingY + kernel_h <= height; boundingY += stride_h) {
     for (let boundingX = 0; boundingX + kernel_w <= width; boundingX += stride_w) {
