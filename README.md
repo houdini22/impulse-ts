@@ -1,3 +1,5 @@
+Full API documentation available at [https://houdini22.github.io/impulse-ts/](https://houdini22.github.io/impulse-ts/).
+
 ### Exports
 ```javascript
 const {
