@@ -29,7 +29,7 @@ builder
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize([200]);
   })
-  .createLayer(SoftmaxLayer, (layer) => {
+  .createLayer(LogisticLayer, (layer) => {
     layer.setSize([10]);
   });
 
