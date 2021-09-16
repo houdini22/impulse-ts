@@ -1,6 +1,6 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
-import { getComputation } from "../../Computation/utils";
+import { getComputation } from "../../Computation";
 import { Matrix } from "../../Math/Matrix";
 
 export class OptimizerAdadelta extends AbstractOptimizer {
@@ -14,7 +14,11 @@ export class OptimizerAdadelta extends AbstractOptimizer {
     layer.cW = getComputation().execute(
       "add",
       getComputation().execute("multiplyNumber", layer.cW, gamma) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gW, 1.0 - gamma) as Matrix
+      getComputation().execute(
+        "multiplyNumber",
+        getComputation().execute("elementWiseMultiply", layer.gW, layer.gW) as Matrix,
+        1.0 - gamma
+      ) as Matrix
     ) as Matrix;
 
     const deltaParameters = getComputation().execute(

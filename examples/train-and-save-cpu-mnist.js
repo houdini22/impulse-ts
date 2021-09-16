@@ -38,8 +38,8 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
     const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-    trainer.setIterations(5);
-    trainer.setLearningRate(0.1);
+    trainer.setIterations(1);
+    trainer.setLearningRate(0.005);
     trainer.setBatchSize(100);
     trainer.setRegularization(0.5);
     trainer.train(inputDataset, outputDataset);
