@@ -1,28 +1,49 @@
+### Exports
+```javascript
+const {
+  NetworkBuilder: { NetworkBuilder1D, NetworkBuilder3D },
+  Math: { Matrix },
+  Layer: {
+    LogisticLayer,
+    ConvLayer,
+    FullyConnectedLayer,
+    MaxPoolLayer,
+    PurelinLayer,
+    ReluLayer,
+    SoftmaxLayer,
+    TanhLayer,
+  },
+  Dataset: { Dataset },
+  DatasetBuilder: { DatasetBuilder },
+  Optimizer: { OptimizerGradientDescent, OptimizerAdam },
+  Trainer: { MiniBatchTrainer },
+  DatasetModifier: {
+    CallbackDatabaseModifier,
+    MinMaxScalingDatabaseModifier,
+    MissingDataScalingDatabaseModifier,
+  },
+  Computation: { ComputationCPU, ComputationGPU, setComputation },
+} = require("impulse-ts");
+```
+
 ### Create network, train network and save.
 
 ```javascript
 const {
-    Builders: { Builder1D, Builder3D },
-    Dataset: { DatasetBuilder },
-    Layers: {
+    NetworkBuilder: { NetworkBuilder1D },
+    Layer: {
         LogisticLayer,
-        ConvLayer,
-        FullyConnectedLayer,
-        MaxPoolLayer,
-        PurelinLayer,
-        ReluLayer,
-        SoftmaxLayer,
-        TanhLayer,
     },
-    Optimizers: { OptimizerGradientDescent, OptimizerAdam },
-    Trainers: { MiniBatchTrainer },
-    Computations: { ComputationCPU, ComputationGPU, setComputation },
+    DatasetBuilder: { DatasetBuilder },
+    Optimizer: { OptimizerAdam },
+    Trainer: { MiniBatchTrainer },
+    Computation: { ComputationCPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
 setComputation(new ComputationCPU());
 
-const builder = new Builder1D([400]);
+const builder = new NetworkBuilder1D([400]);
 builder
     .createLayer(LogisticLayer, (layer) => {
         layer.setSize([1000]);
@@ -56,13 +77,13 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
 ### Restore network and predict
 ```javascript
 const {
-  Builders: { Builder1D },
+  Builder: { NetworkBuilder1D },
   Dataset: { DatasetBuilder },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
 
-Builder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
+NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
   (network) => {
     DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_x.csv")).then(
       (inputDataset) => {

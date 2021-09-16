@@ -1,11 +1,11 @@
 const {
-  Builders: { Builder1D },
-  Dataset: { DatasetBuilder },
-  Layers: { SoftmaxLayer, LogisticLayer },
+  NetworkBuilder: { NetworkBuilder1D },
+  DatasetBuilder: { DatasetBuilder },
+  Layer: { LogisticLayer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
-const builder = new Builder1D([400]);
+const builder = new NetworkBuilder1D([400]);
 builder
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize([1000]);

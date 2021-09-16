@@ -1,17 +1,17 @@
 const {
-  Builders: { Builder3D },
-  Dataset: { DatasetBuilder },
-  Layers: {
-    LogisticLayer,
-    TanhLayer,
-    ConvLayer,
-    MaxPoolLayer,
-    FullyConnectedLayer,
-  },
+    NetworkBuilder: { NetworkBuilder3D },
+    Layer: {
+        LogisticLayer,
+        ConvLayer,
+        FullyConnectedLayer,
+        MaxPoolLayer,
+        TanhLayer,
+    },
+    DatasetBuilder: { DatasetBuilder },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
-const builder = new Builder3D([20, 20, 1]);
+const builder = new NetworkBuilder3D([20, 20, 1]);
 builder
   .createLayer(ConvLayer, (layer) => {
     layer.setFilterSize(4).setPadding(1).setStride(1).setNumFilters(32);

@@ -1,4 +1,4 @@
-import { Builder1D, Builder3D } from "./builder";
+import { NetworkBuilder1D, NetworkBuilder3D } from "./network-builder";
 import {
   SoftmaxLayer,
   LogisticLayer,
@@ -10,7 +10,10 @@ import {
   MaxPoolLayer,
 } from "./layer";
 import { Matrix } from "./math/Matrix";
-import { DatasetBuilder } from "./dataset";
+import {
+  DatasetBuilder as DatasetBuilderBuilder,
+  Dataset as DatasetDataset,
+} from "./dataset";
 import { OptimizerAdam, OptimizerGradientDescent } from "./trainer/optimizer";
 import { MiniBatchTrainer } from "./trainer";
 import {
@@ -20,11 +23,11 @@ import {
 } from "./dataset/datasetmodifier";
 import { ComputationCPU, ComputationGPU, setComputation } from "./computation";
 
-const Builders = { Builder1D, Builder3D };
+const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
 const Math = {
   Matrix,
 };
-const Layers = {
+const Layer = {
   SoftmaxLayer,
   LogisticLayer,
   ReluLayer,
@@ -34,34 +37,38 @@ const Layers = {
   MaxPoolLayer,
   FullyConnectedLayer,
 };
-const Dataset = {
-  DatasetBuilder: DatasetBuilder,
+const DatasetBuilder = {
+  DatasetBuilder: DatasetBuilderBuilder,
 };
-const Optimizers = {
+const Optimizer = {
   OptimizerAdam,
   OptimizerGradientDescent,
 };
-const Trainers = {
+const Trainer = {
   MiniBatchTrainer,
 };
-const DatasetModifiers = {
+const DatasetModifier = {
   CallbackDatabaseModifier,
   MinMaxScalingDatabaseModifier,
   MissingDataScalingDatabaseModifier,
 };
-const Computations = {
+const Computation = {
   ComputationCPU,
   ComputationGPU,
   setComputation,
 };
+const Dataset = {
+  Dataset: DatasetDataset,
+};
 
 export {
-  Builders,
+  NetworkBuilder,
   Math,
-  Layers,
+  Layer,
   Dataset,
-  Optimizers,
-  Trainers,
-  DatasetModifiers,
-  Computations,
+  DatasetBuilder,
+  Optimizer,
+  Trainer,
+  DatasetModifier,
+  Computation,
 };

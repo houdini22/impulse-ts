@@ -1,25 +1,18 @@
 const {
-  Builders: { Builder1D, Builder3D },
-  Dataset: { DatasetBuilder },
-  Layers: {
+  NetworkBuilder: { NetworkBuilder1D },
+  Layer: {
     LogisticLayer,
-    ConvLayer,
-    FullyConnectedLayer,
-    MaxPoolLayer,
-    PurelinLayer,
-    ReluLayer,
-    SoftmaxLayer,
-    TanhLayer,
   },
-  Optimizers: { OptimizerGradientDescent, OptimizerAdam },
-  Trainers: { MiniBatchTrainer },
-  Computations: { ComputationCPU, ComputationGPU, setComputation },
+  DatasetBuilder: { DatasetBuilder },
+  Optimizer: { OptimizerAdam },
+  Trainer: { MiniBatchTrainer },
+  Computation: { ComputationCPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
 setComputation(new ComputationCPU());
 
-const builder = new Builder1D([400]);
+const builder = new NetworkBuilder1D([400]);
 builder
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize([1000]);

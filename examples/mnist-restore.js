@@ -1,11 +1,11 @@
 const {
-  Builders: { Builder1D },
-  Dataset: { DatasetBuilder },
+  NetworkBuilder: { NetworkBuilder1D },
+  DatasetBuilder: { DatasetBuilder },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
 
-Builder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
+NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
   (network) => {
     const timeEnd = new Date().getTime();
     console.log(`${timeEnd - timeStart} ms.`);

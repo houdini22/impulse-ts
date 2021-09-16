@@ -1,25 +1,18 @@
 const {
-  Builders: { Builder1D, Builder3D },
-  Dataset: { DatasetBuilder },
-  Layers: {
-    LogisticLayer,
-    ConvLayer,
-    FullyConnectedLayer,
-    MaxPoolLayer,
-    PurelinLayer,
-    ReluLayer,
-    SoftmaxLayer,
-    TanhLayer,
-  },
-  Optimizers: { OptimizerGradientDescent, OptimizerAdam },
-  Trainers: { MiniBatchTrainer },
-  Computations: { ComputationCPU, ComputationGPU, setComputation },
+    NetworkBuilder: { NetworkBuilder1D },
+    Layer: {
+        LogisticLayer,
+    },
+    DatasetBuilder: { DatasetBuilder },
+    Optimizer: { OptimizerGradientDescent },
+    Trainer: { MiniBatchTrainer },
+    Computation: { ComputationCPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
 setComputation(new ComputationCPU());
 
-const builder = new Builder1D([4]);
+const builder = new NetworkBuilder1D([4]);
 builder
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize([20]);
@@ -48,7 +41,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then(
         );
         trainer.setIterations(1);
         trainer.setBatchSize(10);
-        trainer.setLearningRate(0.001);
+        trainer.setLearningRate(0.00001);
         trainer.train(inputDataset, outputDataset);
         await network.save(path.resolve(__dirname, "./data/iris.json"));
       }
