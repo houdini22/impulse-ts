@@ -166,8 +166,8 @@ var Builder1D = /*#__PURE__*/function (_AbstractBuilder) {
           });
           var network = builder.getNetwork();
           network.getLayers().forEach(function (layer, i) {
-            layer.W = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]['weights']["W"].length, json["layers"][i]['weights']["W"][0].length, json["layers"][i]['weights']["W"]);
-            layer.b = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]['weights']["b"].length, json["layers"][i]['weights']["b"][0].length, json["layers"][i]['weights']["b"]);
+            layer.W = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["W"].length, json["layers"][i]["weights"]["W"][0].length, json["layers"][i]["weights"]["W"]);
+            layer.b = new _math_matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["b"].length, json["layers"][i]["weights"]["b"][0].length, json["layers"][i]["weights"]["b"]);
           });
           resolve(network);
         });
@@ -995,8 +995,7 @@ var softmaxActivation = function softmaxActivation(m) {
   }).setOutput([m.rows, m.cols]);
   var data = new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
   var divider = new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(1, m.cols, data.colwiseSum().data).replicate(m.rows, 1);
-  var result = new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
-  return result;
+  return new _math_matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
 };
 var softmaxLoss = function softmaxLoss(output, predictions) {
   var kernel = gpu.createKernel(function (a) {
@@ -1334,7 +1333,6 @@ var Dataset = /*#__PURE__*/function () {
       data[example] = [];
 
       for (var dataIndex = 0; dataIndex < exampleSize; dataIndex += 1) {
-        console.log(arr[example][dataIndex]);
         data[example][dataIndex] = arr[example][dataIndex].length ? Number(arr[example][dataIndex]) : NaN;
       }
     }
@@ -2590,6 +2588,31 @@ var BackpropagationFactory = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/typescript/layer/backpropagation/index.tsx":
+/*!********************************************************!*\
+  !*** ./src/typescript/layer/backpropagation/index.tsx ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BackpropagationToMaxPool": () => (/* reexport safe */ _backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_2__.BackpropagationToMaxPool),
+/* harmony export */   "Backpropagation3Dto1D": () => (/* reexport safe */ _backpropagationto3dto1d__WEBPACK_IMPORTED_MODULE_3__.Backpropagation3Dto1D),
+/* harmony export */   "BackpropagationToConv": () => (/* reexport safe */ _backpropagationtoconv__WEBPACK_IMPORTED_MODULE_1__.BackpropagationToConv),
+/* harmony export */   "Backpropagation1Dto1D": () => (/* reexport safe */ _backpropagation1dto1d__WEBPACK_IMPORTED_MODULE_0__.Backpropagation1Dto1D)
+/* harmony export */ });
+/* harmony import */ var _backpropagation1dto1d__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./backpropagation1dto1d */ "./src/typescript/layer/backpropagation/backpropagation1dto1d.tsx");
+/* harmony import */ var _backpropagationtoconv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./backpropagationtoconv */ "./src/typescript/layer/backpropagation/backpropagationtoconv.tsx");
+/* harmony import */ var _backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./backpropagationtomaxpool */ "./src/typescript/layer/backpropagation/backpropagationtomaxpool.tsx");
+/* harmony import */ var _backpropagationto3dto1d__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./backpropagationto3dto1d */ "./src/typescript/layer/backpropagation/backpropagationto3dto1d.tsx");
+
+
+
+
+
+
+/***/ }),
+
 /***/ "./src/typescript/layer/conv.tsx":
 /*!***************************************!*\
   !*** ./src/typescript/layer/conv.tsx ***!
@@ -3050,7 +3073,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../math/math */ "./src/typescript/math/math.tsx");
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.tsx");
 /* harmony import */ var _abstract3d__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./abstract3d */ "./src/typescript/layer/abstract3d.tsx");
-/* harmony import */ var _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backpropagation/backpropagationtomaxpool */ "./src/typescript/layer/backpropagation/backpropagationtomaxpool.tsx");
+/* harmony import */ var _backpropagation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backpropagation */ "./src/typescript/layer/backpropagation/index.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3093,7 +3116,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   _createClass(MaxPoolLayer, [{
     key: "configure",
     value: function configure() {
-      this.backPropagation = new _backpropagation_backpropagationtomaxpool__WEBPACK_IMPORTED_MODULE_4__.BackpropagationToMaxPool(this, this.previousLayer);
+      this.backPropagation = new _backpropagation__WEBPACK_IMPORTED_MODULE_4__.BackpropagationToMaxPool(this, this.previousLayer);
     }
   }, {
     key: "getOutputHeight",
@@ -4080,11 +4103,10 @@ var AbstractTrainer = /*#__PURE__*/function () {
         }
       }
 
-      var result = {
+      return {
         cost: cost,
         accuracy: (accuracy - 1) / numberOfExamples * 100
       };
-      return result;
     }
   }]);
 
