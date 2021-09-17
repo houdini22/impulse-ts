@@ -14,16 +14,10 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([400]);
 builder
-  .createLayer(ReluLayer, (layer) => {
-    layer.setSize(1000);
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize(128);
   })
-  .createLayer(ReluLayer, (layer) => {
-    layer.setSize(500);
-  })
-  .createLayer(ReluLayer, (layer) => {
-    layer.setSize(200);
-  })
-  .createLayer(ReluLayer, (layer) => {
+  .createLayer(LogisticLayer, (layer) => {
     layer.setSize(10);
   });
 
@@ -48,8 +42,8 @@ DatasetBuilder.fromSource(
 
     console.log(trainer.cost(inputDataset, outputDataset));
 
-    trainer.setIterations(10);
-    trainer.setLearningRate(0.0007);
+    trainer.setIterations(10000);
+    trainer.setLearningRate(0.005);
     trainer.setBatchSize(100);
     trainer.train(inputDataset, outputDataset);
 

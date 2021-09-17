@@ -33,17 +33,14 @@ export class OptimizerAdam extends AbstractOptimizer {
     layer.sW = getComputation().execute(
       "add",
       getComputation().execute("multiplyNumber", layer.sW, this.beta2) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gW, 1 - this.beta2) as Matrix
-    ) as Matrix;
-
-    const sCorrected = getComputation().execute(
-      "sqrt",
       getComputation().execute(
         "multiplyNumber",
-        getComputation().execute("elementWiseMultiply", layer.gW, layer.gW) as Matrix,
-        1 - Math.pow(this.beta2, t)
+        getComputation().execute("pow", layer.gW, 2) as Matrix,
+        1 - this.beta2
       ) as Matrix
     ) as Matrix;
+
+    const sCorrected = getComputation().execute("divideNumber", layer.sW, 1 - Math.pow(this.beta2, this.t)) as Matrix;
 
     layer.W = getComputation().execute(
       "subtract",

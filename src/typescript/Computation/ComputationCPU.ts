@@ -117,14 +117,19 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
 };
 
 export const logisticBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
-  return elementWiseMultiply(oldY, elementWiseMultiply(subtractFromNumber(sigma, 1), oldY)) as Matrix;
-};
-
-export const softmaxBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
-  return elementWiseMultiply(
-    oldY,
-    subtract(sigma, elementWiseMultiply(sigma, oldY).colwiseSum().replicate(oldY.rows, 1))
-  ) as Matrix;
+  const data = [];
+  for (let row = 0; row < oldY.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < oldY.cols; col += 1) {
+      data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
+    }
+  }
+  const s = new Matrix(oldY.rows, oldY.cols, data);
+  return new Matrix(
+    oldY.rows,
+    oldY.cols,
+    elementWiseMultiply(elementWiseMultiply(oldY, s), subtractFromNumber(s, 1)).data
+  );
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {
@@ -369,6 +374,43 @@ export const pow = (m1: Matrix, pow: number): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
+export const log = (m1: Matrix, pow: number): Matrix => {
+  const data = [];
+  for (let row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = Math.log(m1.data[row][col] + 1e-8);
+      }
+    }
+  }
+  return new Matrix(m1.rows, m1.cols, data);
+};
+
+export const logMinusOne = (m1: Matrix, pow: number): Matrix => {
+  const data = [];
+  for (let row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = Math.log(1 - m1.data[row][col]);
+      }
+    }
+  }
+  return new Matrix(m1.rows, m1.cols, data);
+};
+
+export const addNumber = (m1: Matrix, num: number): Matrix => {
+  const data = [];
+  for (let row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < m1.cols; col += 1) {
+      data[row][col] = m1.data[row][col] + num;
+    }
+  }
+  return new Matrix(m1.rows, m1.cols, data);
+};
+
 export const transpose = (m: Matrix): Matrix => {
   const data = [];
   for (let col = 0; col < m.cols; col += 1) {
@@ -410,6 +452,8 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("purelinLoss", purelinLoss);
     this.addKernel("transpose", transpose);
     this.addKernel("pow", pow);
-    this.addKernel("softmaxBackpropagation", softmaxBackpropagation);
+    this.addKernel("log", log);
+    this.addKernel("logMinusOne", logMinusOne);
+    this.addKernel("addNumber", addNumber);
   }
 }

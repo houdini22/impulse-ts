@@ -36,26 +36,10 @@ class Network {
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
     const m = X.cols;
 
-    /*let sigma = getComputation().execute(
-      "multiplyNumber",
-      getComputation().execute(
-        "subtract",
-        getComputation().execute("elementWiseDivide", Y, predictions) as Matrix,
-        getComputation().execute(
-          "elementWiseDivide",
-          getComputation().execute("subtractFromNumber", Y, 1) as Matrix,
-          getComputation().execute("subtractFromNumber", predictions, 1) as Matrix
-        ) as Matrix
-      ) as Matrix,
-      -1
-    ) as Matrix;
-*/ let sigma = getComputation().execute("subtract", predictions, Y) as Matrix;
-
+    let sigma = getComputation().execute("subtract", predictions, Y) as Matrix;
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-      const backPropagation = this.layers[layer].getBackPropagation();
-      if (backPropagation) {
-        sigma = backPropagation.propagate(X, m, regularization, sigma);
-      }
+      const dZ = this.layers[layer].backpropagation(sigma);
+      this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
     }
   }
 
@@ -64,7 +48,7 @@ class Network {
   }
 
   error(m: number): number {
-    return this.layers[this.layers.length - 1].error(m);
+    return 0;
   }
 
   save(path: string): Promise<string> {

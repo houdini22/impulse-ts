@@ -1,8 +1,8 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: { LogisticLayer, SoftmaxLayer },
+  Layer: { LogisticLayer, SoftmaxLayer, ReluLayer },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerGradientDescent },
+  Optimizer: { OptimizerGradientDescent, OptimizerAdam },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
@@ -14,9 +14,6 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([4]);
 builder
-  .createLayer(LogisticLayer, (layer) => {
-    layer.setSize(20);
-  })
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize(10);
   })
@@ -37,9 +34,9 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
         const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(5);
+        trainer.setIterations(500);
         trainer.setBatchSize(10);
-        trainer.setLearningRate(0.1);
+        trainer.setLearningRate(0.001);
         console.log("cost", trainer.cost(inputDataset, outputDataset));
         trainer.train(inputDataset, outputDataset);
         await network.save(path.resolve(__dirname, "./data/iris.json"));

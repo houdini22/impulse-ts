@@ -21,7 +21,7 @@ class SoftmaxLayer extends AbstractLayer1D {
   }
 
   backpropagation(delta: Matrix): Matrix {
-    this.dZ = getComputation().execute("softmaxBackpropagation", delta, this.A) as Matrix;
+    this.gW = getComputation().execute("multiply", this.A.transpose(), this.A) as Matrix;
     return this.dZ;
   }
 }

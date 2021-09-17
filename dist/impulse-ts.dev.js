@@ -68,7 +68,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "logisticActivation": () => (/* binding */ logisticActivation),
 /* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss),
 /* harmony export */   "logisticBackpropagation": () => (/* binding */ logisticBackpropagation),
-/* harmony export */   "softmaxBackpropagation": () => (/* binding */ softmaxBackpropagation),
 /* harmony export */   "tanhActivation": () => (/* binding */ tanhActivation),
 /* harmony export */   "reluActivation": () => (/* binding */ reluActivation),
 /* harmony export */   "reluBackpropagation": () => (/* binding */ reluBackpropagation),
@@ -86,6 +85,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "multiplyNumber": () => (/* binding */ multiplyNumber),
 /* harmony export */   "subtractFromNumber": () => (/* binding */ subtractFromNumber),
 /* harmony export */   "pow": () => (/* binding */ pow),
+/* harmony export */   "log": () => (/* binding */ log),
+/* harmony export */   "logMinusOne": () => (/* binding */ logMinusOne),
+/* harmony export */   "addNumber": () => (/* binding */ addNumber),
 /* harmony export */   "transpose": () => (/* binding */ transpose),
 /* harmony export */   "ComputationCPU": () => (/* binding */ ComputationCPU)
 /* harmony export */ });
@@ -231,10 +233,18 @@ var logisticLoss = function logisticLoss(output, predictions) {
   return add(elementWiseMultiply(multiplyNumber(firstMatrix, -1), output), elementWiseMultiply(multiplyNumber(toMultiply1, -1), subtractFromNumber(toMultiply2, 1))).sum();
 };
 var logisticBackpropagation = function logisticBackpropagation(sigma, oldY) {
-  return elementWiseMultiply(oldY, elementWiseMultiply(subtractFromNumber(sigma, 1), oldY));
-};
-var softmaxBackpropagation = function softmaxBackpropagation(sigma, oldY) {
-  return elementWiseMultiply(oldY, subtract(sigma, elementWiseMultiply(sigma, oldY).colwiseSum().replicate(oldY.rows, 1)));
+  var data = [];
+
+  for (var row = 0; row < oldY.rows; row += 1) {
+    data[row] = [];
+
+    for (var col = 0; col < oldY.cols; col += 1) {
+      data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
+    }
+  }
+
+  var s = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, data);
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, elementWiseMultiply(elementWiseMultiply(oldY, s), subtractFromNumber(s, 1)).data);
 };
 var tanhActivation = function tanhActivation(m) {
   var data = [];
@@ -517,6 +527,49 @@ var pow = function pow(m1, _pow) {
 
   return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, data);
 };
+var log = function log(m1, pow) {
+  var data = [];
+
+  for (var row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+
+    for (var col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = Math.log(m1.data[row][col] + 1e-8);
+      }
+    }
+  }
+
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, data);
+};
+var logMinusOne = function logMinusOne(m1, pow) {
+  var data = [];
+
+  for (var row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+
+    for (var col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = Math.log(1 - m1.data[row][col]);
+      }
+    }
+  }
+
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, data);
+};
+var addNumber = function addNumber(m1, num) {
+  var data = [];
+
+  for (var row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+
+    for (var col = 0; col < m1.cols; col += 1) {
+      data[row][col] = m1.data[row][col] + num;
+    }
+  }
+
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, data);
+};
 var transpose = function transpose(m) {
   var data = [];
 
@@ -592,7 +645,11 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this.addKernel("pow", pow);
 
-    _this.addKernel("softmaxBackpropagation", softmaxBackpropagation);
+    _this.addKernel("log", log);
+
+    _this.addKernel("logMinusOne", logMinusOne);
+
+    _this.addKernel("addNumber", addNumber);
 
     return _this;
   }
@@ -2131,14 +2188,13 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-      var dZ = this.layer.backpropagation(sigma);
-      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", dZ, previousActivations.transpose());
+      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations);
       this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.gW, 1 / numberOfExamples);
-      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", dZ.rowwiseSum().transpose(), 1 / numberOfExamples);
+      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", sigma.rowwiseSum().transpose(), 1 / numberOfExamples);
 
       if (this.previousLayer !== null) {
         // @ts-ignore
-        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), dZ);
+        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma);
       }
 
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
@@ -2929,7 +2985,6 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackpropagation", delta, this.A);
       return this.dZ;
     }
   }]);
@@ -3254,7 +3309,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxBackpropagation", delta, this.A);
+      this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.A.transpose(), this.A);
       return this.dZ;
     }
   }]);
@@ -3704,6 +3759,20 @@ var Matrix = /*#__PURE__*/function () {
 
       return new Matrix(this.rows * this.cols, 1, data);
     }
+  }, {
+    key: "mean",
+    value: function mean() {
+      var sum = 0;
+      var numberOfElements = this.rows * this.cols;
+
+      for (var row = 0; row < this.rows; row += 1) {
+        for (var col = 0; col < this.cols; col += 1) {
+          sum += this.data[row][col];
+        }
+      }
+
+      return sum / numberOfElements;
+    }
   }]);
 
   return Matrix;
@@ -3860,29 +3929,11 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = X.cols;
-      /*let sigma = getComputation().execute(
-        "multiplyNumber",
-        getComputation().execute(
-          "subtract",
-          getComputation().execute("elementWiseDivide", Y, predictions) as Matrix,
-          getComputation().execute(
-            "elementWiseDivide",
-            getComputation().execute("subtractFromNumber", Y, 1) as Matrix,
-            getComputation().execute("subtractFromNumber", predictions, 1) as Matrix
-          ) as Matrix
-        ) as Matrix,
-        -1
-      ) as Matrix;
-      */
-
       var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-        var backPropagation = this.layers[layer].getBackPropagation();
-
-        if (backPropagation) {
-          sigma = backPropagation.propagate(X, m, regularization, sigma);
-        }
+        var dZ = this.layers[layer].backpropagation(sigma);
+        this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
       }
     }
   }, {
@@ -3893,7 +3944,7 @@ var Network = /*#__PURE__*/function () {
   }, {
     key: "error",
     value: function error(m) {
-      return this.layers[this.layers.length - 1].error(m);
+      return 0;
     }
   }, {
     key: "save",
@@ -4316,12 +4367,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./src/typescript/Trainer/AbstractTrainer.ts ***!
   \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractTrainer": () => (/* binding */ AbstractTrainer)
 /* harmony export */ });
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
+/* module decorator */ module = __webpack_require__.hmd(module);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -4330,6 +4383,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+
+var defaultCoreCipherList = module;
 var AbstractTrainer = /*#__PURE__*/function () {
   function AbstractTrainer(network, optimizer) {
     _classCallCheck(this, AbstractTrainer);
@@ -4395,9 +4450,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
   }, {
     key: "cost",
     value: function cost(inputDataset, outputDataset) {
-      var batchSize = 100;
       var numberOfExamples = inputDataset.getNumberOfExamples();
-      var numBatches = Math.ceil(numberOfExamples / batchSize);
       var accuracy = 0;
       var penalty = 0;
       this.network.getLayers().forEach(function (layer) {
@@ -4405,9 +4458,11 @@ var AbstractTrainer = /*#__PURE__*/function () {
       });
       var predictedOutput = this.network.forward(inputDataset.data);
       var correctOutput = outputDataset.data;
-      var loss = this.network.loss(correctOutput, predictedOutput);
-      var error = this.network.error(inputDataset.getNumberOfExamples());
-      var cost = loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
+      var error = (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", correctOutput, //@ts-ignore
+      (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("log", predictedOutput).transpose()), (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("subtractFromNumber", correctOutput, 1), //@ts-ignore
+      (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("logMinusOne", predictedOutput).transpose())) //@ts-ignore
+      .sum();
+      var cost = -1 / numberOfExamples * error + this.regularization / (penalty / 2 * inputDataset.getNumberOfExamples());
 
       for (var col = 0; col < predictedOutput.cols; col += 1) {
         var index1 = predictedOutput.colMaxCoeffIndex(col);
@@ -4759,8 +4814,8 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
     value: function adam(layer, learningRate, t) {
       layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta1));
       var vCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t));
-      layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta2));
-      var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gW, layer.gW), 1 - Math.pow(this.beta2, t)));
+      layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("pow", layer.gW, 2), 1 - this.beta2));
+      var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.sW, 1 - Math.pow(this.beta2, this.t));
       layer.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", vCorrected, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", sCorrected)), learningRate));
       layer.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, 1 - this.beta1));
       var vCorrected2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vb, 1 - Math.pow(this.beta1, t));
@@ -4830,7 +4885,7 @@ var OptimizerGradientDescent = /*#__PURE__*/function (_AbstractOptimizer) {
   }, {
     key: "gradientDescent",
     value: function gradientDescent(layer, learningRate) {
-      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, learningRate));
+      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W.transpose(), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, learningRate));
       layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, learningRate));
     }
   }]);
@@ -5036,13 +5091,16 @@ module.exports = require("fs");
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -5070,6 +5128,21 @@ module.exports = require("fs");
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/harmony module decorator */
+/******/ 	(() => {
+/******/ 		__webpack_require__.hmd = (module) => {
+/******/ 			module = Object.create(module);
+/******/ 			if (!module.children) module.children = [];
+/******/ 			Object.defineProperty(module, 'exports', {
+/******/ 				enumerable: true,
+/******/ 				set: () => {
+/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
+/******/ 				}
+/******/ 			});
+/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

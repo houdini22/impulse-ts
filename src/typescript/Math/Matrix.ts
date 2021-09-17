@@ -173,4 +173,17 @@ export class Matrix {
 
     return new Matrix(this.rows * this.cols, 1, data);
   }
+
+  mean() {
+    let sum = 0;
+    const numberOfElements = this.rows * this.cols;
+
+    for (let row = 0; row < this.rows; row += 1) {
+      for (let col = 0; col < this.cols; col += 1) {
+        sum += this.data[row][col];
+      }
+    }
+
+    return sum / numberOfElements;
+  }
 }
