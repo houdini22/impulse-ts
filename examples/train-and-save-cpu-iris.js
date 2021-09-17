@@ -29,10 +29,14 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then((inputDataset) => {
-  console.log("Loaded iris_x.csv");
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_y.csv")).then(async (outputDataset) => {
-    console.log("Loaded iris_y.csv");
+DatasetBuilder.fromSource(
+  DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+).then(async (inputDataset) => {
+  console.log("Loaded mnist_20x20_x.csv");
+  DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+  ).then(async (outputDataset) => {
+    console.log("Loaded mnist_20x20_y.csv");
     console.log("forward", network.forward(inputDataset.exampleAt(0)));
     inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();

@@ -6,6 +6,7 @@ const {
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
   DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -22,16 +23,19 @@ builder
   .createLayer(ReluLayer, (layer) => {
     layer.setSize(200);
   })
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(10);
   });
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then(async (inputDataset) => {
+DatasetBuilder.fromSource(
+  DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+).then(async (inputDataset) => {
   console.log("Loaded mnist_20x20_x.csv");
-
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then(async (outputDataset) => {
+  DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+  ).then(async (outputDataset) => {
     console.log("Loaded mnist_20x20_y.csv");
 
     inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
@@ -45,9 +49,8 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then
     console.log(trainer.cost(inputDataset, outputDataset));
 
     trainer.setIterations(10);
-    trainer.setLearningRate(0.0001);
+    trainer.setLearningRate(0.0007);
     trainer.setBatchSize(100);
-    trainer.setRegularization(0.2);
     trainer.train(inputDataset, outputDataset);
 
     await network.save(path.resolve(__dirname, "./data/mnist2.json"));

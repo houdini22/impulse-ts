@@ -10,17 +10,14 @@ export class Dataset {
     this.numberOfExamples = numberOfExamples;
     const data = [];
 
-    for (let row = 0; row < numberOfExamples; row += 1) {
-      for (let col = 0; col < exampleSize; col += 1) {
-        if (!data[col]) {
-          data[col] = new Array(exampleSize);
-        }
-
+    for (let row = 0; row < exampleSize; row += 1) {
+      data[row] = new Array(numberOfExamples);
+      for (let col = 0; col < numberOfExamples; col += 1) {
         if (typeof arr[row][col] === "string") {
           // @ts-ignore
-          data[col][row] = arr[row][col].length ? Number(arr[row][col]) : NaN;
+          data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
         } else if (typeof arr[row][col] === "number") {
-          data[col][row] = arr[row][col];
+          data[row][col] = arr[row][col];
         }
       }
     }

@@ -67,7 +67,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "softmaxLoss": () => (/* binding */ softmaxLoss),
 /* harmony export */   "logisticActivation": () => (/* binding */ logisticActivation),
 /* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss),
-/* harmony export */   "logisticBackward": () => (/* binding */ logisticBackward),
+/* harmony export */   "logisticBackpropagation": () => (/* binding */ logisticBackpropagation),
+/* harmony export */   "softmaxBackpropagation": () => (/* binding */ softmaxBackpropagation),
 /* harmony export */   "tanhActivation": () => (/* binding */ tanhActivation),
 /* harmony export */   "reluActivation": () => (/* binding */ reluActivation),
 /* harmony export */   "reluBackpropagation": () => (/* binding */ reluBackpropagation),
@@ -190,17 +191,17 @@ var logisticLoss = function logisticLoss(output, predictions) {
   var log = [];
   var epsilon = 1e-8;
 
-  for (var row = 0; row < output.rows; row += 1) {
+  for (var row = 0; row < predictions.rows; row += 1) {
     log[row] = [];
 
-    for (var col = 0; col < output.cols; col += 1) {
-      if (output.data) {
-        log[row][col] = Math.log(output.data[row][col] + epsilon);
+    for (var col = 0; col < predictions.cols; col += 1) {
+      if (predictions.data) {
+        log[row][col] = Math.log(predictions.data[row][col] + epsilon);
       }
     }
   }
 
-  var logMatrix = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, log);
+  var firstMatrix = elementWiseMultiply(new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(predictions.rows, predictions.cols, log), output);
   var sub = [];
 
   for (var _row = 0; _row < output.rows; _row += 1) {
@@ -213,7 +214,7 @@ var logisticLoss = function logisticLoss(output, predictions) {
     }
   }
 
-  var subMatrix = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, sub);
+  var toMultiply2 = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, sub);
   var data = [];
 
   for (var _row2 = 0; _row2 < predictions.rows; _row2 += 1) {
@@ -226,28 +227,14 @@ var logisticLoss = function logisticLoss(output, predictions) {
     }
   }
 
-  var logSubMatrix = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(predictions.rows, predictions.cols, data);
-  return subtract(elementWiseMultiply(multiplyNumber(output, -1), logMatrix), elementWiseMultiply(subMatrix, logSubMatrix)).sum();
+  var toMultiply1 = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(predictions.rows, predictions.cols, data);
+  return add(elementWiseMultiply(multiplyNumber(firstMatrix, -1), output), elementWiseMultiply(multiplyNumber(toMultiply1, -1), subtractFromNumber(toMultiply2, 1))).sum();
 };
-var logisticBackward = function logisticBackward(linearCache, activationCache) {
-  var s = [];
-  var s2 = [];
-
-  for (var row = 0; row < linearCache.rows; row += 1) {
-    s[row] = [];
-    s2[row] = [];
-
-    for (var col = 0; col < linearCache.cols; col += 1) {
-      if (linearCache.data) {
-        s[row][col] = 1 / (1 + Math.exp(-linearCache.data[row][col]));
-        s2[row][col] = 1 - s[row][col];
-      }
-    }
-  }
-
-  var S = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(linearCache.rows, linearCache.cols, s);
-  var S2 = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(linearCache.rows, linearCache.cols, s2);
-  return elementWiseMultiply(activationCache, elementWiseMultiply(S, S2));
+var logisticBackpropagation = function logisticBackpropagation(sigma, oldY) {
+  return elementWiseMultiply(oldY, elementWiseMultiply(subtractFromNumber(sigma, 1), oldY));
+};
+var softmaxBackpropagation = function softmaxBackpropagation(sigma, oldY) {
+  return elementWiseMultiply(oldY, subtract(sigma, elementWiseMultiply(sigma, oldY).colwiseSum().replicate(oldY.rows, 1)));
 };
 var tanhActivation = function tanhActivation(m) {
   var data = [];
@@ -279,20 +266,20 @@ var reluActivation = function reluActivation(m) {
 
   return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, data);
 };
-var reluBackpropagation = function reluBackpropagation(linearCache, activationCache) {
+var reluBackpropagation = function reluBackpropagation(sigma, oldY) {
   var data = [];
 
-  for (var row = 0; row < linearCache.rows; row += 1) {
+  for (var row = 0; row < sigma.rows; row += 1) {
     data[row] = [];
 
-    for (var col = 0; col < linearCache.cols; col += 1) {
-      if (linearCache.data) {
-        data[row][col] = Math.max(linearCache.data[row][col], 0);
+    for (var col = 0; col < sigma.cols; col += 1) {
+      if (sigma.data) {
+        data[row][col] = oldY.data[row][col] > 0 ? 1 : 0;
       }
     }
   }
 
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(linearCache.rows, linearCache.cols, data);
+  return elementWiseMultiply(new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(sigma.rows, sigma.cols, data), sigma);
 };
 var softplusActivation = function softplusActivation(m) {
   var data = [];
@@ -585,7 +572,7 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this.addKernel("logisticLoss", logisticLoss);
 
-    _this.addKernel("logisticBackward", logisticBackward);
+    _this.addKernel("logisticBackpropagation", logisticBackpropagation);
 
     _this.addKernel("tanhActivation", tanhActivation);
 
@@ -604,6 +591,8 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
     _this.addKernel("transpose", transpose);
 
     _this.addKernel("pow", pow);
+
+    _this.addKernel("softmaxBackpropagation", softmaxBackpropagation);
 
     return _this;
   }
@@ -1020,17 +1009,15 @@ var Dataset = /*#__PURE__*/function () {
     this.numberOfExamples = numberOfExamples;
     var data = [];
 
-    for (var row = 0; row < numberOfExamples; row += 1) {
-      for (var col = 0; col < exampleSize; col += 1) {
-        if (!data[col]) {
-          data[col] = new Array(exampleSize);
-        }
+    for (var row = 0; row < exampleSize; row += 1) {
+      data[row] = new Array(numberOfExamples);
 
+      for (var col = 0; col < numberOfExamples; col += 1) {
         if (typeof arr[row][col] === "string") {
           // @ts-ignore
-          data[col][row] = arr[row][col].length ? Number(arr[row][col]) : NaN;
+          data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
         } else if (typeof arr[row][col] === "number") {
-          data[col][row] = arr[row][col];
+          data[row][col] = arr[row][col];
         }
       }
     }
@@ -1454,7 +1441,6 @@ var DatasetBuilder = /*#__PURE__*/function () {
       return new Promise(function (resolve) {
         sourcePromise.then(function (source) {
           var matrix = source.parse();
-          console.log(matrix);
           var numberOfExamples = matrix.cols;
           var exampleSize = matrix.rows;
           var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, matrix.data);
@@ -1497,10 +1483,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DatasetBuilderSourceCSV": () => (/* binding */ DatasetBuilderSourceCSV)
 /* harmony export */ });
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractDocumentBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDocumentBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! csvtojson */ "csvtojson");
+/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1541,138 +1527,125 @@ var DatasetBuilderSourceCSV = /*#__PURE__*/function (_AbstractDatasetBuild) {
 
   var _super = _createSuper(DatasetBuilderSourceCSV);
 
-  function DatasetBuilderSourceCSV(contentStr) {
+  function DatasetBuilderSourceCSV(data) {
     var _this;
 
     _classCallCheck(this, DatasetBuilderSourceCSV);
 
     _this = _super.call(this);
 
-    _defineProperty(_assertThisInitialized(_this), "contentStr", "");
+    _defineProperty(_assertThisInitialized(_this), "data", null);
 
     _defineProperty(_assertThisInitialized(_this), "matrixData", null);
 
-    _this.contentStr = contentStr;
+    _this.data = data;
     return _this;
   }
 
   _createClass(DatasetBuilderSourceCSV, [{
     key: "parse",
     value: function parse() {
-      var _this2 = this;
-
-      this.matrixData = [];
-      var lines = this.contentStr.trim().split(/\n+/);
-      lines.forEach(function (line, i) {
-        return _this2.parseLine(line.trim(), i);
-      });
-      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);
+      /*this.matrixData = [];
+       const lines = this.contentStr.trim().split(/\n+/);
+      lines.forEach((line, i) => this.parseLine(line.trim(), i));
+       return new Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);*/
+      var numberOfExamples = this.data.length;
+      var exampleSize = this.data[0].length;
+      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(numberOfExamples, exampleSize, this.data).transpose();
     }
-  }, {
-    key: "parseLine",
-    value: function parseLine(line, exampleIndexCol) {
-      var _this3 = this;
-
-      var state = CSVState.UnquotedField;
-      var fields = [];
-      var i = 0;
-
-      for (var j = 0; j < line.length; j += 1) {
-        var c = line.at(j);
-
-        switch (state) {
-          case CSVState.UnquotedField:
-            switch (c) {
-              case ",":
-                // end of field
-                fields.push("");
-                i++;
-                break;
-
-              case '"':
-                state = CSVState.QuotedField;
-                break;
-
-              default:
-                fields[i] += c;
-                break;
+    /*
+      protected parseLine(line: string, exampleIndexCol: number): void {
+        let state = CSVState.UnquotedField;
+        const fields = [];
+        let i = 0;
+    
+        for (let j = 0; j < line.length; j += 1) {
+          const c = line.at(j);
+          switch (state) {
+            case CSVState.UnquotedField:
+              switch (c) {
+                case ",": // end of field
+                  fields.push("");
+                  i++;
+                  break;
+                case '"':
+                  state = CSVState.QuotedField;
+                  break;
+                default:
+                  fields[i] += c;
+                  break;
+              }
+              break;
+            case CSVState.QuotedField:
+              switch (c) {
+                case '"':
+                  state = CSVState.QuotedQuote;
+                  break;
+                default:
+                  fields[i] += c;
+                  break;
+              }
+              break;
+            case CSVState.QuotedQuote:
+              switch (c) {
+                case ",": // , after closing quote
+                  fields.push("");
+                  i++;
+                  state = CSVState.UnquotedField;
+                  break;
+                case '"': // "" -> "
+                  fields[i] += '"';
+                  state = CSVState.QuotedField;
+                  break;
+                default:
+                  // end of quote
+                  state = CSVState.UnquotedField;
+                  break;
+              }
+              break;
+          }
+    
+          fields.forEach((value, row) => {
+            if (value.length === 0) {
+              value = NaN;
             }
-
-            break;
-
-          case CSVState.QuotedField:
-            switch (c) {
-              case '"':
-                state = CSVState.QuotedQuote;
-                break;
-
-              default:
-                fields[i] += c;
-                break;
+            value = parseFloat(value);
+            if (!this.matrixData[row]) {
+              this.matrixData[row] = [];
             }
-
-            break;
-
-          case CSVState.QuotedQuote:
-            switch (c) {
-              case ",":
-                // , after closing quote
-                fields.push("");
-                i++;
-                state = CSVState.UnquotedField;
-                break;
-
-              case '"':
-                // "" -> "
-                fields[i] += '"';
-                state = CSVState.QuotedField;
-                break;
-
-              default:
-                // end of quote
-                state = CSVState.UnquotedField;
-                break;
-            }
-
-            break;
+            this.matrixData[row][exampleIndexCol] = value;
+          });
         }
+      }*/
 
-        fields.forEach(function (value, row) {
-          if (value.length === 0) {
-            value = NaN;
-          }
-
-          value = parseFloat(value);
-
-          if (!_this3.matrixData[row]) {
-            _this3.matrixData[row] = [];
-          }
-
-          _this3.matrixData[row][exampleIndexCol] = value;
-        });
-      }
-    }
   }], [{
     key: "fromLocalFile",
     value: function fromLocalFile(path) {
-      return new Promise(function (resolve, reject) {
-        fs__WEBPACK_IMPORTED_MODULE_0__.readFile(path, function (err, buffer) {
+      /*return new Promise((resolve, reject) => {
+        fs.readFile(path, (err, buffer) => {
           console.log("first");
-
           if (err) {
             console.log(err);
             reject();
           } else {
-            var instance = new DatasetBuilderSourceCSV(buffer.toString("utf-8"));
+            const instance = new DatasetBuilderSourceCSV(buffer.toString("utf-8"));
             resolve(instance);
           }
+        });
+      });*/
+      return new Promise(function (resolve) {
+        csvtojson__WEBPACK_IMPORTED_MODULE_2__({
+          noheader: true,
+          output: "csv"
+        }).fromFile(path).then(function (arr) {
+          resolve(new DatasetBuilderSourceCSV(arr));
         });
       });
     }
   }]);
 
   return DatasetBuilderSourceCSV;
-}(_AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_1__.AbstractDatasetBuilderSource);
+}(_AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetBuilderSource);
 
 /***/ }),
 
@@ -2908,10 +2881,6 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -2962,14 +2931,9 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return 1.0 / m;
     }
   }, {
-    key: "getBackPropagation",
-    value: function getBackPropagation() {
-      return _get(_getPrototypeOf(LogisticLayer.prototype), "getBackPropagation", this).call(this);
-    }
-  }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackward", delta, this.A);
+      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackpropagation", delta, this.A);
       return this.dZ;
     }
   }]);
@@ -3291,6 +3255,12 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     value: function error(m) {
       return -1.0 / m;
     }
+  }, {
+    key: "backpropagation",
+    value: function backpropagation(delta) {
+      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxBackpropagation", delta, this.A);
+      return this.dZ;
+    }
   }]);
 
   return SoftmaxLayer;
@@ -3569,6 +3539,9 @@ var Matrix = /*#__PURE__*/function () {
             data[_row2][col] = arr[_row2][col];
           } else if (arr[_row2] && typeof arr[_row2][col] === "number") {
             data[_row2][col] = arr[_row2][col];
+          } else if (typeof arr[_row2][col] === "string") {
+            // @ts-ignore
+            data[_row2][col] = arr[_row2][col].length ? Number(arr[_row2][col]) : NaN;
           } else {
             data[_row2][col] = NaN;
           }
@@ -3891,7 +3864,22 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = X.cols;
-      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", Y, predictions), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtractFromNumber", Y, 1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtractFromNumber", predictions, 1))), -1);
+      /*let sigma = getComputation().execute(
+        "multiplyNumber",
+        getComputation().execute(
+          "subtract",
+          getComputation().execute("elementWiseDivide", Y, predictions) as Matrix,
+          getComputation().execute(
+            "elementWiseDivide",
+            getComputation().execute("subtractFromNumber", Y, 1) as Matrix,
+            getComputation().execute("subtractFromNumber", predictions, 1) as Matrix
+          ) as Matrix
+        ) as Matrix,
+        -1
+      ) as Matrix;
+      */
+
+      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
         var backPropagation = this.layers[layer].getBackPropagation();
@@ -4414,30 +4402,23 @@ var AbstractTrainer = /*#__PURE__*/function () {
       var batchSize = 100;
       var numberOfExamples = inputDataset.getNumberOfExamples();
       var numBatches = Math.ceil(numberOfExamples / batchSize);
-      var cost = 0;
       var accuracy = 0;
       var penalty = 0;
       this.network.getLayers().forEach(function (layer) {
         penalty += layer.penalty();
       });
+      var predictedOutput = this.network.forward(inputDataset.data);
+      var correctOutput = outputDataset.data;
+      var loss = this.network.loss(correctOutput, predictedOutput);
+      var error = this.network.error(inputDataset.getNumberOfExamples());
+      var cost = error * loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
 
-      for (var batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += batchSize) {
-        var inputBatch = inputDataset.getBatch(offset, batchSize).data;
-        var outputBatch = outputDataset.getBatch(offset, batchSize).data;
-        var predictedOutput = this.network.forward(inputBatch);
-        var correctOutput = outputBatch;
-        var miniBatchSize = correctOutput.cols;
-        var loss = this.network.loss(correctOutput, predictedOutput);
-        var error = this.network.error(miniBatchSize);
-        cost += (error * loss + this.regularization * penalty / (2.0 * miniBatchSize)) / (numBatches * (miniBatchSize / batchSize));
+      for (var col = 0; col < predictedOutput.cols; col += 1) {
+        var index1 = predictedOutput.colMaxCoeffIndex(col);
+        var index2 = correctOutput.colMaxCoeffIndex(col);
 
-        for (var col = 0; col < predictedOutput.cols; col += 1) {
-          var index1 = predictedOutput.colMaxCoeffIndex(col);
-          var index2 = correctOutput.colMaxCoeffIndex(col);
-
-          if (index1 === index2) {
-            accuracy++;
-          }
+        if (index1 === index2) {
+          accuracy++;
         }
       }
 
@@ -4783,7 +4764,7 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
       layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta1));
       var vCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t));
       layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta2));
-      var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, 1 - Math.pow(this.beta2, t)));
+      var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseMultiply", layer.gW, layer.gW), 1 - Math.pow(this.beta2, t)));
       layer.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", vCorrected, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", sCorrected)), learningRate));
       layer.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, 1 - this.beta1));
       var vCorrected2 = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vb, 1 - Math.pow(this.beta1, t));
@@ -4936,10 +4917,10 @@ var OptimizerMomentum = /*#__PURE__*/function (_AbstractOptimizer) {
   }, {
     key: "momentum",
     value: function momentum(layer, learningRate) {
-      layer.dW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", layer.dW, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.dW, 1 - this.beta));
-      layer.db = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", layer.db, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.db, 1 - this.beta));
-      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.dW, learningRate));
-      layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.db, learningRate));
+      layer.vW = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, this.beta), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta));
+      layer.vb = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, this.beta), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, 1 - this.beta));
+      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, learningRate));
+      layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vb, learningRate));
     }
   }]);
 

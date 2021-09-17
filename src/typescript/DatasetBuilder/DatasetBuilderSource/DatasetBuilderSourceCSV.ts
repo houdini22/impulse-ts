@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import { AbstractDatasetBuilderSource } from "./AbstractDocumentBuilderSource";
 import { Matrix } from "../../Math/Matrix";
+import * as csvtojson from "csvtojson";
+import { Dataset } from "../../Dataset";
 
 enum CSVState {
   UnquotedField,
@@ -9,16 +11,16 @@ enum CSVState {
 }
 
 export class DatasetBuilderSourceCSV extends AbstractDatasetBuilderSource {
-  protected contentStr = "";
+  protected data: number[][] | string[][] | null = null;
   protected matrixData: number[][] | string[][] = null;
 
-  constructor(contentStr: string) {
+  constructor(data: number[][] | string[][]) {
     super();
-    this.contentStr = contentStr;
+    this.data = data;
   }
 
   static fromLocalFile(path: string): Promise<DatasetBuilderSourceCSV> {
-    return new Promise((resolve, reject) => {
+    /*return new Promise((resolve, reject) => {
       fs.readFile(path, (err, buffer) => {
         console.log("first");
         if (err) {
@@ -29,18 +31,33 @@ export class DatasetBuilderSourceCSV extends AbstractDatasetBuilderSource {
           resolve(instance);
         }
       });
+    });*/
+    return new Promise((resolve) => {
+      csvtojson({
+        noheader: true,
+        output: "csv",
+      })
+        .fromFile(path)
+        .then((arr) => {
+          resolve(new DatasetBuilderSourceCSV(arr));
+        });
     });
   }
 
   parse(): Matrix {
-    this.matrixData = [];
+    /*this.matrixData = [];
 
     const lines = this.contentStr.trim().split(/\n+/);
     lines.forEach((line, i) => this.parseLine(line.trim(), i));
 
-    return new Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);
-  }
+    return new Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);*/
 
+    const numberOfExamples = this.data.length;
+    const exampleSize = this.data[0].length;
+
+    return new Matrix(numberOfExamples, exampleSize, this.data).transpose();
+  }
+  /*
   protected parseLine(line: string, exampleIndexCol: number): void {
     let state = CSVState.UnquotedField;
     const fields = [];
@@ -103,5 +120,5 @@ export class DatasetBuilderSourceCSV extends AbstractDatasetBuilderSource {
         this.matrixData[row][exampleIndexCol] = value;
       });
     }
-  }
+  }*/
 }

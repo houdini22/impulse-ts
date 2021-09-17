@@ -5,6 +5,7 @@ const {
   Optimizer: { OptimizerAdam },
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationGPU, setComputation },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -27,9 +28,13 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+DatasetBuilder.fromSource(
+  DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+).then(async (inputDataset) => {
   console.log("Loaded mnist_20x20_x.csv");
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then((outputDataset) => {
+  DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+  ).then(async (outputDataset) => {
     console.log("Loaded mnist_20x20_y.csv");
     const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
     trainer.train(inputDataset, outputDataset);

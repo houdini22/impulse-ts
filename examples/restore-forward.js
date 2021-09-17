@@ -3,6 +3,7 @@ const {
   DatasetBuilder: { DatasetBuilder },
   Trainer: { MiniBatchTrainer },
   Optimizer: { OptimizerGradientDescent },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 const timeStart = new Date().getTime();
@@ -10,9 +11,13 @@ const timeStart = new Date().getTime();
 NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/save.json")).then((network) => {
   const timeEnd = new Date().getTime();
   console.log(`Restored in ${timeEnd - timeStart} ms.`);
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+  DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+  ).then(async (inputDataset) => {
     console.log("Loaded mnist_20x20_x.csv");
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then(async (outputDataset) => {
+    DatasetBuilder.fromSource(
+      DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+    ).then(async (outputDataset) => {
       console.log("Loaded mnist_20x20_y.csv");
       let timeStart = new Date().getTime();
       const result = network.forward(inputDataset.exampleAt(0));

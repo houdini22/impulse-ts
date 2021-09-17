@@ -143,24 +143,34 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+).then(async (inputDataset) => {
     console.log("Loaded mnist_20x20_x.csv");
-
-    DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then(async (outputDataset) => {
+    DatasetBuilder.fromSource(
+        DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+    ).then(async (outputDataset) => {
         console.log("Loaded mnist_20x20_y.csv");
 
+        inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
         const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(5);
-        trainer.setLearningRate(0.05);
+
+        const result = network.forward(inputDataset.exampleAt(0));
+        console.log("forward", result);
+
+        console.log(trainer.cost(inputDataset, outputDataset));
+
+        trainer.setIterations(10);
+        trainer.setLearningRate(0.0007);
         trainer.setBatchSize(100);
-        trainer.setRegularization(0.1);
         trainer.train(inputDataset, outputDataset);
 
-        await network.save(path.resolve(__dirname, "./data/mnist.json"));
+        await network.save(path.resolve(__dirname, "./data/mnist2.json"));
     });
 });
+
 ```
 
 ### Restore network and predict

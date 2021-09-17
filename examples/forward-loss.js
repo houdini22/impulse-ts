@@ -1,6 +1,7 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
   DatasetBuilder: { DatasetBuilder },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
   Layer: { LogisticLayer },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
@@ -22,9 +23,13 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then((inputDataset) => {
+DatasetBuilder.fromSource(
+  DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
+).then(async (inputDataset) => {
   console.log("Loaded mnist_20x20_x.csv");
-  DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then((outputDataset) => {
+  DatasetBuilder.fromSource(
+    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
+  ).then(async (outputDataset) => {
     console.log("Loaded mnist_20x20_y.csv");
     let timeStart = new Date().getTime();
     const result = network.forward(inputDataset.exampleAt(0));

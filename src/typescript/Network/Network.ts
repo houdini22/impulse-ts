@@ -36,7 +36,7 @@ class Network {
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
     const m = X.cols;
 
-    let sigma = getComputation().execute(
+    /*let sigma = getComputation().execute(
       "multiplyNumber",
       getComputation().execute(
         "subtract",
@@ -49,6 +49,7 @@ class Network {
       ) as Matrix,
       -1
     ) as Matrix;
+*/ let sigma = getComputation().execute("subtract", predictions, Y);
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       const backPropagation = this.layers[layer].getBackPropagation();

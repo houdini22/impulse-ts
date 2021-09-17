@@ -36,6 +36,9 @@ export class Matrix {
           data[row][col] = arr[row][col];
         } else if (arr[row] && typeof arr[row][col] === "number") {
           data[row][col] = arr[row][col];
+        } else if (typeof arr[row][col] === "string") {
+          // @ts-ignore
+          data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
         } else {
           data[row][col] = NaN;
         }

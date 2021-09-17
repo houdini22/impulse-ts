@@ -63,7 +63,6 @@ export abstract class AbstractTrainer {
     const numberOfExamples = inputDataset.getNumberOfExamples();
     const numBatches = Math.ceil(numberOfExamples / batchSize);
 
-    let cost = 0;
     let accuracy = 0;
     let penalty = 0;
 
@@ -71,30 +70,19 @@ export abstract class AbstractTrainer {
       penalty += layer.penalty();
     });
 
-    for (let batch = 0, offset = 0; batch < numberOfExamples; batch += batchSize, offset += batchSize) {
-      const inputBatch = inputDataset.getBatch(offset, batchSize).data;
-      const outputBatch = outputDataset.getBatch(offset, batchSize).data;
+    const predictedOutput = this.network.forward(inputDataset.data);
+    const correctOutput = outputDataset.data;
 
-      const predictedOutput = this.network.forward(inputBatch);
-      const correctOutput = outputBatch;
+    const loss = this.network.loss(correctOutput, predictedOutput);
+    const error = this.network.error(inputDataset.getNumberOfExamples());
+    const cost = error * loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
 
-      const miniBatchSize = correctOutput.cols;
+    for (let col = 0; col < predictedOutput.cols; col += 1) {
+      const index1 = predictedOutput.colMaxCoeffIndex(col);
+      const index2 = correctOutput.colMaxCoeffIndex(col);
 
-      const loss = this.network.loss(correctOutput, predictedOutput);
-      const error = this.network.error(miniBatchSize);
-
-      cost +=
-        (error * loss + (this.regularization * penalty) / (2.0 * miniBatchSize)) /
-        // TODO: fix it
-        (numBatches * (miniBatchSize / batchSize));
-
-      for (let col = 0; col < predictedOutput.cols; col += 1) {
-        const index1 = predictedOutput.colMaxCoeffIndex(col);
-        const index2 = correctOutput.colMaxCoeffIndex(col);
-
-        if (index1 === index2) {
-          accuracy++;
-        }
+      if (index1 === index2) {
+        accuracy++;
       }
     }
 

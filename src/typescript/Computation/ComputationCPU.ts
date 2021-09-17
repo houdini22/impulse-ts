@@ -78,15 +78,15 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   const log = [];
   const epsilon = 1e-8;
 
-  for (let row = 0; row < output.rows; row += 1) {
+  for (let row = 0; row < predictions.rows; row += 1) {
     log[row] = [];
-    for (let col = 0; col < output.cols; col += 1) {
-      if (output.data) {
-        log[row][col] = Math.log(output.data[row][col] + epsilon);
+    for (let col = 0; col < predictions.cols; col += 1) {
+      if (predictions.data) {
+        log[row][col] = Math.log(predictions.data[row][col] + epsilon);
       }
     }
   }
-  const logMatrix = new Matrix(output.rows, output.cols, log);
+  const firstMatrix = elementWiseMultiply(new Matrix(predictions.rows, predictions.cols, log), output);
 
   const sub = [];
   for (let row = 0; row < output.rows; row += 1) {
@@ -97,7 +97,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
       }
     }
   }
-  const subMatrix = new Matrix(output.rows, output.cols, sub);
+  const toMultiply2 = new Matrix(output.rows, output.cols, sub);
 
   const data = [];
   for (let row = 0; row < predictions.rows; row += 1) {
@@ -108,31 +108,23 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
       }
     }
   }
-  const logSubMatrix = new Matrix(predictions.rows, predictions.cols, data);
+  const toMultiply1 = new Matrix(predictions.rows, predictions.cols, data);
 
-  return subtract(
-    elementWiseMultiply(multiplyNumber(output, -1), logMatrix),
-    elementWiseMultiply(subMatrix, logSubMatrix)
+  return add(
+    elementWiseMultiply(multiplyNumber(firstMatrix, -1), output),
+    elementWiseMultiply(multiplyNumber(toMultiply1, -1), subtractFromNumber(toMultiply2, 1))
   ).sum();
 };
 
-export const logisticBackward = (linearCache: Matrix, activationCache: Matrix): Matrix => {
-  const s = [];
-  const s2 = [];
-  for (let row = 0; row < linearCache.rows; row += 1) {
-    s[row] = [];
-    s2[row] = [];
-    for (let col = 0; col < linearCache.cols; col += 1) {
-      if (linearCache.data) {
-        s[row][col] = 1 / (1 + Math.exp(-linearCache.data[row][col]));
-        s2[row][col] = 1 - s[row][col];
-      }
-    }
-  }
-  const S = new Matrix(linearCache.rows, linearCache.cols, s);
-  const S2 = new Matrix(linearCache.rows, linearCache.cols, s2);
+export const logisticBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
+  return elementWiseMultiply(oldY, elementWiseMultiply(subtractFromNumber(sigma, 1), oldY)) as Matrix;
+};
 
-  return elementWiseMultiply(activationCache, elementWiseMultiply(S, S2)) as Matrix;
+export const softmaxBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
+  return elementWiseMultiply(
+    oldY,
+    subtract(sigma, elementWiseMultiply(sigma, oldY).colwiseSum().replicate(oldY.rows, 1))
+  ) as Matrix;
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {
@@ -161,17 +153,17 @@ export const reluActivation = (m: Matrix): Matrix => {
   return new Matrix(m.rows, m.cols, data);
 };
 
-export const reluBackpropagation = (linearCache: Matrix, activationCache: Matrix): Matrix => {
+export const reluBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
   const data = [];
-  for (let row = 0; row < linearCache.rows; row += 1) {
+  for (let row = 0; row < sigma.rows; row += 1) {
     data[row] = [];
-    for (let col = 0; col < linearCache.cols; col += 1) {
-      if (linearCache.data) {
-        data[row][col] = Math.max(linearCache.data[row][col], 0);
+    for (let col = 0; col < sigma.cols; col += 1) {
+      if (sigma.data) {
+        data[row][col] = oldY.data[row][col] > 0 ? 1 : 0;
       }
     }
   }
-  return new Matrix(linearCache.rows, linearCache.cols, data);
+  return elementWiseMultiply(new Matrix(sigma.rows, sigma.cols, data), sigma);
 };
 
 export const softplusActivation = (m: Matrix): Matrix => {
@@ -408,7 +400,7 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);
     this.addKernel("logisticLoss", logisticLoss);
-    this.addKernel("logisticBackward", logisticBackward);
+    this.addKernel("logisticBackpropagation", logisticBackpropagation);
     this.addKernel("tanhActivation", tanhActivation);
     this.addKernel("reluActivation", reluActivation);
     this.addKernel("reluBackpropagation", reluBackpropagation);
@@ -418,5 +410,6 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("purelinLoss", purelinLoss);
     this.addKernel("transpose", transpose);
     this.addKernel("pow", pow);
+    this.addKernel("softmaxBackpropagation", softmaxBackpropagation);
   }
 }

@@ -1,7 +1,6 @@
 import * as csvtojson from "csvtojson";
 import { Dataset } from "../Dataset";
 import { AbstractDatasetBuilderSource } from "./DatasetBuilderSource/AbstractDocumentBuilderSource";
-import { Matrix } from "../Math/Matrix";
 
 export class DatasetBuilder {
   static fromCSV(csvPath: string): Promise<Dataset> {
@@ -25,7 +24,6 @@ export class DatasetBuilder {
     return new Promise((resolve) => {
       sourcePromise.then((source) => {
         const matrix = source.parse();
-        console.log(matrix);
         const numberOfExamples = matrix.cols;
         const exampleSize = matrix.rows;
 
