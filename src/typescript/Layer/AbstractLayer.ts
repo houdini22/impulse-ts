@@ -16,6 +16,7 @@ abstract class AbstractLayer {
   public sb: Matrix;
   public dW: Matrix;
   public db: Matrix;
+  public dZ: Matrix;
 
   protected width = 0;
   protected height = 0;
@@ -36,6 +37,7 @@ abstract class AbstractLayer {
     this.sb = new Matrix();
     this.dW = new Matrix();
     this.db = new Matrix();
+    this.dZ = new Matrix();
   }
 
   setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {
@@ -114,8 +116,6 @@ abstract class AbstractLayer {
 
   abstract activation(value: Matrix): Matrix;
 
-  abstract derivative(value: Matrix): Matrix;
-
   abstract getType(): string;
 
   abstract loss(output: Matrix, predictions: Matrix): number;
@@ -125,6 +125,8 @@ abstract class AbstractLayer {
   penalty(): number {
     return getComputation().execute("penalty", this.W) as number;
   }
+
+  abstract backpropagation(delta: Matrix): Matrix;
 }
 
 export { AbstractLayer };

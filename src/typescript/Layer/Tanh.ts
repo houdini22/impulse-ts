@@ -8,10 +8,6 @@ class TanhLayer extends AbstractLayer1D {
     return getComputation().execute("tanhActivation", m) as Matrix;
   }
 
-  derivative(m: Matrix): Matrix {
-    return getComputation().execute("tanhDerivative", m) as Matrix;
-  }
-
   getType(): LayerType {
     return LayerType.tanh;
   }

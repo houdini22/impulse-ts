@@ -16,12 +16,6 @@ export class Dataset {
           data[col] = new Array(exampleSize);
         }
 
-        if (!arr[row]) {
-          console.log(row, col, arr.length, arr[0].length);
-          console.trace();
-          process.exit();
-        }
-
         if (typeof arr[row][col] === "string") {
           // @ts-ignore
           data[col][row] = arr[row][col].length ? Number(arr[row][col]) : NaN;

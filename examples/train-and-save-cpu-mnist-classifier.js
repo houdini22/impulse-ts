@@ -13,13 +13,13 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([400]);
 builder
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(1000);
   })
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(500);
   })
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(200);
   })
   .createLayer(LogisticLayer, (layer) => {
@@ -45,7 +45,7 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then
     console.log(trainer.cost(inputDataset, outputDataset));
 
     trainer.setIterations(10);
-    trainer.setLearningRate(0.075);
+    trainer.setLearningRate(0.0001);
     trainer.setBatchSize(100);
     trainer.setRegularization(0.2);
     trainer.train(inputDataset, outputDataset);

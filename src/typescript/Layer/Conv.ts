@@ -119,10 +119,6 @@ export class ConvLayer extends AbstractLayer3D {
     return getComputation().execute("reluActivation", m) as Matrix;
   }
 
-  derivative(m: Matrix): Matrix {
-    return getComputation().execute("reluDerivative", m) as Matrix;
-  }
-
   getType(): LayerType {
     return LayerType.conv;
   }

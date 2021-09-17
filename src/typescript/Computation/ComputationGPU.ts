@@ -73,16 +73,6 @@ export const logisticActivation = (m: Matrix): Matrix => {
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
-export const logisticDerivative = (m: Matrix): Matrix => {
-  const kernel = gpu
-    .createKernel(function (a) {
-      // @ts-ignore
-      return a[this.thread.x][this.thread.y] * (1.0 - a[this.thread.x][this.thread.y]);
-    })
-    .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
-};
-
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   const kernel = gpu
     .createKernel(function (a) {
@@ -121,17 +111,6 @@ export const tanhActivation = (m: Matrix): Matrix => {
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
-
-export const tanhDerivative = (m: Matrix): Matrix => {
-  const kernel = gpu
-    .createKernel(function (a) {
-      // @ts-ignore
-      return 1.0 - Math.pow(2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0, 2.0);
-    })
-    .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
-};
-
 export const reluActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
@@ -142,34 +121,11 @@ export const reluActivation = (m: Matrix): Matrix => {
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
 };
 
-export const reluDerivative = (m: Matrix): Matrix => {
-  const kernel = gpu
-    .createKernel(function (a) {
-      // @ts-ignore
-      if (a[this.thread.x][this.thread.y] > 0) {
-        return 1;
-      }
-      return 0;
-    })
-    .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
-};
-
 export const softplusActivation = (m: Matrix): Matrix => {
   const kernel = gpu
     .createKernel(function (a) {
       // @ts-ignore
       return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
-    })
-    .setOutput([m.rows, m.cols]);
-  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
-};
-
-export const softplusDerivative = (m: Matrix): Matrix => {
-  const kernel = gpu
-    .createKernel(function (a) {
-      // @ts-ignore
-      return 1 / (1 + Math.exp(-a[this.thread.x][this.thread.y]));
     })
     .setOutput([m.rows, m.cols]);
   return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
@@ -353,14 +309,10 @@ export class ComputationGPU extends AbstractComputation {
     this.addKernel("softmaxActivation", softmaxActivation);
     this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);
-    this.addKernel("logisticDerivative", logisticDerivative);
     this.addKernel("logisticLoss", logisticLoss);
     this.addKernel("tanhActivation", tanhActivation);
-    this.addKernel("tanhDerivative", tanhDerivative);
     this.addKernel("reluActivation", reluActivation);
-    this.addKernel("reluDerivative", reluDerivative);
     this.addKernel("softplusActivation", softplusActivation);
-    this.addKernel("softplusDerivative", softplusDerivative);
     this.addKernel("penalty", penalty);
     this.addKernel("sqrt", sqrt);
     this.addKernel("purelinLoss", purelinLoss);

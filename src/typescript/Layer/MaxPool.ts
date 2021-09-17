@@ -73,10 +73,6 @@ class MaxPoolLayer extends AbstractLayer3D {
     throw new Error("No activation for MAXPOOL Layer.");
   }
 
-  derivative(m: Matrix): Matrix {
-    throw new Error("No derivative for MAXPOOL Layer.");
-  }
-
   getType(): LayerType {
     return LayerType.maxpool;
   }

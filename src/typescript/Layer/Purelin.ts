@@ -8,10 +8,6 @@ class PurelinLayer extends AbstractLayer1D {
     return this.Z;
   }
 
-  derivative(m: Matrix): Matrix {
-    return getComputation().execute("setOnes", this.Z) as Matrix;
-  }
-
   getType(): LayerType {
     return LayerType.purelin;
   }

@@ -8,10 +8,6 @@ class SoftplusLayer extends AbstractLayer1D {
     return getComputation().execute("softplusActivation", m) as Matrix;
   }
 
-  derivative(m: Matrix): Matrix {
-    return getComputation().execute("softplusDerivative", m) as Matrix;
-  }
-
   getType(): LayerType {
     return LayerType.softplus;
   }

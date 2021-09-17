@@ -74,19 +74,6 @@ export const logisticActivation = (m: Matrix): Matrix => {
   return new Matrix(m.rows, m.cols, data);
 };
 
-export const logisticDerivative = (m: Matrix): Matrix => {
-  const data = [];
-
-  for (let row = 0; row < m.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = m.data[row][col] * (1.0 - m.data[row][col]);
-    }
-  }
-
-  return new Matrix(m.rows, m.cols, data);
-};
-
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   const log = [];
   const epsilon = 1e-8;
@@ -129,6 +116,25 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
   ).sum();
 };
 
+export const logisticBackward = (linearCache: Matrix, activationCache: Matrix): Matrix => {
+  const s = [];
+  const s2 = [];
+  for (let row = 0; row < linearCache.rows; row += 1) {
+    s[row] = [];
+    s2[row] = [];
+    for (let col = 0; col < linearCache.cols; col += 1) {
+      if (linearCache.data) {
+        s[row][col] = 1 / (1 + Math.exp(-linearCache.data[row][col]));
+        s2[row][col] = 1 - s[row][col];
+      }
+    }
+  }
+  const S = new Matrix(linearCache.rows, linearCache.cols, s);
+  const S2 = new Matrix(linearCache.rows, linearCache.cols, s2);
+
+  return elementWiseMultiply(activationCache, elementWiseMultiply(S, S2)) as Matrix;
+};
+
 export const tanhActivation = (m: Matrix): Matrix => {
   const data = [];
   for (let row = 0; row < m.rows; row += 1) {
@@ -136,19 +142,6 @@ export const tanhActivation = (m: Matrix): Matrix => {
     for (let col = 0; col < m.cols; col += 1) {
       if (m.data) {
         data[row][col] = 2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0;
-      }
-    }
-  }
-  return new Matrix(m.rows, m.cols, data);
-};
-
-export const tanhDerivative = (m: Matrix): Matrix => {
-  const data = [];
-  for (let row = 0; row < m.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < m.cols; col += 1) {
-      if (m.data) {
-        data[row][col] = 1.0 - Math.pow(2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0, 2.0);
       }
     }
   }
@@ -168,17 +161,17 @@ export const reluActivation = (m: Matrix): Matrix => {
   return new Matrix(m.rows, m.cols, data);
 };
 
-export const reluDerivative = (m: Matrix): Matrix => {
+export const reluBackpropagation = (linearCache: Matrix, activationCache: Matrix): Matrix => {
   const data = [];
-  for (let row = 0; row < m.rows; row += 1) {
+  for (let row = 0; row < linearCache.rows; row += 1) {
     data[row] = [];
-    for (let col = 0; col < m.cols; col += 1) {
-      if (m.data) {
-        data[row][col] = m.data[row][col] > 0 ? 1 : 0;
+    for (let col = 0; col < linearCache.cols; col += 1) {
+      if (linearCache.data) {
+        data[row][col] = Math.max(linearCache.data[row][col], 0);
       }
     }
   }
-  return new Matrix(m.rows, m.cols, data);
+  return new Matrix(linearCache.rows, linearCache.cols, data);
 };
 
 export const softplusActivation = (m: Matrix): Matrix => {
@@ -188,19 +181,6 @@ export const softplusActivation = (m: Matrix): Matrix => {
     for (let col = 0; col < m.cols; col += 1) {
       if (m.data) {
         data[row][col] = Math.log(1 + Math.exp(m.data[row][col]));
-      }
-    }
-  }
-  return new Matrix(m.rows, m.cols, data);
-};
-
-export const softplusDerivative = (m: Matrix): Matrix => {
-  const data = [];
-  for (let row = 0; row < m.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < m.cols; col += 1) {
-      if (m.data) {
-        data[row][col] = 1 / (1 + Math.exp(-Math.log(1 + Math.exp(m.data[row][col]))));
       }
     }
   }
@@ -371,6 +351,19 @@ export const multiplyNumber = (m1: Matrix, num: number): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
+export const subtractFromNumber = (m1: Matrix, num: number): Matrix => {
+  const data = [];
+  for (let row = 0; row < m1.rows; row += 1) {
+    data[row] = [];
+    for (let col = 0; col < m1.cols; col += 1) {
+      if (m1.data) {
+        data[row][col] = num - m1.data[row][col];
+      }
+    }
+  }
+  return new Matrix(m1.rows, m1.cols, data);
+};
+
 export const pow = (m1: Matrix, pow: number): Matrix => {
   const data = [];
   for (let row = 0; row < m1.rows; row += 1) {
@@ -404,6 +397,7 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("multiply", multiply);
     this.addKernel("add", add);
     this.addKernel("subtract", subtract);
+    this.addKernel("subtractFromNumber", subtractFromNumber);
     this.addKernel("fillRandom", fillRandom);
     this.addKernel("fillZeros", fillZeros);
     this.addKernel("elementWiseMultiply", elementWiseMultiply);
@@ -413,14 +407,12 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("softmaxActivation", softmaxActivation);
     this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);
-    this.addKernel("logisticDerivative", logisticDerivative);
     this.addKernel("logisticLoss", logisticLoss);
+    this.addKernel("logisticBackward", logisticBackward);
     this.addKernel("tanhActivation", tanhActivation);
-    this.addKernel("tanhDerivative", tanhDerivative);
     this.addKernel("reluActivation", reluActivation);
-    this.addKernel("reluDerivative", reluDerivative);
+    this.addKernel("reluBackpropagation", reluBackpropagation);
     this.addKernel("softplusActivation", softplusActivation);
-    this.addKernel("softplusDerivative", softplusDerivative);
     this.addKernel("penalty", penalty);
     this.addKernel("sqrt", sqrt);
     this.addKernel("purelinLoss", purelinLoss);

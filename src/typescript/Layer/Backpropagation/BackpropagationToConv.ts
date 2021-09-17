@@ -27,8 +27,6 @@ export class BackpropagationToConv extends AbstractBackPropagation {
 
       const result = new Matrix(inputWidth * inputHeight * inputDepth, numberOfExamples);
 
-      const aPrev = previousLayer.derivative(previousLayer.A);
-
       previousLayer.gW = getComputation().execute("fillZeros", previousLayer.gW) as Matrix;
       previousLayer.gb = getComputation().execute("fillZeros", previousLayer.gb) as Matrix;
 

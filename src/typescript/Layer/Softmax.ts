@@ -8,10 +8,6 @@ class SoftmaxLayer extends AbstractLayer1D {
     return getComputation().execute("softmaxActivation", m) as Matrix;
   }
 
-  derivative(m: Matrix): Matrix {
-    throw new Error("Unsupported usage.");
-  }
-
   getType(): LayerType {
     return LayerType.softmax;
   }
