@@ -37,7 +37,6 @@ abstract class AbstractLayer {
     this.sb = new Matrix();
     this.dW = new Matrix();
     this.db = new Matrix();
-    this.dZ = new Matrix();
   }
 
   setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {

@@ -33,8 +33,8 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
         inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
-        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(500);
+        const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
+        trainer.setIterations(5000);
         trainer.setBatchSize(10);
         trainer.setLearningRate(0.001);
         console.log("cost", trainer.cost(inputDataset, outputDataset));

@@ -21,8 +21,7 @@ class ReluLayer extends AbstractLayer1D {
   }
 
   backpropagation(delta: Matrix) {
-    this.dZ = getComputation().execute("reluBackpropagation", delta, this.A) as Matrix;
-    return this.dZ;
+    return getComputation().execute("reluBackpropagation", delta, this.A) as Matrix;
   }
 }
 

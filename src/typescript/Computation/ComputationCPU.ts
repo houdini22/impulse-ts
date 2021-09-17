@@ -36,10 +36,11 @@ export const divideNumber = (m1: Matrix, num: number): Matrix => {
 
 export const softmaxActivation = (m: Matrix): Matrix => {
   const data = [];
+  const max = m.max();
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.exp(m.data[row][col]);
+      data[row][col] = Math.exp(m.data[row][col] - max);
     }
   }
   const calculated = new Matrix(m.rows, m.cols, data);
@@ -117,18 +118,18 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
 };
 
 export const logisticBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
-  const data = [];
+  /*const data = [];
   for (let row = 0; row < oldY.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < oldY.cols; col += 1) {
       data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
     }
   }
-  const s = new Matrix(oldY.rows, oldY.cols, data);
+  const s = new Matrix(oldY.rows, oldY.cols, data);*/
   return new Matrix(
     oldY.rows,
     oldY.cols,
-    elementWiseMultiply(elementWiseMultiply(oldY, s), subtractFromNumber(s, 1)).data
+    elementWiseMultiply(oldY, subtractFromNumber(oldY, 1)).data
   );
 };
 
@@ -225,7 +226,7 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
 
 export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
-    throw new Error(`DIMENSIONS error. m1.cols ${m1.cols} !== m2.rows ${m2.rows}.`);
+    throw new Error(`DIMENSIONS error. m1.cols ${m1.rows} ${m1.cols} !== m2.rows ${m2.rows} ${m2.cols}.`);
   }
   const data = [];
   for (let row = 0; row < m1.rows; ++row) {

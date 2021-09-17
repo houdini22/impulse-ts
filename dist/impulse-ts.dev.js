@@ -149,12 +149,13 @@ var divideNumber = function divideNumber(m1, num) {
 };
 var softmaxActivation = function softmaxActivation(m) {
   var data = [];
+  var max = m.max();
 
   for (var row = 0; row < m.rows; row += 1) {
     data[row] = [];
 
     for (var col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.exp(m.data[row][col]);
+      data[row][col] = Math.exp(m.data[row][col] - max);
     }
   }
 
@@ -233,18 +234,15 @@ var logisticLoss = function logisticLoss(output, predictions) {
   return add(elementWiseMultiply(multiplyNumber(firstMatrix, -1), output), elementWiseMultiply(multiplyNumber(toMultiply1, -1), subtractFromNumber(toMultiply2, 1))).sum();
 };
 var logisticBackpropagation = function logisticBackpropagation(sigma, oldY) {
-  var data = [];
-
-  for (var row = 0; row < oldY.rows; row += 1) {
+  /*const data = [];
+  for (let row = 0; row < oldY.rows; row += 1) {
     data[row] = [];
-
-    for (var col = 0; col < oldY.cols; col += 1) {
+    for (let col = 0; col < oldY.cols; col += 1) {
       data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
     }
   }
-
-  var s = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, data);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, elementWiseMultiply(elementWiseMultiply(oldY, s), subtractFromNumber(s, 1)).data);
+  const s = new Matrix(oldY.rows, oldY.cols, data);*/
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, elementWiseMultiply(oldY, subtractFromNumber(oldY, 1)).data);
 };
 var tanhActivation = function tanhActivation(m) {
   var data = [];
@@ -353,7 +351,7 @@ var purelinLoss = function purelinLoss(output, predictions) {
 };
 var multiply = function multiply(m1, m2) {
   if (m1.cols !== m2.rows) {
-    throw new Error("DIMENSIONS error. m1.cols ".concat(m1.cols, " !== m2.rows ").concat(m2.rows, "."));
+    throw new Error("DIMENSIONS error. m1.cols ".concat(m1.rows, " ").concat(m1.cols, " !== m2.rows ").concat(m2.rows, " ").concat(m2.cols, "."));
   }
 
   var data = [];
@@ -1783,7 +1781,6 @@ var AbstractLayer = /*#__PURE__*/function () {
     this.sb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.dW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
     this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.dZ = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
   }
 
   _createClass(AbstractLayer, [{
@@ -1950,8 +1947,6 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       this.dW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
       this.db.resize(this.height, 1);
       this.db = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
-      this.dZ.resize(this.height, this.width);
-      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
     }
   }, {
     key: "is1D",
@@ -2188,13 +2183,28 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations);
+      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose());
       this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.gW, 1 / numberOfExamples);
       this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", sigma.rowwiseSum().transpose(), 1 / numberOfExamples);
 
       if (this.previousLayer !== null) {
         // @ts-ignore
-        return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma);
+        var result = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma);
+
+        if (result.rows !== previousActivations.rows || result.cols !== previousActivations.cols) {
+          console.log(this.layer.W.rows, this.layer.W.cols, sigma.rows, sigma.cols, this.layer.gW.rows, this.layer.gW.cols);
+          throw new Error("Dimension error 1. (".concat(result.rows, ", ").concat(result.cols, ") | (").concat(previousActivations.rows, ", ").concat(previousActivations.cols, ")"));
+        }
+
+        if (this.layer.gW.rows !== this.layer.W.rows || this.layer.gW.cols !== this.layer.W.cols) {
+          throw new Error("Dimension error 2. (".concat(this.layer.gW.rows, ", ").concat(this.layer.gW.cols, ") | (").concat(this.layer.W.rows, ", ").concat(this.layer.W.cols, ")"));
+        }
+
+        if (this.layer.gb.rows !== this.layer.b.rows || this.layer.gb.cols !== this.layer.b.cols) {
+          throw new Error("Dimension error 3. (".concat(this.layer.gb.rows, ", ").concat(this.layer.gb.cols, ") | (").concat(this.layer.b.rows, ", ").concat(this.layer.b.cols, ")"));
+        }
+
+        return result;
       }
 
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
@@ -2984,8 +2994,8 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     }
   }, {
     key: "backpropagation",
-    value: function backpropagation(delta) {
-      return this.dZ;
+    value: function backpropagation(sigma) {
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackpropagation", sigma, this.A);
     }
   }]);
 
@@ -3224,8 +3234,7 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      this.dZ = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluBackpropagation", delta, this.A);
-      return this.dZ;
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluBackpropagation", delta, this.A);
     }
   }]);
 
@@ -3309,8 +3318,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.A.transpose(), this.A);
-      return this.dZ;
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.A.transpose(), this.A);
     }
   }]);
 
@@ -3773,6 +3781,19 @@ var Matrix = /*#__PURE__*/function () {
 
       return sum / numberOfElements;
     }
+  }, {
+    key: "max",
+    value: function max() {
+      var max = -Infinity;
+
+      for (var row = 0; row < this.rows; row += 1) {
+        for (var col = 0; col < this.cols; col += 1) {
+          max = Math.max(this.data[row][col], max);
+        }
+      }
+
+      return max;
+    }
   }]);
 
   return Matrix;
@@ -3929,11 +3950,11 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = X.cols;
-      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
+      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", Y, predictions);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
         var dZ = this.layers[layer].backpropagation(sigma);
-        this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
+        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
       }
     }
   }, {
@@ -4885,7 +4906,7 @@ var OptimizerGradientDescent = /*#__PURE__*/function (_AbstractOptimizer) {
   }, {
     key: "gradientDescent",
     value: function gradientDescent(layer, learningRate) {
-      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W.transpose(), (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, learningRate));
+      layer.W = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, learningRate));
       layer.b = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.b, (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gb, learningRate));
     }
   }]);

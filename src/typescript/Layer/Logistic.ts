@@ -20,8 +20,8 @@ class LogisticLayer extends AbstractLayer1D {
     return 1.0 / m;
   }
 
-  backpropagation(delta: Matrix): Matrix {
-    return this.dZ;
+  backpropagation(sigma: Matrix): Matrix {
+    return getComputation().execute("logisticBackpropagation", sigma, this.A) as Matrix;
   }
 }
 

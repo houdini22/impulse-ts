@@ -38,9 +38,6 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
     this.db.resize(this.height, 1);
     this.db = getComputation().execute("fillZeros", this.sb) as Matrix;
-
-    this.dZ.resize(this.height, this.width);
-    this.dZ = getComputation().execute("fillZeros", this.sW) as Matrix;
   }
 
   is1D(): boolean {

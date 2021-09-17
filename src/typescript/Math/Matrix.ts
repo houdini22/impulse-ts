@@ -186,4 +186,16 @@ export class Matrix {
 
     return sum / numberOfElements;
   }
+
+  max(): number {
+    let max = -Infinity;
+
+    for (let row = 0; row < this.rows; row += 1) {
+      for (let col = 0; col < this.cols; col += 1) {
+        max = Math.max(this.data[row][col], max);
+      }
+    }
+
+    return max
+  }
 }

@@ -36,10 +36,10 @@ class Network {
   backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
     const m = X.cols;
 
-    let sigma = getComputation().execute("subtract", predictions, Y) as Matrix;
+    let sigma = getComputation().execute("subtract", Y, predictions) as Matrix;
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       const dZ = this.layers[layer].backpropagation(sigma);
-      this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
+      sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
     }
   }
 
