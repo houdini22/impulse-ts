@@ -1,6 +1,6 @@
 import { AbstractNetworkBuilder } from "./AbstractNetworkBuilder";
 import { Layers } from "../types";
-import Network from "../Network";
+import { Network } from "../Network";
 import * as fs from "fs";
 import { LogisticLayer, ReluLayer, SoftmaxLayer, SoftplusLayer, TanhLayer } from "../Layer/";
 import { ConvLayer } from "../Layer/";

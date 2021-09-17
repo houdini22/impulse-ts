@@ -1,4 +1,4 @@
-import Network from "../Network";
+import { Network } from "../Network";
 import { AbstractOptimizer } from "./Optimizer/AbstractOptimizer";
 import { Dataset } from "../Dataset";
 

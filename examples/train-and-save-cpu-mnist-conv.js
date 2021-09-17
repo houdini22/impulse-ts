@@ -8,7 +8,7 @@ const path = require("path");
 const builder = new NetworkBuilder3D([20, 20, 1]);
 builder
   .createLayer(ConvLayer, (layer) => {
-    layer.setFilterSize(4).setPadding(1).setStride(1).setNumFilters(32);
+    layer.setFilterSize(4).setPadding(2).setStride(1).setNumFilters(32);
   })
   .createLayer(MaxPoolLayer, (layer) => {
     layer.setFilterSize(2).setStride(2);
@@ -36,7 +36,6 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_x.csv")).then
   console.log("Loaded mnist_20x20_x.csv");
   DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/mnist_20x20_y.csv")).then((outputDataset) => {
     console.log("Loaded mnist_20x20_y.csv");
-    console.log(inputDataset, outputDataset, inputDataset.exampleAt(0));
     let timeStart = new Date().getTime();
     const result = network.forward(inputDataset.exampleAt(0));
     console.log("forward", result);

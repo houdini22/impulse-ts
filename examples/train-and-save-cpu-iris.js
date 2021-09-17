@@ -6,6 +6,7 @@ const {
   Trainer: { MiniBatchTrainer },
   Computation: { ComputationCPU, setComputation },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
+  DatasetModifier: { MissingDataScalingDatabaseModifier, MinMaxScalingDatabaseModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -32,11 +33,17 @@ DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_x.csv")).then((input
   console.log("Loaded iris_x.csv");
   DatasetBuilder.fromCSV(path.resolve(__dirname, "./data/iris_y.csv")).then(async (outputDataset) => {
     console.log("Loaded iris_y.csv");
+    console.log("forward", network.forward(inputDataset.exampleAt(0)));
+    inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
+    inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
+    console.log("forward", network.forward(inputDataset.exampleAt(0)));
     const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
     trainer.setIterations(2);
     trainer.setBatchSize(10);
     trainer.setLearningRate(0.00001);
+    console.log("cost", trainer.cost(inputDataset, outputDataset));
     trainer.train(inputDataset, outputDataset);
     await network.save(path.resolve(__dirname, "./data/iris.json"));
+    console.log("forward", network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
   });
 });

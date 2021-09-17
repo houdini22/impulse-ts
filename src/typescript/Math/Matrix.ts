@@ -64,7 +64,7 @@ export class Matrix {
         data[row][0] += t.data[row][col];
       }
     }
-    return new Matrix(this.rows, 1, data);
+    return new Matrix(this.cols, 1, data);
   }
 
   rowwiseSum(): Matrix {

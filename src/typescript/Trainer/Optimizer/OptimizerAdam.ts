@@ -30,6 +30,9 @@ export class OptimizerAdam extends AbstractOptimizer {
 
     const vCorrected = getComputation().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t)) as Matrix;
 
+    console.log(layer.vW.data[0], vCorrected.data[0]);
+    process.exit();
+
     layer.sW = getComputation().execute(
       "add",
       getComputation().execute("multiplyNumber", layer.sW, this.beta2) as Matrix,

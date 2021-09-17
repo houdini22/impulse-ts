@@ -168,11 +168,11 @@ var softmaxLoss = function softmaxLoss(output, predictions) {
     data[row] = [];
 
     for (var col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = Math.log(predictions.data[row][col] + epsilon);
+      data[row][col] = output.data[row][col] * Math.log(predictions.data[row][col] + epsilon);
     }
   }
 
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, elementWiseMultiply(output, new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, data)).data).sum();
+  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, data).sum();
 };
 var logisticActivation = function logisticActivation(m) {
   var data = [];
@@ -407,7 +407,7 @@ var add = function add(m1, m2) {
   }
 
   if (m1.cols !== m2.cols) {
-    throw new Error("COLS number not equal.");
+    throw new Error("COLS number not equal. m1.cols ".concat(m1.cols, " !== m2.cols ").concat(m2.cols));
   }
 
   var data = [];
@@ -3677,7 +3677,7 @@ var Matrix = /*#__PURE__*/function () {
         }
       }
 
-      return new Matrix(this.rows, 1, data);
+      return new Matrix(this.cols, 1, data);
     }
   }, {
     key: "rowwiseSum",
@@ -3900,10 +3900,10 @@ var round = function round(num, decimalPlaces) {
 
 /***/ }),
 
-/***/ "./src/typescript/Network.ts":
-/*!***********************************!*\
-  !*** ./src/typescript/Network.ts ***!
-  \***********************************/
+/***/ "./src/typescript/Network/Network.ts":
+/*!*******************************************!*\
+  !*** ./src/typescript/Network/Network.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -3913,7 +3913,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Computation_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Computation/utils */ "./src/typescript/Computation/utils.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3963,7 +3963,7 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = X.cols;
-      var delta = (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
+      var delta = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
         var backPropagation = this.layers[layer].getBackPropagation();
@@ -4022,6 +4022,22 @@ var Network = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/typescript/Network/index.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/Network/index.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Network": () => (/* reexport safe */ _Network__WEBPACK_IMPORTED_MODULE_0__.Network)
+/* harmony export */ });
+/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/Network.ts");
+
+
+
+/***/ }),
+
 /***/ "./src/typescript/NetworkBuilder/AbstractNetworkBuilder.ts":
 /*!*****************************************************************!*\
   !*** ./src/typescript/NetworkBuilder/AbstractNetworkBuilder.ts ***!
@@ -4032,7 +4048,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractNetworkBuilder": () => (/* binding */ AbstractNetworkBuilder)
 /* harmony export */ });
-/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Network */ "./src/typescript/Network.ts");
+/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Network */ "./src/typescript/Network/index.ts");
 /* harmony import */ var _Layer_Backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layer/Backpropagation/BackpropagationFactory */ "./src/typescript/Layer/Backpropagation/BackpropagationFactory.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -4056,7 +4072,7 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
     _defineProperty(this, "network", null);
 
     this.dimensions = dimension;
-    this.network = new _Network__WEBPACK_IMPORTED_MODULE_0__["default"](dimension);
+    this.network = new _Network__WEBPACK_IMPORTED_MODULE_0__.Network(dimension);
   }
 
   _createClass(AbstractNetworkBuilder, [{
@@ -4838,6 +4854,8 @@ var OptimizerAdam = /*#__PURE__*/function (_AbstractOptimizer) {
     value: function adam(layer, learningRate, t) {
       layer.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.vW, this.beta1), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta1));
       var vCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t));
+      console.log(layer.vW.data[0], vCorrected.data[0]);
+      process.exit();
       layer.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, this.beta2), (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.gW, 1 - this.beta2));
       var sCorrected = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", layer.sW, 1 - Math.pow(this.beta2, t)));
       layer.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", layer.W, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiplyNumber", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("elementWiseDivide", vCorrected, (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("sqrt", sCorrected)), learningRate));

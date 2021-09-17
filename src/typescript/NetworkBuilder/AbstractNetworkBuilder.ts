@@ -1,5 +1,5 @@
 import { Dimension, Layers } from "../types";
-import Network from "../Network";
+import { Network } from "../Network";
 import { BackpropagationFactory } from "../Layer/Backpropagation/BackpropagationFactory";
 
 abstract class AbstractNetworkBuilder {

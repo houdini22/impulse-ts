@@ -36,16 +36,15 @@ export const divideNumber = (m1: Matrix, num: number): Matrix => {
 
 export const softmaxActivation = (m: Matrix): Matrix => {
   const data = [];
-
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
       data[row][col] = Math.exp(m.data[row][col]);
     }
   }
-
   const calculated = new Matrix(m.rows, m.cols, data);
   const divider = new Matrix(1, m.cols, calculated.colwiseSum().data).replicate(m.rows, 1);
+
   return new Matrix(m.rows, m.cols, elementWiseDivide(calculated, divider).data);
 };
 
@@ -56,15 +55,11 @@ export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
   for (let row = 0; row < predictions.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = Math.log(predictions.data[row][col] + epsilon);
+      data[row][col] = output.data[row][col] * Math.log(predictions.data[row][col] + epsilon);
     }
   }
 
-  return new Matrix(
-    output.rows,
-    output.cols,
-    elementWiseMultiply(output, new Matrix(output.rows, output.cols, data)).data
-  ).sum();
+  return new Matrix(output.rows, output.cols, data).sum();
 };
 
 export const logisticActivation = (m: Matrix): Matrix => {
@@ -76,7 +71,6 @@ export const logisticActivation = (m: Matrix): Matrix => {
       data[row][col] = 1.0 / (1.0 + Math.exp(-m.data[row][col]));
     }
   }
-
   return new Matrix(m.rows, m.cols, data);
 };
 
@@ -276,7 +270,7 @@ export const add = (m1: Matrix, m2: Matrix): Matrix => {
     throw new Error("ROWS number not equal.");
   }
   if (m1.cols !== m2.cols) {
-    throw new Error("COLS number not equal.");
+    throw new Error(`COLS number not equal. m1.cols ${m1.cols} !== m2.cols ${m2.cols}`);
   }
 
   const data = [];
