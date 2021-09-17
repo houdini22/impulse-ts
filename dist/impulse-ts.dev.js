@@ -996,7 +996,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var Dataset = /*#__PURE__*/function () {
-  function Dataset(exampleSize, numberOfExamples, arr) {
+  function Dataset() {
+    var exampleSize = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var numberOfExamples = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var arr = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
     _classCallCheck(this, Dataset);
 
     _defineProperty(this, "exampleSize", 0);
@@ -1007,22 +1011,25 @@ var Dataset = /*#__PURE__*/function () {
 
     this.exampleSize = exampleSize;
     this.numberOfExamples = numberOfExamples;
-    var data = [];
 
-    for (var row = 0; row < exampleSize; row += 1) {
-      data[row] = new Array(numberOfExamples);
+    if (arr) {
+      var data = [];
 
-      for (var col = 0; col < numberOfExamples; col += 1) {
-        if (typeof arr[row][col] === "string") {
-          // @ts-ignore
-          data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
-        } else if (typeof arr[row][col] === "number") {
-          data[row][col] = arr[row][col];
+      for (var row = 0; row < exampleSize; row += 1) {
+        data[row] = new Array(numberOfExamples);
+
+        for (var col = 0; col < numberOfExamples; col += 1) {
+          if (typeof arr[row][col] === "string") {
+            // @ts-ignore
+            data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
+          } else if (typeof arr[row][col] === "number") {
+            data[row][col] = arr[row][col];
+          }
         }
       }
-    }
 
-    this.data = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, this.numberOfExamples, data);
+      this.data = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, this.numberOfExamples, data);
+    }
   }
 
   _createClass(Dataset, [{
@@ -1044,7 +1051,16 @@ var Dataset = /*#__PURE__*/function () {
     key: "getBatch",
     value: function getBatch(offset, batchSize) {
       var data = this.data.block(0, offset, this.data.rows, batchSize);
-      return new Dataset(data.rows, data.cols, data.transpose().data);
+      return Dataset.fromMatrix(data);
+    }
+  }], [{
+    key: "fromMatrix",
+    value: function fromMatrix(m) {
+      var instance = new Dataset();
+      instance.exampleSize = m.rows;
+      instance.numberOfExamples = m.cols;
+      instance.data = m;
+      return instance;
     }
   }]);
 
@@ -1404,15 +1420,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DatasetBuilder": () => (/* binding */ DatasetBuilder)
 /* harmony export */ });
-/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! csvtojson */ "csvtojson");
-/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Dataset */ "./src/typescript/Dataset/index.ts");
+/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Dataset */ "./src/typescript/Dataset/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 var DatasetBuilder = /*#__PURE__*/function () {
@@ -1421,21 +1434,6 @@ var DatasetBuilder = /*#__PURE__*/function () {
   }
 
   _createClass(DatasetBuilder, null, [{
-    key: "fromCSV",
-    value: function fromCSV(csvPath) {
-      return new Promise(function (resolve) {
-        csvtojson__WEBPACK_IMPORTED_MODULE_0__({
-          noheader: true,
-          output: "csv"
-        }).fromFile(csvPath).then(function (arr) {
-          var numberOfExamples = arr.length;
-          var exampleSize = arr[0].length;
-          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, arr);
-          resolve(dataset);
-        });
-      });
-    }
-  }, {
     key: "fromSource",
     value: function fromSource(sourcePromise) {
       return new Promise(function (resolve) {
@@ -1443,7 +1441,7 @@ var DatasetBuilder = /*#__PURE__*/function () {
           var matrix = source.parse();
           var numberOfExamples = matrix.cols;
           var exampleSize = matrix.rows;
-          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(exampleSize, numberOfExamples, matrix.data);
+          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_0__.Dataset(exampleSize, numberOfExamples, matrix.data);
           resolve(dataset);
         });
       });
@@ -1554,69 +1552,67 @@ var DatasetBuilderSourceCSV = /*#__PURE__*/function (_AbstractDatasetBuild) {
       return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(numberOfExamples, exampleSize, this.data).transpose();
     }
     /*
-      protected parseLine(line: string, exampleIndexCol: number): void {
-        let state = CSVState.UnquotedField;
-        const fields = [];
-        let i = 0;
-    
-        for (let j = 0; j < line.length; j += 1) {
-          const c = line.at(j);
-          switch (state) {
-            case CSVState.UnquotedField:
-              switch (c) {
-                case ",": // end of field
-                  fields.push("");
-                  i++;
-                  break;
-                case '"':
-                  state = CSVState.QuotedField;
-                  break;
-                default:
-                  fields[i] += c;
-                  break;
-              }
-              break;
-            case CSVState.QuotedField:
-              switch (c) {
-                case '"':
-                  state = CSVState.QuotedQuote;
-                  break;
-                default:
-                  fields[i] += c;
-                  break;
-              }
-              break;
-            case CSVState.QuotedQuote:
-              switch (c) {
-                case ",": // , after closing quote
-                  fields.push("");
-                  i++;
-                  state = CSVState.UnquotedField;
-                  break;
-                case '"': // "" -> "
-                  fields[i] += '"';
-                  state = CSVState.QuotedField;
-                  break;
-                default:
-                  // end of quote
-                  state = CSVState.UnquotedField;
-                  break;
-              }
-              break;
-          }
-    
-          fields.forEach((value, row) => {
-            if (value.length === 0) {
-              value = NaN;
+    protected parseLine(line: string, exampleIndexCol: number): void {
+      let state = CSVState.UnquotedField;
+      const fields = [];
+      let i = 0;
+       for (let j = 0; j < line.length; j += 1) {
+        const c = line.at(j);
+        switch (state) {
+          case CSVState.UnquotedField:
+            switch (c) {
+              case ",": // end of field
+                fields.push("");
+                i++;
+                break;
+              case '"':
+                state = CSVState.QuotedField;
+                break;
+              default:
+                fields[i] += c;
+                break;
             }
-            value = parseFloat(value);
-            if (!this.matrixData[row]) {
-              this.matrixData[row] = [];
+            break;
+          case CSVState.QuotedField:
+            switch (c) {
+              case '"':
+                state = CSVState.QuotedQuote;
+                break;
+              default:
+                fields[i] += c;
+                break;
             }
-            this.matrixData[row][exampleIndexCol] = value;
-          });
+            break;
+          case CSVState.QuotedQuote:
+            switch (c) {
+              case ",": // , after closing quote
+                fields.push("");
+                i++;
+                state = CSVState.UnquotedField;
+                break;
+              case '"': // "" -> "
+                fields[i] += '"';
+                state = CSVState.QuotedField;
+                break;
+              default:
+                // end of quote
+                state = CSVState.UnquotedField;
+                break;
+            }
+            break;
         }
-      }*/
+         fields.forEach((value, row) => {
+          if (value.length === 0) {
+            value = NaN;
+          }
+          value = parseFloat(value);
+          if (!this.matrixData[row]) {
+            this.matrixData[row] = [];
+          }
+          this.matrixData[row][exampleIndexCol] = value;
+        });
+      }
+    }*/
 
   }], [{
     key: "fromLocalFile",
@@ -4411,7 +4407,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
       var correctOutput = outputDataset.data;
       var loss = this.network.loss(correctOutput, predictedOutput);
       var error = this.network.error(inputDataset.getNumberOfExamples());
-      var cost = error * loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
+      var cost = loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
 
       for (var col = 0; col < predictedOutput.cols; col += 1) {
         var index1 = predictedOutput.colMaxCoeffIndex(col);
@@ -4505,12 +4501,12 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
       var _this2 = this;
 
       var numberOfExamples = inputDataset.getNumberOfExamples();
-      var startTime = new Date().getTime();
       var t = 0;
       this.optimizer.setBatchSize(this.batchSize);
       this.optimizer.setLearningRate(this.learningRate);
 
       for (var i = 0; i < this.iterations; i += 1) {
+        var startTime = new Date().getTime();
         var startIterationTime = new Date().getTime();
 
         for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {

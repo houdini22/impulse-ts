@@ -75,7 +75,7 @@ export abstract class AbstractTrainer {
 
     const loss = this.network.loss(correctOutput, predictedOutput);
     const error = this.network.error(inputDataset.getNumberOfExamples());
-    const cost = error * loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
+    const cost = loss + this.regularization / (penalty * 2 * inputDataset.getNumberOfExamples());
 
     for (let col = 0; col < predictedOutput.cols; col += 1) {
       const index1 = predictedOutput.colMaxCoeffIndex(col);

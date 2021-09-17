@@ -12,7 +12,6 @@ export class MiniBatchTrainer extends AbstractTrainer {
 
   train(inputDataset: Dataset, outputDataset: Dataset): MiniBatchTrainer {
     const numberOfExamples = inputDataset.getNumberOfExamples();
-    const startTime = new Date().getTime();
 
     let t = 0;
 
@@ -20,6 +19,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
     this.optimizer.setLearningRate(this.learningRate);
 
     for (let i = 0; i < this.iterations; i += 1) {
+      const startTime = new Date().getTime();
       const startIterationTime = new Date().getTime();
 
       for (let batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {

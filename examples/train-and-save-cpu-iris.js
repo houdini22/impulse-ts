@@ -1,6 +1,6 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: { LogisticLayer },
+  Layer: { LogisticLayer, SoftmaxLayer },
   DatasetBuilder: { DatasetBuilder },
   Optimizer: { OptimizerGradientDescent },
   Trainer: { MiniBatchTrainer },
@@ -18,9 +18,6 @@ builder
     layer.setSize(20);
   })
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize(15);
-  })
-  .createLayer(LogisticLayer, (layer) => {
     layer.setSize(10);
   })
   .createLayer(LogisticLayer, (layer) => {
@@ -29,25 +26,25 @@ builder
 
 const network = builder.getNetwork();
 
-DatasetBuilder.fromSource(
-  DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_x.csv"))
-).then(async (inputDataset) => {
-  console.log("Loaded mnist_20x20_x.csv");
-  DatasetBuilder.fromSource(
-    DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/mnist_20x20_y.csv"))
-  ).then(async (outputDataset) => {
-    console.log("Loaded mnist_20x20_y.csv");
-    console.log("forward", network.forward(inputDataset.exampleAt(0)));
-    inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
-    inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
-    console.log("forward", network.forward(inputDataset.exampleAt(0)));
-    const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-    trainer.setIterations(2);
-    trainer.setBatchSize(10);
-    trainer.setLearningRate(0.00001);
-    console.log("cost", trainer.cost(inputDataset, outputDataset));
-    trainer.train(inputDataset, outputDataset);
-    await network.save(path.resolve(__dirname, "./data/iris.json"));
-    console.log("forward", network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
-  });
-});
+DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/iris_x.csv"))).then(
+  async (inputDataset) => {
+    console.log("Loaded iris_x.csv");
+    DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/iris_y.csv"))).then(
+      async (outputDataset) => {
+        console.log("Loaded iris_y.csv");
+        console.log("forward", network.forward(inputDataset.exampleAt(0)));
+        inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
+        inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
+        console.log("forward", network.forward(inputDataset.exampleAt(0)));
+        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+        trainer.setIterations(5);
+        trainer.setBatchSize(10);
+        trainer.setLearningRate(0.1);
+        console.log("cost", trainer.cost(inputDataset, outputDataset));
+        trainer.train(inputDataset, outputDataset);
+        await network.save(path.resolve(__dirname, "./data/iris.json"));
+        console.log("forward", network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
+      }
+    );
+  }
+);

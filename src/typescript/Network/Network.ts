@@ -49,7 +49,7 @@ class Network {
       ) as Matrix,
       -1
     ) as Matrix;
-*/ let sigma = getComputation().execute("subtract", predictions, Y);
+*/ let sigma = getComputation().execute("subtract", predictions, Y) as Matrix;
 
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       const backPropagation = this.layers[layer].getBackPropagation();
