@@ -11,14 +11,6 @@ class SoftplusLayer extends AbstractLayer1D {
   getType(): LayerType {
     return LayerType.softplus;
   }
-
-  loss(output: Matrix, predictions: Matrix): number {
-    return 0.0; // todo
-  }
-
-  error(m: number): number {
-    return 0.0; // todo
-  }
 }
 
 export { SoftplusLayer };

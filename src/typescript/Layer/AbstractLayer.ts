@@ -117,10 +117,6 @@ abstract class AbstractLayer {
 
   abstract getType(): string;
 
-  abstract loss(output: Matrix, predictions: Matrix): number;
-
-  abstract error(m: number): number;
-
   penalty(): number {
     return getComputation().execute("penalty", this.W) as number;
   }

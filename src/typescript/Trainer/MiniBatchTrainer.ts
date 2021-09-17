@@ -37,11 +37,15 @@ export class MiniBatchTrainer extends AbstractTrainer {
         });
 
         if (this.verbose) {
+          const cost = this.cost(input, output);
           const endIterationTime = new Date().getTime();
           console.log(
             `Batch: ${offset} / ${numberOfExamples} | Batch time: ${
               endIterationTime - startIterationTime2
-            }ms | Time from start: ${round((endIterationTime - startIterationTime) / 1000, 1)}s.`
+            }ms | Time from start: ${round((endIterationTime - startIterationTime) / 1000, 1)}s. | Cost: ${round(
+              cost.cost,
+              2
+            )} | Acc: ${cost.accuracy}`
           );
         }
       }

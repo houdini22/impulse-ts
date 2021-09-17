@@ -34,45 +34,15 @@ export const divideNumber = (m1: Matrix, num: number): Matrix => {
   return new Matrix(m1.rows, m1.cols, data);
 };
 
-export const softmaxActivation = (m: Matrix): Matrix => {
-  const data = [];
-  const max = m.max();
-  for (let row = 0; row < m.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.exp(m.data[row][col] - max);
-    }
-  }
-  const calculated = new Matrix(m.rows, m.cols, data);
-  const divider = new Matrix(1, m.cols, calculated.colwiseSum().data).replicate(m.rows, 1);
-
-  return new Matrix(m.rows, m.cols, elementWiseDivide(calculated, divider).data);
-};
-
-export const softmaxLoss = (output: Matrix, predictions: Matrix): number => {
-  const data = [];
-  const epsilon = 1e-8;
-
-  for (let row = 0; row < predictions.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = output.data[row][col] * Math.log(predictions.data[row][col] + epsilon);
-    }
-  }
-
-  return new Matrix(output.rows, output.cols, data).sum();
-};
-
 export const logisticActivation = (m: Matrix): Matrix => {
   const data = [];
-
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
       data[row][col] = 1.0 / (1.0 + Math.exp(-m.data[row][col]));
     }
   }
-  return new Matrix(m.rows, m.cols, data);
+  return Matrix.from(data);
 };
 
 export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
@@ -118,19 +88,7 @@ export const logisticLoss = (output: Matrix, predictions: Matrix): number => {
 };
 
 export const logisticBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
-  /*const data = [];
-  for (let row = 0; row < oldY.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < oldY.cols; col += 1) {
-      data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
-    }
-  }
-  const s = new Matrix(oldY.rows, oldY.cols, data);*/
-  return new Matrix(
-    oldY.rows,
-    oldY.cols,
-    elementWiseMultiply(oldY, subtractFromNumber(oldY, 1)).data
-  );
+  return logisticActivation(oldY).multiply(logisticActivation(oldY).minusOne());
 };
 
 export const tanhActivation = (m: Matrix): Matrix => {
@@ -138,12 +96,14 @@ export const tanhActivation = (m: Matrix): Matrix => {
   for (let row = 0; row < m.rows; row += 1) {
     data[row] = [];
     for (let col = 0; col < m.cols; col += 1) {
-      if (m.data) {
-        data[row][col] = 2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0;
-      }
+      data[row][col] = (1 - Math.exp(-2 * m.data[row][col])) / (1 + Math.exp(-2 * m.data[row][col]));
     }
   }
-  return new Matrix(m.rows, m.cols, data);
+  return Matrix.from(data);
+};
+
+export const tanhBackpropagation = (m: Matrix): Matrix => {
+  return tanhActivation(m).pow(2).minusOne();
 };
 
 export const reluActivation = (m: Matrix): Matrix => {
@@ -224,7 +184,7 @@ export const purelinLoss = (output: Matrix, predictions: Matrix): number => {
   return new Matrix(output.rows, output.cols, data).sum();
 };
 
-export const multiply = (m1: Matrix, m2: Matrix): Matrix => {
+export const dot = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.cols !== m2.rows) {
     throw new Error(`DIMENSIONS error. m1.cols ${m1.rows} ${m1.cols} !== m2.rows ${m2.rows} ${m2.cols}.`);
   }
@@ -429,7 +389,7 @@ export class ComputationCPU extends AbstractComputation {
   constructor() {
     super();
 
-    this.addKernel("multiply", multiply);
+    this.addKernel("multiply", dot);
     this.addKernel("add", add);
     this.addKernel("subtract", subtract);
     this.addKernel("subtractFromNumber", subtractFromNumber);
@@ -439,11 +399,10 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("multiplyNumber", multiplyNumber);
     this.addKernel("elementWiseDivide", elementWiseDivide);
     this.addKernel("divideNumber", divideNumber);
-    this.addKernel("softmaxActivation", softmaxActivation);
-    this.addKernel("softmaxLoss", softmaxLoss);
     this.addKernel("logisticActivation", logisticActivation);
     this.addKernel("logisticLoss", logisticLoss);
     this.addKernel("logisticBackpropagation", logisticBackpropagation);
+    this.addKernel("tanhBackpropagation", tanhBackpropagation);
     this.addKernel("tanhActivation", tanhActivation);
     this.addKernel("reluActivation", reluActivation);
     this.addKernel("reluBackpropagation", reluBackpropagation);

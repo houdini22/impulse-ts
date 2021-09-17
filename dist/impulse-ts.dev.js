@@ -63,19 +63,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "elementWiseDivide": () => (/* binding */ elementWiseDivide),
 /* harmony export */   "divideNumber": () => (/* binding */ divideNumber),
-/* harmony export */   "softmaxActivation": () => (/* binding */ softmaxActivation),
-/* harmony export */   "softmaxLoss": () => (/* binding */ softmaxLoss),
 /* harmony export */   "logisticActivation": () => (/* binding */ logisticActivation),
 /* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss),
 /* harmony export */   "logisticBackpropagation": () => (/* binding */ logisticBackpropagation),
 /* harmony export */   "tanhActivation": () => (/* binding */ tanhActivation),
+/* harmony export */   "tanhBackpropagation": () => (/* binding */ tanhBackpropagation),
 /* harmony export */   "reluActivation": () => (/* binding */ reluActivation),
 /* harmony export */   "reluBackpropagation": () => (/* binding */ reluBackpropagation),
 /* harmony export */   "softplusActivation": () => (/* binding */ softplusActivation),
 /* harmony export */   "penalty": () => (/* binding */ penalty),
 /* harmony export */   "sqrt": () => (/* binding */ sqrt),
 /* harmony export */   "purelinLoss": () => (/* binding */ purelinLoss),
-/* harmony export */   "multiply": () => (/* binding */ multiply),
+/* harmony export */   "dot": () => (/* binding */ dot),
 /* harmony export */   "add": () => (/* binding */ add),
 /* harmony export */   "subtract": () => (/* binding */ subtract),
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
@@ -147,36 +146,6 @@ var divideNumber = function divideNumber(m1, num) {
 
   return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, data);
 };
-var softmaxActivation = function softmaxActivation(m) {
-  var data = [];
-  var max = m.max();
-
-  for (var row = 0; row < m.rows; row += 1) {
-    data[row] = [];
-
-    for (var col = 0; col < m.cols; col += 1) {
-      data[row][col] = Math.exp(m.data[row][col] - max);
-    }
-  }
-
-  var calculated = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, data);
-  var divider = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(1, m.cols, calculated.colwiseSum().data).replicate(m.rows, 1);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, elementWiseDivide(calculated, divider).data);
-};
-var softmaxLoss = function softmaxLoss(output, predictions) {
-  var data = [];
-  var epsilon = 1e-8;
-
-  for (var row = 0; row < predictions.rows; row += 1) {
-    data[row] = [];
-
-    for (var col = 0; col < predictions.cols; col += 1) {
-      data[row][col] = output.data[row][col] * Math.log(predictions.data[row][col] + epsilon);
-    }
-  }
-
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, data).sum();
-};
 var logisticActivation = function logisticActivation(m) {
   var data = [];
 
@@ -188,7 +157,7 @@ var logisticActivation = function logisticActivation(m) {
     }
   }
 
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, data);
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from(data);
 };
 var logisticLoss = function logisticLoss(output, predictions) {
   var log = [];
@@ -234,15 +203,7 @@ var logisticLoss = function logisticLoss(output, predictions) {
   return add(elementWiseMultiply(multiplyNumber(firstMatrix, -1), output), elementWiseMultiply(multiplyNumber(toMultiply1, -1), subtractFromNumber(toMultiply2, 1))).sum();
 };
 var logisticBackpropagation = function logisticBackpropagation(sigma, oldY) {
-  /*const data = [];
-  for (let row = 0; row < oldY.rows; row += 1) {
-    data[row] = [];
-    for (let col = 0; col < oldY.cols; col += 1) {
-      data[row][col] = 1 / (1 + Math.exp(-oldY.data[row][col]));
-    }
-  }
-  const s = new Matrix(oldY.rows, oldY.cols, data);*/
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(oldY.rows, oldY.cols, elementWiseMultiply(oldY, subtractFromNumber(oldY, 1)).data);
+  return logisticActivation(oldY).multiply(logisticActivation(oldY).minusOne());
 };
 var tanhActivation = function tanhActivation(m) {
   var data = [];
@@ -251,13 +212,14 @@ var tanhActivation = function tanhActivation(m) {
     data[row] = [];
 
     for (var col = 0; col < m.cols; col += 1) {
-      if (m.data) {
-        data[row][col] = 2.0 / (1.0 + Math.exp(-2.0 * m.data[row][col])) - 1.0;
-      }
+      data[row][col] = (1 - Math.exp(-2 * m.data[row][col])) / (1 + Math.exp(-2 * m.data[row][col]));
     }
   }
 
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, data);
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from(data);
+};
+var tanhBackpropagation = function tanhBackpropagation(m) {
+  return tanhActivation(m).pow(2).minusOne();
 };
 var reluActivation = function reluActivation(m) {
   var data = [];
@@ -349,7 +311,7 @@ var purelinLoss = function purelinLoss(output, predictions) {
 
   return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, data).sum();
 };
-var multiply = function multiply(m1, m2) {
+var dot = function dot(m1, m2) {
   if (m1.cols !== m2.rows) {
     throw new Error("DIMENSIONS error. m1.cols ".concat(m1.rows, " ").concat(m1.cols, " !== m2.rows ").concat(m2.rows, " ").concat(m2.cols, "."));
   }
@@ -595,7 +557,7 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this = _super.call(this);
 
-    _this.addKernel("multiply", multiply);
+    _this.addKernel("multiply", dot);
 
     _this.addKernel("add", add);
 
@@ -615,15 +577,13 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this.addKernel("divideNumber", divideNumber);
 
-    _this.addKernel("softmaxActivation", softmaxActivation);
-
-    _this.addKernel("softmaxLoss", softmaxLoss);
-
     _this.addKernel("logisticActivation", logisticActivation);
 
     _this.addKernel("logisticLoss", logisticLoss);
 
     _this.addKernel("logisticBackpropagation", logisticBackpropagation);
+
+    _this.addKernel("tanhBackpropagation", tanhBackpropagation);
 
     _this.addKernel("tanhActivation", tanhActivation);
 
@@ -678,7 +638,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "penalty": () => (/* binding */ penalty),
 /* harmony export */   "sqrt": () => (/* binding */ sqrt),
 /* harmony export */   "purelinLoss": () => (/* binding */ purelinLoss),
-/* harmony export */   "multiply": () => (/* binding */ multiply),
+/* harmony export */   "dot": () => (/* binding */ dot),
 /* harmony export */   "add": () => (/* binding */ add),
 /* harmony export */   "subtract": () => (/* binding */ subtract),
 /* harmony export */   "fillRandom": () => (/* binding */ fillRandom),
@@ -821,7 +781,7 @@ var purelinLoss = function purelinLoss(output, predictions) {
   }).setOutput([output.rows, output.cols]);
   return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, kernel(output.data)).sum();
 };
-var multiply = function multiply(m1, m2) {
+var dot = function dot(m1, m2) {
   if (m1.cols !== m2.rows) {
     throw new Error("DIMENSIONS error. m1.cols ".concat(m1.cols, " !== m2.rows ").concat(m2.rows, "."));
   }
@@ -933,7 +893,7 @@ var ComputationGPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this = _super.call(this);
 
-    _this.addKernel("multiply", multiply);
+    _this.addKernel("multiply", dot);
 
     _this.addKernel("add", add);
 
@@ -2142,7 +2102,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _AbstractBackpropagation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractBackpropagation */ "./src/typescript/Layer/Backpropagation/AbstractBackpropagation.ts");
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2167,7 +2126,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
   _inherits(Backpropagation1Dto1D, _AbstractBackPropagat);
 
@@ -2183,13 +2141,14 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
     key: "propagate",
     value: function propagate(input, numberOfExamples, regularization, sigma) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", sigma, previousActivations.transpose());
-      this.layer.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", this.layer.gW, 1 / numberOfExamples);
-      this.layer.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiplyNumber", sigma.rowwiseSum().transpose(), 1 / numberOfExamples);
+      this.layer.gW = sigma.dot(previousActivations.transpose());
+      this.layer.gW = this.layer.gW.multiply(1 / numberOfExamples);
+      this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+      this.layer.gb = sigma.rowwiseSum().transpose().multiply(1 / numberOfExamples);
 
       if (this.previousLayer !== null) {
         // @ts-ignore
-        var result = (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.layer.W.transpose(), sigma);
+        var result = this.layer.W.transpose().dot(sigma);
 
         if (result.rows !== previousActivations.rows || result.cols !== previousActivations.cols) {
           console.log(this.layer.W.rows, this.layer.W.cols, sigma.rows, sigma.cols, this.layer.gW.rows, this.layer.gW.cols);
@@ -2983,16 +2942,6 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.logistic;
     }
   }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticLoss", output, predictions);
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return 1.0 / m;
-    }
-  }, {
     key: "backpropagation",
     value: function backpropagation(sigma) {
       return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackpropagation", sigma, this.A);
@@ -3222,16 +3171,6 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.relu;
     }
   }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return 0.0; // todo
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return 0.0; // todo
-    }
-  }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
       return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluBackpropagation", delta, this.A);
@@ -3304,16 +3243,6 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     key: "getType",
     value: function getType() {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.softmax;
-    }
-  }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxLoss", output, predictions);
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return -1.0 / m;
     }
   }, {
     key: "backpropagation",
@@ -3389,16 +3318,6 @@ var SoftplusLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     value: function getType() {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.softplus;
     }
-  }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return 0.0; // todo
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return 0.0; // todo
-    }
   }]);
 
   return SoftplusLayer;
@@ -3461,7 +3380,7 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(TanhLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhActivation", m);
+      return m.exp().divide(m.colwiseSum().replicate(m.rows, 1));
     }
   }, {
     key: "getType",
@@ -3469,14 +3388,9 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.tanh;
     }
   }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return 0.0; // todo
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return 0.0; // todo
+    key: "backpropagation",
+    value: function backpropagation(sigma) {
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhBackpropagation", sigma, this.A);
     }
   }]);
 
@@ -3794,6 +3708,181 @@ var Matrix = /*#__PURE__*/function () {
 
       return max;
     }
+  }, {
+    key: "dot",
+    value: function dot(m) {
+      return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", this, m);
+    }
+  }, {
+    key: "multiply",
+    value: function multiply(num) {
+      if (typeof num === "number") {
+        var data = [];
+
+        for (var row = 0; row < this.rows; row += 1) {
+          data[row] = [];
+
+          for (var col = 0; col < this.cols; col += 1) {
+            // @ts-ignore
+            data[row][col] = this.data[row][col] * num;
+          }
+        }
+
+        return Matrix.from(data);
+      } else {
+        var _data = [];
+
+        for (var _row4 = 0; _row4 < this.rows; _row4 += 1) {
+          _data[_row4] = [];
+
+          for (var _col3 = 0; _col3 < this.cols; _col3 += 1) {
+            // @ts-ignore
+            _data[_row4][_col3] = this.data[_row4][_col3] * num.data[_row4][_col3];
+          }
+        }
+
+        return Matrix.from(_data);
+      }
+    }
+  }, {
+    key: "subtract",
+    value: function subtract(m) {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = this.data[row][col] - m.data[row][col];
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "divide",
+    value: function divide(num) {
+      if (typeof num === "number") {
+        var data = [];
+
+        for (var row = 0; row < this.rows; row += 1) {
+          data[row] = [];
+
+          for (var col = 0; col < this.cols; col += 1) {
+            data[row][col] = this.data[row][col] / num;
+          }
+        }
+
+        return Matrix.from(data);
+      } else {
+        var _data2 = [];
+
+        for (var _row5 = 0; _row5 < this.rows; _row5 += 1) {
+          _data2[_row5] = [];
+
+          for (var _col4 = 0; _col4 < this.cols; _col4 += 1) {
+            _data2[_row5][_col4] = this.data[_row5][_col4] / num.data[_row5][_col4];
+          }
+        }
+
+        return Matrix.from(_data2);
+      }
+    }
+  }, {
+    key: "minusOne",
+    value: function minusOne() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = 1 - this.data[row][col];
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "subtractFromNumber",
+    value: function subtractFromNumber(num) {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = num - this.data[row][col];
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "add",
+    value: function add(m) {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = this.data[row][col] + m.data[row][col];
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "log",
+    value: function log() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = Math.log(this.data[row][col] + 1e-8);
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "exp",
+    value: function exp() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = Math.log(this.data[row][col] + 1e-8);
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "pow",
+    value: function pow(num) {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = Math.pow(this.data[row][col], num);
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }], [{
+    key: "from",
+    value: function from(arr) {
+      return new Matrix(arr.length, arr[0].length, arr);
+    }
   }]);
 
   return Matrix;
@@ -3950,22 +4039,11 @@ var Network = /*#__PURE__*/function () {
     key: "backward",
     value: function backward(X, Y, predictions, regularization) {
       var m = X.cols;
-      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", Y, predictions);
+      var sigma = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("subtract", predictions, Y);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-        var dZ = this.layers[layer].backpropagation(sigma);
-        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, dZ);
+        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, this.layers[layer].backpropagation(sigma));
       }
-    }
-  }, {
-    key: "loss",
-    value: function loss(output, predictions) {
-      return this.layers[this.layers.length - 1].loss(output, predictions);
-    }
-  }, {
-    key: "error",
-    value: function error(m) {
-      return 0;
     }
   }, {
     key: "save",
@@ -4388,14 +4466,12 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./src/typescript/Trainer/AbstractTrainer.ts ***!
   \***************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractTrainer": () => (/* binding */ AbstractTrainer)
 /* harmony export */ });
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
-/* module decorator */ module = __webpack_require__.hmd(module);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -4404,8 +4480,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-
-var defaultCoreCipherList = module;
 var AbstractTrainer = /*#__PURE__*/function () {
   function AbstractTrainer(network, optimizer) {
     _classCallCheck(this, AbstractTrainer);
@@ -4479,11 +4553,16 @@ var AbstractTrainer = /*#__PURE__*/function () {
       });
       var predictedOutput = this.network.forward(inputDataset.data);
       var correctOutput = outputDataset.data;
-      var error = (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", correctOutput, //@ts-ignore
-      (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("log", predictedOutput).transpose()), (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("subtractFromNumber", correctOutput, 1), //@ts-ignore
-      (0,_Computation__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("logMinusOne", predictedOutput).transpose())) //@ts-ignore
-      .sum();
-      var cost = -1 / numberOfExamples * error + this.regularization / (penalty / 2 * inputDataset.getNumberOfExamples());
+      /*const error = predictedOutput
+        .transpose()
+        .multiply(-1)
+        .log()
+        .dot(correctOutput)
+        .add(correctOutput.transpose().subtractFromNumber(1).dot(predictedOutput.minusOne().log().multiply(-1)))
+        .sum();*/
+
+      var error = correctOutput.subtract(predictedOutput).sum();
+      var cost = -1 / numberOfExamples * error + this.regularization / (penalty * (2 * inputDataset.getNumberOfExamples()));
 
       for (var col = 0; col < predictedOutput.cols; col += 1) {
         var index1 = predictedOutput.colMaxCoeffIndex(col);
@@ -4597,8 +4676,9 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
           });
 
           if (this.verbose) {
+            var cost = this.cost(input, output);
             var endIterationTime = new Date().getTime();
-            console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Batch time: ").concat(endIterationTime - startIterationTime2, "ms | Time from start: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)((endIterationTime - startIterationTime) / 1000, 1), "s."));
+            console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Batch time: ").concat(endIterationTime - startIterationTime2, "ms | Time from start: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)((endIterationTime - startIterationTime) / 1000, 1), "s. | Cost: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(cost.cost, 2), " | Acc: ").concat(cost.accuracy));
           }
         }
 
@@ -5112,16 +5192,13 @@ module.exports = require("fs");
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -5149,21 +5226,6 @@ module.exports = require("fs");
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

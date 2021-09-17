@@ -5,19 +5,26 @@ import { getComputation } from "../../Computation";
 export class Backpropagation1Dto1D extends AbstractBackPropagation {
   propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
     const previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-    this.layer.gW = getComputation().execute("multiply", sigma, previousActivations.transpose()) as Matrix;
-    this.layer.gW = getComputation().execute("multiplyNumber", this.layer.gW, 1 / numberOfExamples) as Matrix;
-    this.layer.gb = getComputation().execute(
-      "multiplyNumber",
-      sigma.rowwiseSum().transpose(),
-      1 / numberOfExamples
-    ) as Matrix;
+    this.layer.gW = sigma.dot(previousActivations.transpose());
+    this.layer.gW = this.layer.gW.multiply(1 / numberOfExamples);
+    this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+    this.layer.gb = sigma
+      .rowwiseSum()
+      .transpose()
+      .multiply(1 / numberOfExamples);
 
     if (this.previousLayer !== null) {
       // @ts-ignore
-      const result = getComputation().execute("multiply", this.layer.W.transpose(), sigma) as Matrix;
+      const result = this.layer.W.transpose().dot(sigma);
       if (result.rows !== previousActivations.rows || result.cols !== previousActivations.cols) {
-        console.log(this.layer.W.rows, this.layer.W.cols, sigma.rows, sigma.cols, this.layer.gW.rows, this.layer.gW.cols);
+        console.log(
+          this.layer.W.rows,
+          this.layer.W.cols,
+          sigma.rows,
+          sigma.cols,
+          this.layer.gW.rows,
+          this.layer.gW.cols
+        );
         throw new Error(
           `Dimension error 1. (${result.rows}, ${result.cols}) | (${previousActivations.rows}, ${previousActivations.cols})`
         );

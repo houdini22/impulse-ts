@@ -3,8 +3,6 @@ import { AbstractOptimizer } from "./Optimizer/AbstractOptimizer";
 import { Dataset } from "../Dataset";
 import { Matrix } from "../Math/Matrix";
 import { getComputation } from "../Computation";
-import { constants } from "crypto";
-import defaultCoreCipherList = module;
 
 export interface CostResult {
   cost: number;
@@ -75,26 +73,16 @@ export abstract class AbstractTrainer {
     const predictedOutput = this.network.forward(inputDataset.data);
     const correctOutput = outputDataset.data;
 
-    const error = getComputation()
-      .execute(
-        "add",
-        getComputation().execute(
-          "multiply",
-          correctOutput,
-          //@ts-ignore
-          getComputation().execute("log", predictedOutput).transpose()
-        ) as Matrix,
-        getComputation().execute(
-          "multiply",
-          getComputation().execute("subtractFromNumber", correctOutput, 1) as Matrix,
-          //@ts-ignore
-          getComputation().execute("logMinusOne", predictedOutput).transpose() as Matrix
-        ) as Matrix
-      )
-      //@ts-ignore
-      .sum();
+    /*const error = predictedOutput
+      .transpose()
+      .multiply(-1)
+      .log()
+      .dot(correctOutput)
+      .add(correctOutput.transpose().subtractFromNumber(1).dot(predictedOutput.minusOne().log().multiply(-1)))
+      .sum();*/
+    const error = correctOutput.subtract(predictedOutput).sum();
     const cost =
-      (-1 / numberOfExamples) * error + this.regularization / ((penalty / 2) * inputDataset.getNumberOfExamples());
+      (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * inputDataset.getNumberOfExamples()));
 
     for (let col = 0; col < predictedOutput.cols; col += 1) {
       const index1 = predictedOutput.colMaxCoeffIndex(col);

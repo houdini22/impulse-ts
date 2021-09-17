@@ -196,6 +196,137 @@ export class Matrix {
       }
     }
 
-    return max
+    return max;
+  }
+
+  dot(m: Matrix): Matrix {
+    return getComputation().execute("multiply", this, m) as Matrix;
+  }
+
+  multiply(num: number | Matrix): Matrix {
+    if (typeof num === "number") {
+      const data = [];
+      for (let row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+        for (let col = 0; col < this.cols; col += 1) {
+          // @ts-ignore
+          data[row][col] = this.data[row][col] * num;
+        }
+      }
+      return Matrix.from(data);
+    } else {
+      const data = [];
+      for (let row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+        for (let col = 0; col < this.cols; col += 1) {
+          // @ts-ignore
+          data[row][col] = this.data[row][col] * num.data[row][col];
+        }
+      }
+      return Matrix.from(data);
+    }
+  }
+
+  subtract(m: Matrix): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = this.data[row][col] - m.data[row][col];
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  divide(num: number | Matrix): Matrix {
+    if (typeof num === "number") {
+      const data = [];
+      for (let row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+        for (let col = 0; col < this.cols; col += 1) {
+          data[row][col] = this.data[row][col] / num;
+        }
+      }
+      return Matrix.from(data);
+    } else {
+      const data = [];
+      for (let row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+        for (let col = 0; col < this.cols; col += 1) {
+          data[row][col] = this.data[row][col] / num.data[row][col];
+        }
+      }
+      return Matrix.from(data);
+    }
+  }
+
+  minusOne(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = 1 - this.data[row][col];
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  subtractFromNumber(num: number): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = num - this.data[row][col];
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  add(m: Matrix): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = this.data[row][col] + m.data[row][col];
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  log(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.log(this.data[row][col] + 1e-8);
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  exp(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.log(this.data[row][col] + 1e-8);
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  pow(num): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.pow(this.data[row][col], num);
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  static from(arr: number[][]): Matrix {
+    return new Matrix(arr.length, arr[0].length, arr);
   }
 }

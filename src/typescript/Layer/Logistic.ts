@@ -12,14 +12,6 @@ class LogisticLayer extends AbstractLayer1D {
     return LayerType.logistic;
   }
 
-  loss(output: Matrix, predictions: Matrix): number {
-    return getComputation().execute("logisticLoss", output, predictions) as number;
-  }
-
-  error(m: number): number {
-    return 1.0 / m;
-  }
-
   backpropagation(sigma: Matrix): Matrix {
     return getComputation().execute("logisticBackpropagation", sigma, this.A) as Matrix;
   }
