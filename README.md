@@ -19,17 +19,24 @@ MinMaxScalingDatabaseModifier
 ### Supported network builders:
 ```
 NetworkBuilder1D
+NetworkBuilder1D
 ```
 
 ### Supported layers:
 ```
 LogisticLayer
 PurelinLayer
+ReluLayer
 ```
 
 ### Supported trainers:
 ```
 MiniBatchTrainer
+```
+
+### Supported Networks
+```
+Network1D
 ```
 
 There are no errors using above.
