@@ -67,7 +67,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "logisticLoss": () => (/* binding */ logisticLoss),
 /* harmony export */   "logisticBackpropagation": () => (/* binding */ logisticBackpropagation),
 /* harmony export */   "tanhActivation": () => (/* binding */ tanhActivation),
-/* harmony export */   "tanhBackpropagation": () => (/* binding */ tanhBackpropagation),
 /* harmony export */   "reluActivation": () => (/* binding */ reluActivation),
 /* harmony export */   "reluBackpropagation": () => (/* binding */ reluBackpropagation),
 /* harmony export */   "softplusActivation": () => (/* binding */ softplusActivation),
@@ -217,9 +216,6 @@ var tanhActivation = function tanhActivation(m) {
   }
 
   return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from(data);
-};
-var tanhBackpropagation = function tanhBackpropagation(m) {
-  return tanhActivation(m).pow(2).minusOne();
 };
 var reluActivation = function reluActivation(m) {
   var data = [];
@@ -583,8 +579,6 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
 
     _this.addKernel("logisticBackpropagation", logisticBackpropagation);
 
-    _this.addKernel("tanhBackpropagation", tanhBackpropagation);
-
     _this.addKernel("tanhActivation", tanhActivation);
 
     _this.addKernel("reluActivation", reluActivation);
@@ -596,8 +590,6 @@ var ComputationCPU = /*#__PURE__*/function (_AbstractComputation) {
     _this.addKernel("penalty", penalty);
 
     _this.addKernel("sqrt", sqrt);
-
-    _this.addKernel("purelinLoss", purelinLoss);
 
     _this.addKernel("transpose", transpose);
 
@@ -1750,11 +1742,6 @@ var AbstractLayer = /*#__PURE__*/function () {
       return this;
     }
   }, {
-    key: "setPreviousLayer",
-    value: function setPreviousLayer(layer) {
-      this.previousLayer = layer;
-    }
-  }, {
     key: "getBackPropagation",
     value: function getBackPropagation() {
       return this.backPropagation;
@@ -1762,7 +1749,7 @@ var AbstractLayer = /*#__PURE__*/function () {
   }, {
     key: "forward",
     value: function forward(input) {
-      this.Z = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("add", (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("multiply", this.W, input), this.b.replicate(1, input.cols));
+      this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
       this.A = this.activation(this.Z);
       return this.A;
     }
@@ -1830,7 +1817,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractLayer1D": () => (/* binding */ AbstractLayer1D)
 /* harmony export */ });
 /* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1861,7 +1847,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
 var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
   _inherits(AbstractLayer1D, _AbstractLayer);
 
@@ -1886,27 +1871,26 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
   _createClass(AbstractLayer1D, [{
     key: "configure",
     value: function configure() {
-      var prevLayer = this.previousLayer;
-      this.W.resize(this.height, this.width);
-      this.W = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.W, prevLayer ? prevLayer.getHeight() : this.height);
-      this.b.resize(this.height, 1);
-      this.b = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillRandom", this.b, prevLayer ? prevLayer.getHeight() : this.height);
-      this.gW.resize(this.height, this.width);
-      this.gW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gW);
-      this.gb.resize(this.height, 1);
-      this.gb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.gb);
-      this.sW.resize(this.height, this.width);
-      this.sW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
-      this.sb.resize(this.height, 1);
-      this.sb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
-      this.vW.resize(this.height, this.width);
-      this.vW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.vW);
-      this.vb.resize(this.height, 1);
-      this.vb = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
-      this.dW.resize(this.height, this.width);
-      this.dW = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sW);
-      this.db.resize(this.height, 1);
-      this.db = (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("fillZeros", this.sb);
+      this.W.resize(this.getHeight(), this.getWidth());
+      this.W = this.W.setRandom(this.previousLayer ? this.previousLayer.getHeight() : this.getHeight());
+      this.b.resize(this.getHeight(), 1);
+      this.b = this.b.setRandom(this.previousLayer ? this.previousLayer.getHeight() : this.getHeight());
+      this.gW.resize(this.getHeight(), this.getWidth());
+      this.gW = this.W.setZeros();
+      this.gb.resize(this.getHeight(), 1);
+      this.gb = this.gb.setZeros();
+      this.sW.resize(this.getHeight(), this.getWidth());
+      this.sW = this.sW.setZeros();
+      this.sb.resize(this.getHeight(), 1);
+      this.sb = this.sb.setZeros();
+      this.vW.resize(this.getHeight(), this.getWidth());
+      this.vW = this.vW.setZeros();
+      this.vb.resize(this.getHeight(), 1);
+      this.vb = this.vb.setZeros();
+      this.dW.resize(this.getHeight(), this.getWidth());
+      this.dW = this.dW.setZeros();
+      this.db.resize(this.getHeight(), 1);
+      this.db = this.db.setZeros();
     }
   }, {
     key: "is1D",
@@ -2142,8 +2126,8 @@ var Backpropagation1Dto1D = /*#__PURE__*/function (_AbstractBackPropagat) {
     value: function propagate(input, numberOfExamples, regularization, sigma) {
       var previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
       this.layer.gW = sigma.dot(previousActivations.transpose());
-      this.layer.gW = this.layer.gW.multiply(1 / numberOfExamples);
-      this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+      this.layer.gW = this.layer.gW.multiply(1 / numberOfExamples); //this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+
       this.layer.gb = sigma.rowwiseSum().transpose().multiply(1 / numberOfExamples);
 
       if (this.previousLayer !== null) {
@@ -2893,7 +2877,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2919,7 +2902,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _inherits(LogisticLayer, _AbstractLayer1D);
 
@@ -2934,7 +2916,7 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(LogisticLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticActivation", m);
+      return m.multiply(-1).exp().add(1).fraction(1);
     }
   }, {
     key: "getType",
@@ -2943,8 +2925,8 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
     }
   }, {
     key: "backpropagation",
-    value: function backpropagation(sigma) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("logisticBackpropagation", sigma, this.A);
+    value: function backpropagation(delta) {
+      return this.activation(delta).multiply(this.activation(delta).minusOne());
     }
   }]);
 
@@ -3196,7 +3178,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3222,7 +3203,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _inherits(SoftmaxLayer, _AbstractLayer1D);
 
@@ -3237,7 +3217,10 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(SoftmaxLayer, [{
     key: "activation",
     value: function activation(m) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("softmaxActivation", m);
+      var max = m.max();
+      return m.forEach(function (num) {
+        return num - max;
+      }).exp();
     }
   }, {
     key: "getType",
@@ -3247,7 +3230,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(delta) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("multiply", this.A.transpose(), this.A);
+      return this.A.exp().divide(this.A.sum());
     }
   }]);
 
@@ -3339,7 +3322,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3365,7 +3347,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _inherits(TanhLayer, _AbstractLayer1D);
 
@@ -3380,7 +3361,9 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(TanhLayer, [{
     key: "activation",
     value: function activation(m) {
-      return m.exp().divide(m.colwiseSum().replicate(m.rows, 1));
+      return m.multiply(-2).exp().add(1).forEach(function (num) {
+        return 2 / num;
+      }).subtract(1);
     }
   }, {
     key: "getType",
@@ -3390,7 +3373,7 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   }, {
     key: "backpropagation",
     value: function backpropagation(sigma) {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("tanhBackpropagation", sigma, this.A);
+      return this.activation(this.A).pow(2).minusOne();
     }
   }]);
 
@@ -3573,35 +3556,30 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "replicate",
     value: function replicate(rows, cols) {
-      var oldData = this.data;
-      var newData = [];
-      var result = null;
-
       if (rows === 1 && this.cols === 1 && cols > 1) {
-        result = new Matrix(this.rows, cols);
+        var newData = [];
 
         for (var row = 0; row < this.rows; row += 1) {
           newData[row] = [];
 
           for (var col = 0; col < cols; col += 1) {
-            newData[row][col] = oldData[row][0];
+            newData[row][col] = this.data[row][0];
           }
         }
+
+        return Matrix.from(newData);
       } else if (cols === 1 && this.rows === 1 && rows > 1) {
-        result = new Matrix(rows, this.cols);
+        var _newData = [];
 
         for (var _row3 = 0; _row3 < rows; _row3 += 1) {
-          newData[_row3] = [];
+          _newData[_row3] = [];
 
           for (var _col2 = 0; _col2 < this.cols; _col2 += 1) {
-            newData[_row3][_col2] = oldData[0][_col2];
+            _newData[_row3][_col2] = this.data[0][_col2];
           }
         }
-      }
 
-      if (result) {
-        result.generateData(newData);
-        return result;
+        return Matrix.from(_newData);
       }
 
       return this;
@@ -3709,6 +3687,53 @@ var Matrix = /*#__PURE__*/function () {
       return max;
     }
   }, {
+    key: "setZeros",
+    value: function setZeros() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = 0;
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "setRandom",
+    value: function setRandom() {
+      var parameter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = (Math.random() * 4 - 2) * Math.sqrt(2 / parameter); // todo: gaussian distribution;
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
+    key: "fraction",
+    value: function fraction() {
+      var num = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = num / this.data[row][col];
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
     key: "dot",
     value: function dot(m) {
       return (0,_Computation_utils__WEBPACK_IMPORTED_MODULE_0__.getComputation)().execute("multiply", this, m);
@@ -3747,13 +3772,42 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "subtract",
     value: function subtract(m) {
+      if (m instanceof Matrix) {
+        var data = [];
+
+        for (var row = 0; row < this.rows; row += 1) {
+          data[row] = [];
+
+          for (var col = 0; col < this.cols; col += 1) {
+            data[row][col] = this.data[row][col] - m.data[row][col];
+          }
+        }
+
+        return Matrix.from(data);
+      } else {
+        var _data2 = [];
+
+        for (var _row5 = 0; _row5 < this.rows; _row5 += 1) {
+          _data2[_row5] = [];
+
+          for (var _col4 = 0; _col4 < this.cols; _col4 += 1) {
+            _data2[_row5][_col4] = this.data[_row5][_col4] - m;
+          }
+        }
+
+        return Matrix.from(_data2);
+      }
+    }
+  }, {
+    key: "forEach",
+    value: function forEach(cb) {
       var data = [];
 
       for (var row = 0; row < this.rows; row += 1) {
         data[row] = [];
 
         for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = this.data[row][col] - m.data[row][col];
+          data[row][col] = cb(this.data[row][col]);
         }
       }
 
@@ -3775,17 +3829,17 @@ var Matrix = /*#__PURE__*/function () {
 
         return Matrix.from(data);
       } else {
-        var _data2 = [];
+        var _data3 = [];
 
-        for (var _row5 = 0; _row5 < this.rows; _row5 += 1) {
-          _data2[_row5] = [];
+        for (var _row6 = 0; _row6 < this.rows; _row6 += 1) {
+          _data3[_row6] = [];
 
-          for (var _col4 = 0; _col4 < this.cols; _col4 += 1) {
-            _data2[_row5][_col4] = this.data[_row5][_col4] / num.data[_row5][_col4];
+          for (var _col5 = 0; _col5 < this.cols; _col5 += 1) {
+            _data3[_row6][_col5] = this.data[_row6][_col5] / num.data[_row6][_col5];
           }
         }
 
-        return Matrix.from(_data2);
+        return Matrix.from(_data3);
       }
     }
   }, {
@@ -3821,17 +3875,37 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "add",
     value: function add(m) {
-      var data = [];
+      if (typeof m === "number") {
+        var data = [];
 
-      for (var row = 0; row < this.rows; row += 1) {
-        data[row] = [];
+        for (var row = 0; row < this.rows; row += 1) {
+          data[row] = [];
 
-        for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = this.data[row][col] + m.data[row][col];
+          for (var col = 0; col < this.cols; col += 1) {
+            data[row][col] = this.data[row][col] + m;
+          }
         }
+
+        return Matrix.from(data);
+      } else if (m instanceof Matrix) {
+        if (m.rows !== this.rows || m.cols !== this.cols) {
+          throw new Error("Dimention error: rows (x: ".concat(this.rows, ", y: ").concat(this.cols, ") !== (x: ").concat(m.rows, ", y: ").concat(m.cols, ")"));
+        }
+
+        var _data4 = [];
+
+        for (var _row7 = 0; _row7 < this.rows; _row7 += 1) {
+          _data4[_row7] = [];
+
+          for (var _col6 = 0; _col6 < this.cols; _col6 += 1) {
+            _data4[_row7][_col6] = this.data[_row7][_col6] + m.data[_row7][_col6];
+          }
+        }
+
+        return Matrix.from(_data4);
       }
 
-      return Matrix.from(data);
+      return this;
     }
   }, {
     key: "log",
@@ -3857,7 +3931,7 @@ var Matrix = /*#__PURE__*/function () {
         data[row] = [];
 
         for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = Math.log(this.data[row][col] + 1e-8);
+          data[row][col] = Math.exp(this.data[row][col] + 1e-8);
         }
       }
 
@@ -3881,7 +3955,9 @@ var Matrix = /*#__PURE__*/function () {
   }], [{
     key: "from",
     value: function from(arr) {
-      return new Matrix(arr.length, arr[0].length, arr);
+      var _arr$;
+
+      return new Matrix(arr.length, ((_arr$ = arr[0]) === null || _arr$ === void 0 ? void 0 : _arr$.length) || 0, arr);
     }
   }]);
 
@@ -4141,32 +4217,24 @@ var AbstractNetworkBuilder = /*#__PURE__*/function () {
     key: "createLayer",
     value: function createLayer(layerClass) {
       var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      // @ts-ignore
+      var layer = new layerClass();
 
-      if (this.network) {
-        // @ts-ignore
-        var _layer = new layerClass();
-
-        if (typeof callback === "function") {
-          callback(_layer);
-        }
-
-        if (this.lastLayer === null) {
-          this.firstLayerTransition(_layer);
-        } else {
-          // @ts-ignore
-          _layer.transition(this.lastLayer);
-        }
-
-        _layer.setPreviousLayer(this.lastLayer);
-
-        _layer.configure();
-
-        _layer.setBackPropagation(_Layer_Backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__.BackpropagationFactory.create(this.lastLayer, _layer));
-
-        this.network.addLayer(_layer);
-        this.lastLayer = _layer;
+      if (typeof callback === "function") {
+        callback(layer);
       }
 
+      if (this.lastLayer === null) {
+        this.firstLayerTransition(layer);
+      } else {
+        // @ts-ignore
+        layer.transition(this.lastLayer);
+      }
+
+      layer.configure();
+      layer.setBackPropagation(_Layer_Backpropagation_BackpropagationFactory__WEBPACK_IMPORTED_MODULE_1__.BackpropagationFactory.create(this.lastLayer, layer));
+      this.network.addLayer(layer);
+      this.lastLayer = layer;
       return this;
     }
   }, {
@@ -4274,14 +4342,11 @@ var NetworkBuilder1D = /*#__PURE__*/function (_AbstractNetworkBuild) {
             });
           });
           var network = builder.getNetwork();
-
-          if (network) {
-            network.getLayers().forEach(function (layer, i) {
-              layer.W = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["W"].length, json["layers"][i]["weights"]["W"][0].length, json["layers"][i]["weights"]["W"]);
-              layer.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["b"].length, json["layers"][i]["weights"]["b"][0].length, json["layers"][i]["weights"]["b"]);
-            });
-            resolve(network);
-          }
+          network.getLayers().forEach(function (layer, i) {
+            layer.W = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["W"].length, json["layers"][i]["weights"]["W"][0].length, json["layers"][i]["weights"]["W"]);
+            layer.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_3__.Matrix(json["layers"][i]["weights"]["b"].length, json["layers"][i]["weights"]["b"][0].length, json["layers"][i]["weights"]["b"]);
+          });
+          resolve(network);
         });
       });
     }
@@ -4575,7 +4640,7 @@ var AbstractTrainer = /*#__PURE__*/function () {
 
       return {
         cost: cost,
-        accuracy: (accuracy - 1) / numberOfExamples * 100
+        accuracy: accuracy / numberOfExamples * 100
       };
     }
   }]);

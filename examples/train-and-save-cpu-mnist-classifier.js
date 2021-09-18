@@ -46,7 +46,7 @@ DatasetBuilder.fromSource(
     console.log(trainer.cost(inputDataset, outputDataset));
 
     trainer.setIterations(10000);
-    trainer.setLearningRate(0.0007);
+    trainer.setLearningRate(0.0001);
     trainer.setBatchSize(100);
     trainer.setRegularization(0.7);
     trainer.train(inputDataset, outputDataset);

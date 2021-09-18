@@ -102,10 +102,6 @@ export const tanhActivation = (m: Matrix): Matrix => {
   return Matrix.from(data);
 };
 
-export const tanhBackpropagation = (m: Matrix): Matrix => {
-  return tanhActivation(m).pow(2).minusOne();
-};
-
 export const reluActivation = (m: Matrix): Matrix => {
   const data = [];
   for (let row = 0; row < m.rows; row += 1) {
@@ -402,14 +398,12 @@ export class ComputationCPU extends AbstractComputation {
     this.addKernel("logisticActivation", logisticActivation);
     this.addKernel("logisticLoss", logisticLoss);
     this.addKernel("logisticBackpropagation", logisticBackpropagation);
-    this.addKernel("tanhBackpropagation", tanhBackpropagation);
     this.addKernel("tanhActivation", tanhActivation);
     this.addKernel("reluActivation", reluActivation);
     this.addKernel("reluBackpropagation", reluBackpropagation);
     this.addKernel("softplusActivation", softplusActivation);
     this.addKernel("penalty", penalty);
     this.addKernel("sqrt", sqrt);
-    this.addKernel("purelinLoss", purelinLoss);
     this.addKernel("transpose", transpose);
     this.addKernel("pow", pow);
     this.addKernel("log", log);

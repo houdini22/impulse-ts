@@ -13,28 +13,25 @@ abstract class AbstractNetworkBuilder {
   }
 
   createLayer(layerClass: Layers, callback: (layer: Layers) => void | null = null): AbstractNetworkBuilder {
-    if (this.network) {
-      // @ts-ignore
-      const layer: Layers = new layerClass();
+    // @ts-ignore
+    const layer: Layers = new layerClass();
 
-      if (typeof callback === "function") {
-        callback(layer);
-      }
-
-      if (this.lastLayer === null) {
-        this.firstLayerTransition(layer);
-      } else {
-        // @ts-ignore
-        layer.transition(this.lastLayer);
-      }
-
-      layer.setPreviousLayer(this.lastLayer);
-      layer.configure();
-      layer.setBackPropagation(BackpropagationFactory.create(this.lastLayer, layer));
-
-      this.network.addLayer(layer);
-      this.lastLayer = layer;
+    if (typeof callback === "function") {
+      callback(layer);
     }
+
+    if (this.lastLayer === null) {
+      this.firstLayerTransition(layer);
+    } else {
+      // @ts-ignore
+      layer.transition(this.lastLayer);
+    }
+
+    layer.configure();
+    layer.setBackPropagation(BackpropagationFactory.create(this.lastLayer, layer));
+
+    this.network.addLayer(layer);
+    this.lastLayer = layer;
 
     return this;
   }

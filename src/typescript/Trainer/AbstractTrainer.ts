@@ -95,7 +95,7 @@ export abstract class AbstractTrainer {
 
     return {
       cost,
-      accuracy: ((accuracy - 1) / numberOfExamples) * 100,
+      accuracy: (accuracy / numberOfExamples) * 100,
     };
   }
 }

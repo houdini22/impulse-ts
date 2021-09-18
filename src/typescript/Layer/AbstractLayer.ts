@@ -44,27 +44,18 @@ abstract class AbstractLayer {
     return this;
   }
 
-  setPreviousLayer(layer: Layers): void {
-    this.previousLayer = layer;
-  }
-
   getBackPropagation(): AbstractBackPropagation | null {
     return this.backPropagation;
   }
 
   forward(input: Matrix): Matrix {
-    this.Z = getComputation().execute(
-      "add",
-      getComputation().execute("multiply", this.W, input) as Matrix,
-      this.b.replicate(1, input.cols)
-    ) as Matrix;
+    this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
     this.A = this.activation(this.Z);
     return this.A;
   }
 
   setWidth(value: number): AbstractLayer {
     this.width = value;
-
     return this;
   }
 
@@ -74,7 +65,6 @@ abstract class AbstractLayer {
 
   setHeight(value: number): AbstractLayer {
     this.height = value;
-
     return this;
   }
 
@@ -84,7 +74,6 @@ abstract class AbstractLayer {
 
   setDepth(value: number): AbstractLayer {
     this.depth = value;
-
     return this;
   }
 

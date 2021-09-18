@@ -45,22 +45,20 @@ class NetworkBuilder1D extends AbstractNetworkBuilder {
 
         const network = builder.getNetwork();
 
-        if (network) {
-          network.getLayers().forEach((layer, i) => {
-            layer.W = new Matrix(
-              json["layers"][i]["weights"]["W"].length,
-              json["layers"][i]["weights"]["W"][0].length,
-              json["layers"][i]["weights"]["W"]
-            );
-            layer.b = new Matrix(
-              json["layers"][i]["weights"]["b"].length,
-              json["layers"][i]["weights"]["b"][0].length,
-              json["layers"][i]["weights"]["b"]
-            );
-          });
+        network.getLayers().forEach((layer, i) => {
+          layer.W = new Matrix(
+            json["layers"][i]["weights"]["W"].length,
+            json["layers"][i]["weights"]["W"][0].length,
+            json["layers"][i]["weights"]["W"]
+          );
+          layer.b = new Matrix(
+            json["layers"][i]["weights"]["b"].length,
+            json["layers"][i]["weights"]["b"][0].length,
+            json["layers"][i]["weights"]["b"]
+          );
+        });
 
-          resolve(network);
-        }
+        resolve(network);
       });
     });
   }

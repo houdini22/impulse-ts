@@ -7,37 +7,35 @@ abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;
 
   configure(): void {
-    const prevLayer = this.previousLayer as Layers;
+    this.W.resize(this.getHeight(), this.getWidth());
+    this.W = this.W.setRandom(this.previousLayer ? (this.previousLayer.getHeight() as number) : this.getHeight());
 
-    this.W.resize(this.height, this.width);
-    this.W = getComputation().execute("fillRandom", this.W, prevLayer ? prevLayer.getHeight() : this.height) as Matrix;
+    this.b.resize(this.getHeight(), 1);
+    this.b = this.b.setRandom(this.previousLayer ? (this.previousLayer.getHeight() as number) : this.getHeight());
 
-    this.b.resize(this.height, 1);
-    this.b = getComputation().execute("fillRandom", this.b, prevLayer ? prevLayer.getHeight() : this.height) as Matrix;
+    this.gW.resize(this.getHeight(), this.getWidth());
+    this.gW = this.W.setZeros();
 
-    this.gW.resize(this.height, this.width);
-    this.gW = getComputation().execute("fillZeros", this.gW) as Matrix;
+    this.gb.resize(this.getHeight(), 1);
+    this.gb = this.gb.setZeros();
 
-    this.gb.resize(this.height, 1);
-    this.gb = getComputation().execute("fillZeros", this.gb) as Matrix;
+    this.sW.resize(this.getHeight(), this.getWidth());
+    this.sW = this.sW.setZeros();
 
-    this.sW.resize(this.height, this.width);
-    this.sW = getComputation().execute("fillZeros", this.sW) as Matrix;
+    this.sb.resize(this.getHeight(), 1);
+    this.sb = this.sb.setZeros();
 
-    this.sb.resize(this.height, 1);
-    this.sb = getComputation().execute("fillZeros", this.sb) as Matrix;
+    this.vW.resize(this.getHeight(), this.getWidth());
+    this.vW = this.vW.setZeros();
 
-    this.vW.resize(this.height, this.width);
-    this.vW = getComputation().execute("fillZeros", this.vW) as Matrix;
+    this.vb.resize(this.getHeight(), 1);
+    this.vb = this.vb.setZeros();
 
-    this.vb.resize(this.height, 1);
-    this.vb = getComputation().execute("fillZeros", this.sb) as Matrix;
+    this.dW.resize(this.getHeight(), this.getWidth());
+    this.dW = this.dW.setZeros();
 
-    this.dW.resize(this.height, this.width);
-    this.dW = getComputation().execute("fillZeros", this.sW) as Matrix;
-
-    this.db.resize(this.height, 1);
-    this.db = getComputation().execute("fillZeros", this.sb) as Matrix;
+    this.db.resize(this.getHeight(), 1);
+    this.db = this.db.setZeros();
   }
 
   is1D(): boolean {

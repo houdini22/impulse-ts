@@ -7,7 +7,7 @@ export class Backpropagation1Dto1D extends AbstractBackPropagation {
     const previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
     this.layer.gW = sigma.dot(previousActivations.transpose());
     this.layer.gW = this.layer.gW.multiply(1 / numberOfExamples);
-    this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+    //this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
     this.layer.gb = sigma
       .rowwiseSum()
       .transpose()
