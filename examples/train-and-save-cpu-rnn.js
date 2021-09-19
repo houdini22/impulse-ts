@@ -12,11 +12,10 @@ DatasetVocabularyBuilder.fromSource(
   DatasetVocabularyBuilderSourceTextFile.fromLocalFile(path.resolve(__dirname, "./data/dinos.txt"))
 ).then(async (dataset) => {
   console.log("Vocabulary size: ", dataset.getVocabularySize());
-  console.log("Chars size: ", dataset.getCharsLength());
-  const network = new NetworkRNN([dataset.getCharsLength(), 40, 40]);
+  const network = new NetworkRNN([dataset.getVocabularySize(), 40, 40]);
   const [X, Y] = dataset.buildData(40, 3);
   const [x, y] = dataset.vectorization(X, Y);
-  const layer = new RNNLayer().setWidth(dataset.getCharsLength()).setHeight(40).setDepth(40);
+  const layer = new RNNLayer().setWidth(dataset.getVocabularySize()).setHeight(40).setDepth(40);
   layer.configure();
   network.addLayer(layer);
 

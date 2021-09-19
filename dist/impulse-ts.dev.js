@@ -3745,15 +3745,15 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
   _createClass(RNNLayer, [{
     key: "configure",
     value: function configure() {
-      this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getHeight(), this.getWidth());
+      this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
       this.Wax = this.Wax.setRandom(this.getWidth());
       this.Waa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
       this.Waa = this.Waa.setRandom(this.getWidth());
-      this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
+      this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getHeight(), this.getWidth());
       this.Wya = this.Wya.setRandom(this.getWidth());
       this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
       this.b = this.b.setZeros();
-      this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
+      this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getHeight(), 1);
       this.by = this.by.setZeros();
       this.dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
       this.dWax = this.dWax.setZeros();
@@ -3770,7 +3770,7 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
     key: "forward",
     value: function forward(aPrev, x) {
       var aNext = this.Waa.dot(aPrev).add(this.Wax.dot(x)).add(this.b).tanh();
-      var y = this.Wya.dot(aNext).add(this.by).softmax();
+      var y = this.Wya.dot(aNext).add(this.by).add(1e-8).softmax();
       this.A.push(aNext);
       this.X.push(x);
       this.Y.push(y);
@@ -5168,18 +5168,18 @@ var NetworkRNN = /*#__PURE__*/function () {
       var by = this.layers[0].by;
       var b = this.layers[0].b;
       var vocabularySize = this.layers[0].by.rows;
-      var na = this.layers[0].Waa.cols;
       var indices = [];
       var charIndices = dataset.getCharIndices();
       var newLineCharacter = charIndices["\n"];
       var chars = dataset.getChars();
-      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(vocabularySize, 1).setZeros();
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(na, 1).setZeros();
+      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Wax.cols, 1).setZeros();
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Wax.rows, 1).setZeros();
       var idx = -1;
       var counter = 0;
 
       while (idx != newLineCharacter && counter != 50) {
-        var a = Wax.transpose().dot(x).add(Waa.dot(aPrev).replicate(1, aPrev.cols)).add(b).tanh();
+        var a = Wax.dot(x).add(Waa.dot(aPrev)); //.add(b).tanh();
+
         var z = Wya.dot(a).add(by);
         var y = z.softmax();
         var flat = y.flatten();
@@ -5205,8 +5205,7 @@ var NetworkRNN = /*#__PURE__*/function () {
       var loss = 0;
 
       for (var t = 1; t <= X.length; t += 1) {
-        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(vocabularySize, 1).setZeros();
-        x[t].data[t][0] = 1;
+        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[1], 1).setZeros(); //x[t].data[t][0] = 1;
 
         var _this$layers$0$forwar = this.layers[0].forward(a[t - 1], x[t]),
             _this$layers$0$forwar2 = _slicedToArray(_this$layers$0$forwar, 2),
@@ -5215,61 +5214,13 @@ var NetworkRNN = /*#__PURE__*/function () {
 
         a[t] = _a;
         yHat[t] = _yHat;
-        loss += Math.log(yHat[t].data[t][0]);
+        loss -= _yHat.add(1e-8).log().sum();
       }
 
+      this.layers[0].A = a;
+      this.layers[0].X = x;
+      this.layers[0].Y = yHat;
       return [loss];
-      /*const m = X[0].rows;
-      const tX = X[0].cols;
-      const nY = this.layers[0].Wya.rows;
-      const nA = this.layers[0].Wya.cols;
-       const a = [];
-      for (let i = 0; i < nA; i += 1) {
-        a[i] = new Matrix(m, tX).setZeros();
-      }
-      const yPred = [];
-      for (let i = 0; i < nY; i += 1) {
-        yPred[i] = new Matrix(m, tX).setZeros();
-      }
-       let aNext = a0;
-       for (let t = 0; t < tX; t += 1) {
-        const dataInput = [];
-        X.forEach((m: Matrix, i) => {
-          dataInput[i] = [];
-          for (let row = 0; row < m.rows; row += 1) {
-            dataInput[i].push(m.data[row][t]);
-          }
-        });
-        const input = Matrix.from(dataInput);
-        const [_aNext, _yPred] = this.layers[0].forward(input, aNext);
-         let yPredRowIndex = 0;
-        let yPredIndex = 0;
-        _yPred.forEach((num: number) => {
-          if (!yPred[yPredIndex]) {
-            yPred[yPredIndex] = new Matrix(_yPred.rows, _yPred.cols);
-          }
-          yPred[yPredIndex].data[yPredRowIndex][t] = num;
-           yPredRowIndex++;
-          if (yPredRowIndex > yPred[0].rows - 1) {
-            yPredRowIndex = 0;
-            yPredIndex++;
-          }
-        });
-         let aNextRowIndex = 0;
-        let aNextIndex = 0;
-        _aNext.forEach((num: number) => {
-          if (!a[aNextIndex]) {
-            a[aNextIndex] = new Matrix(_aNext.rows, _aNext.cols);
-          }
-          a[aNextIndex].data[aNextRowIndex][t] = num;
-           aNextRowIndex++;
-          if (aNextRowIndex > _aNext.rows - 1) {
-            aNextRowIndex = 0;
-            aNextIndex++;
-          }
-        });
-      }
-       return [a, yPred];*/
     }
   }, {
     key: "backward",
@@ -5282,36 +5233,25 @@ var NetworkRNN = /*#__PURE__*/function () {
       this.layers[0].db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
       this.layers[0].dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
 
-      for (var t = X.length - 1; t >= 0; t -= 1) {
+      for (var t = X.length - 1; t >= 1; t -= 1) {
         var dy = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Y[t].rows, this.layers[0].Y[t].cols, this.layers[0].Y[t].data);
         this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
       }
-      /*const na = da.length;
-      const [m, tx] = da[0].shape();
-      const nx = this.layers[0].x1.rows;
-       const dx: Matrix[] = [];
-      for (let i = 0; i < nx; i += 1) {
-        dx.push(new Matrix(m, tx).setZeros());
-      }
-      let dba = new Matrix(na, 1).setZeros();
-      let da0 = new Matrix(na, m).setZeros();
-      let daPrevT = new Matrix(na, m).setZeros();
-       for (let t = tx - 1; t >= 0; t -= 1) {
-        const sum = new Matrix();
-        this.layers[0].backward(sum);
-        //todo: dx
-        dWax = dWax.add(this.layers[0].dWax);
-        dWaa = dWaa.add(this.layers[0].dWaa);
-        dba = dba.add(this.layers[0].dba);
-        daPrevT = this.layers[0].daPrev;
-      }
-       da0 = daPrevT;
-       this.layers[0].dx = dx;
-      this.layers[0].da0 = da0;
-      this.layers[0].dWax = dWax;
-      this.layers[0].dWaa = dWaa;
-      this.layers[0].dba = dba;*/
+    }
+  }, {
+    key: "optimize",
+    value: function optimize(X, Y, aPrev, learningRate) {
+      var _this$forward = this.forward(X, Y, aPrev),
+          _this$forward2 = _slicedToArray(_this$forward, 1),
+          loss = _this$forward2[0];
 
+      this.backward(X, Y);
+      this.layers[0].Wax = this.layers[0].Wax.add(this.layers[0].dWax.multiply(-learningRate));
+      this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate));
+      this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
+      this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
+      this.layers[0].by = this.layers[0].by.add(this.layers[0].dby.multiply(-learningRate));
+      return [loss, this.layers[0].A[X.length - 1]];
     }
     /*save(path: string): Promise<string> {
       const resultJSON = {
@@ -6499,15 +6439,31 @@ var RNNTrainer = /*#__PURE__*/function () {
           x = _dataset$vectorizatio2[0],
           y = _dataset$vectorizatio2[1];
 
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(dataset.getCharsLength(), 1);
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(dataset.getCharsLength(), 1).setZeros();
+      console.log(y.shape(), x.length, x[0].shape());
 
       for (var j = 0; j < this.iterations; j += 1) {
+        console.log("Iteration ".concat(j + 1));
+
         var _this$network$forward = this.network.forward(x, y, aPrev),
             _this$network$forward2 = _slicedToArray(_this$network$forward, 1),
             _loss = _this$network$forward2[0];
 
         loss = _loss;
         this.network.backward(x, y);
+
+        var _this$network$optimiz = this.network.optimize(x, y, aPrev, this.learningRate),
+            _this$network$optimiz2 = _slicedToArray(_this$network$optimiz, 2),
+            currentLoss = _this$network$optimiz2[0],
+            _aPrev = _this$network$optimiz2[1];
+
+        console.log(_loss, currentLoss);
+        aPrev = _aPrev;
+        loss = loss * 0.999 + currentLoss * 0.001;
+
+        if (j % 10 === 0) {
+          console.log("Loss: ", loss, ", sample: ", this.network.sample(dataset));
+        }
       }
 
       return [loss];
@@ -6702,7 +6658,7 @@ module.exports = require("fs");
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/
+/******/ 	
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -6716,14 +6672,14 @@ module.exports = require("fs");
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/
+/******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/
+/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
@@ -6736,7 +6692,7 @@ module.exports = require("fs");
 /******/ 			return getter;
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -6748,12 +6704,12 @@ module.exports = require("fs");
 /******/ 			}
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -6764,7 +6720,7 @@ module.exports = require("fs");
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
