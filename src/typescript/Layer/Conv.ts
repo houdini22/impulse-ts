@@ -101,7 +101,7 @@ export class ConvLayer extends AbstractLayer3D {
         this.stride
       );
 
-      console.log(conv.rows, conv.cols);
+      console.log(conv.rows, conv.cols, this.W.rows, this.W.cols);
       process.exit();
 
       const tmp = this.W.dot(conv).add(this.b.replicate(1, conv.cols));
@@ -122,11 +122,7 @@ export class ConvLayer extends AbstractLayer3D {
     return LayerType.conv;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta;
-  }
-
-  setSize(dimension: Dimension | number): Layers {
-    return this;
   }
 }

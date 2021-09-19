@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { AbstractDatasetBuilderSource } from "./AbstractDocumentBuilderSource";
+import { AbstractDatasetBuilderSource } from "./AbstractDatasetBuilderSource";
 import { Matrix } from "../../Math/Matrix";
 import * as csvtojson from "csvtojson";
 import { Dataset } from "../../Dataset";

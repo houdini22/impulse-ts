@@ -8,10 +8,11 @@ import {
   ConvLayer,
   FullyConnectedLayer,
   MaxPoolLayer,
+  RNNLayer,
 } from "./Layer";
 import { Matrix } from "./Math/Matrix";
 import { Dataset as DatasetDataset } from "./Dataset";
-import { DatasetBuilder as DatasetBuilderBuilder } from "./DatasetBuilder";
+import { DatasetBuilder as DatasetBuilderBuilder, DatasetVocabularyBuilder } from "./DatasetBuilder";
 import {
   OptimizerAdam,
   OptimizerGradientDescent,
@@ -27,6 +28,8 @@ import {
 } from "./Dataset/DatasetModifier";
 import { ComputationCPU, ComputationGPU, setComputation, getComputation } from "./Computation";
 import { DatasetBuilderSourceCSV } from "./DatasetBuilder/DatasetBuilderSource";
+import { NetworkRNN } from "./Network";
+import { DatasetVocabularyBuilderSourceTextFile } from "./DatasetBuilder/DatasetVocabularyBuilderSource";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
 const Math = {
@@ -41,9 +44,11 @@ const Layer = {
   ConvLayer,
   MaxPoolLayer,
   FullyConnectedLayer,
+  RNNLayer,
 };
 const DatasetBuilder = {
   DatasetBuilder: DatasetBuilderBuilder,
+  DatasetVocabularyBuilder,
 };
 const Optimizer = {
   OptimizerAdam,
@@ -72,6 +77,10 @@ const Dataset = {
 };
 const DatasetBuilderSource = {
   DatasetBuilderSourceCSV,
+  DatasetVocabularyBuilderSourceTextFile,
+};
+const Network = {
+  NetworkRNN,
 };
 
 export {
@@ -85,4 +94,5 @@ export {
   DatasetModifier,
   Computation,
   DatasetBuilderSource,
+  Network,
 };

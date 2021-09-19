@@ -12,7 +12,7 @@ class ReluLayer extends AbstractLayer1D {
     return LayerType.relu;
   }
 
-  backpropagation(delta: Matrix) {
+  derivative(delta: Matrix) {
     return getComputation().execute("reluBackpropagation", delta, this.A) as Matrix;
   }
 }

@@ -1,5 +1,5 @@
 import { Dataset } from "../Dataset";
-import { AbstractDatasetBuilderSource } from "./DatasetBuilderSource/AbstractDocumentBuilderSource";
+import { AbstractDatasetBuilderSource } from "./DatasetBuilderSource/AbstractDatasetBuilderSource";
 
 export class DatasetBuilder {
   static fromSource(sourcePromise: Promise<AbstractDatasetBuilderSource>): Promise<Dataset> {

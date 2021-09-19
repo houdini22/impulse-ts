@@ -12,7 +12,7 @@ class PurelinLayer extends AbstractLayer1D {
     return LayerType.purelin;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta.setOnes();
   }
 }

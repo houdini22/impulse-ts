@@ -1,7 +1,38 @@
 import { AbstractLayer } from "./AbstractLayer";
 import { Dimension, Layers } from "../types";
+import { Matrix } from "../Math/Matrix";
 
 abstract class AbstractLayer3D extends AbstractLayer {
+  public W: Matrix;
+  public b: Matrix;
+  public A: Matrix;
+  public Z: Matrix;
+  public gW: Matrix;
+  public gb: Matrix;
+  public vW: Matrix;
+  public sW: Matrix;
+  public vb: Matrix;
+  public sb: Matrix;
+  public dW: Matrix;
+  public db: Matrix;
+  public dZ: Matrix;
+
+  constructor() {
+    super();
+    this.W = new Matrix();
+    this.b = new Matrix();
+    this.A = new Matrix();
+    this.Z = new Matrix();
+    this.gW = new Matrix();
+    this.gb = new Matrix();
+    this.vW = new Matrix();
+    this.vb = new Matrix();
+    this.sW = new Matrix();
+    this.sb = new Matrix();
+    this.dW = new Matrix();
+    this.db = new Matrix();
+  }
+
   configure(): void {
     // do nothing
   }
@@ -41,6 +72,14 @@ abstract class AbstractLayer3D extends AbstractLayer {
   abstract getStride(): number;
 
   abstract getFilterSize(): number;
+
+  abstract forward(input: Matrix): Matrix;
+
+  abstract derivative(delta: Matrix): Matrix;
+
+  penalty(): number {
+    return this.W.pow(2).sum();
+  }
 }
 
 export { AbstractLayer3D };

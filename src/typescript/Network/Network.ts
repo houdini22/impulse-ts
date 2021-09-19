@@ -41,7 +41,7 @@ class Network {
     for (let layer = this.layers.length - 1; layer >= 0; layer -= 1) {
       sigma = this.layers[layer]
         .getBackPropagation()
-        .propagate(X, m, regularization, this.layers[layer].backpropagation(sigma));
+        .propagate(X, m, regularization, this.layers[layer].derivative(sigma));
     }
   }
 

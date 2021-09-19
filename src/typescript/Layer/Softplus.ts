@@ -1,7 +1,6 @@
 import { Matrix } from "../Math/Matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./AbstractLayer1D";
-import { getComputation } from "../Computation";
 
 class SoftplusLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
@@ -12,7 +11,7 @@ class SoftplusLayer extends AbstractLayer1D {
     return LayerType.softplus;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta.multiply(-1).exp().add(1).fraction(1);
   }
 }

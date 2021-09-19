@@ -11,7 +11,7 @@ class LogisticLayer extends AbstractLayer1D {
     return LayerType.logistic;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta.multiply(this.activation(delta).multiply(this.activation(delta.minusOne())));
   }
 }

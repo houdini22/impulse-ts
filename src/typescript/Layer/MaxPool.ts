@@ -77,7 +77,7 @@ class MaxPoolLayer extends AbstractLayer3D {
     return LayerType.maxpool;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta;
   }
 }

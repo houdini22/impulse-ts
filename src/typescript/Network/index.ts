@@ -1,3 +1,4 @@
 import { Network } from "./Network";
+import { NetworkRNN } from "./NetworkRNN";
 
-export { Network };
+export { Network, NetworkRNN };

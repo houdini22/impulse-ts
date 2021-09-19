@@ -7,6 +7,8 @@ import { SoftplusLayer } from "./Softplus";
 import { ConvLayer } from "./Conv";
 import { FullyConnectedLayer } from "./FullyConnected";
 import { MaxPoolLayer } from "./MaxPool";
+import { RNNLayer } from "./RNN";
+import { PurelinLayer } from "./Purelin";
 
 export {
   AbstractLayer,
@@ -18,4 +20,6 @@ export {
   ConvLayer,
   FullyConnectedLayer,
   MaxPoolLayer,
+  RNNLayer,
+  PurelinLayer,
 };

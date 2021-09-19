@@ -4,42 +4,15 @@ import { AbstractBackPropagation } from "./Backpropagation/AbstractBackpropagati
 import { getComputation } from "../Computation";
 
 abstract class AbstractLayer {
-  public W: Matrix;
-  public b: Matrix;
-  public A: Matrix;
-  public Z: Matrix;
-  public gW: Matrix;
-  public gb: Matrix;
-  public vW: Matrix;
-  public sW: Matrix;
-  public vb: Matrix;
-  public sb: Matrix;
-  public dW: Matrix;
-  public db: Matrix;
-  public dZ: Matrix;
-
   protected width = 0;
   protected height = 0;
   protected depth = 0;
   protected previousLayer: Layers | null = null;
   protected backPropagation: AbstractBackPropagation | null = null;
 
-  constructor() {
-    this.W = new Matrix();
-    this.b = new Matrix();
-    this.A = new Matrix();
-    this.Z = new Matrix();
-    this.gW = new Matrix();
-    this.gb = new Matrix();
-    this.vW = new Matrix();
-    this.vb = new Matrix();
-    this.sW = new Matrix();
-    this.sb = new Matrix();
-    this.dW = new Matrix();
-    this.db = new Matrix();
-  }
+  constructor() {}
 
-  setBackPropagation(backPropagation: AbstractBackPropagation): AbstractLayer {
+  setBackPropagation(backPropagation: AbstractBackPropagation): Layers {
     this.backPropagation = backPropagation;
     return this;
   }
@@ -48,13 +21,7 @@ abstract class AbstractLayer {
     return this.backPropagation;
   }
 
-  forward(input: Matrix): Matrix {
-    this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
-    this.A = this.activation(this.Z);
-    return this.A;
-  }
-
-  setWidth(value: number): AbstractLayer {
+  setWidth(value: number): Layers {
     this.width = value;
     return this;
   }
@@ -63,7 +30,7 @@ abstract class AbstractLayer {
     return this.width;
   }
 
-  setHeight(value: number): AbstractLayer {
+  setHeight(value: number): Layers {
     this.height = value;
     return this;
   }
@@ -72,7 +39,7 @@ abstract class AbstractLayer {
     return this.height;
   }
 
-  setDepth(value: number): AbstractLayer {
+  setDepth(value: number): Layers {
     this.depth = value;
     return this;
   }
@@ -93,12 +60,10 @@ abstract class AbstractLayer {
 
   abstract is3D(): boolean;
 
-  transition(previousLayer: Layers): AbstractLayer {
+  transition(previousLayer: Layers): Layers {
     this.previousLayer = previousLayer;
     return this;
   }
-
-  abstract setSize(dimension: Dimension | number): AbstractLayer;
 
   abstract getSize(): Dimension | number;
 
@@ -106,11 +71,9 @@ abstract class AbstractLayer {
 
   abstract getType(): string;
 
-  penalty(): number {
-    return getComputation().execute("penalty", this.W) as number;
-  }
+  abstract derivative(delta: Matrix): Matrix;
 
-  abstract backpropagation(delta: Matrix): Matrix;
+  abstract penalty(): number;
 }
 
 export { AbstractLayer };

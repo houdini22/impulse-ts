@@ -1401,6 +1401,121 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/typescript/Dataset/DatasetVocabulary.ts":
+/*!*****************************************************!*\
+  !*** ./src/typescript/Dataset/DatasetVocabulary.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetVocabulary": () => (/* binding */ DatasetVocabulary)
+/* harmony export */ });
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+var DatasetVocabulary = /*#__PURE__*/function () {
+  function DatasetVocabulary(str) {
+    _classCallCheck(this, DatasetVocabulary);
+
+    _defineProperty(this, "vocabularySize", 0);
+
+    _defineProperty(this, "dataSize", 0);
+
+    _defineProperty(this, "data", "");
+
+    this.data = str.toLowerCase();
+
+    var chars = _toConsumableArray(new Set(this.data.split("").sort()));
+
+    this.chars = chars;
+    this.dataSize = this.data.length;
+    this.vocabularySize = chars.length;
+  }
+
+  _createClass(DatasetVocabulary, [{
+    key: "getExamples",
+    value: function getExamples() {
+      return this.data.replace(/\n+/, "\n").split("\n").map(function (example) {
+        return example + "\n";
+      });
+    }
+  }, {
+    key: "getVocabularySize",
+    value: function getVocabularySize() {
+      return this.vocabularySize;
+    }
+  }, {
+    key: "getCharsLength",
+    value: function getCharsLength() {
+      return this.chars.length;
+    }
+  }, {
+    key: "getCharIndices",
+    value: function getCharIndices() {
+      var result = {};
+      this.chars.forEach(function (_char, i) {
+        result[_char] = i;
+      });
+      return result;
+    }
+  }, {
+    key: "buildData",
+    value: function buildData() {
+      var tx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 40;
+      var stride = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3;
+      var X = [];
+      var Y = [];
+
+      for (var i = 0; i < this.data.length; i += stride) {
+        X.push(this.data.substr(i, tx));
+        Y.push(this.data[i + tx]);
+      }
+
+      return [X, Y];
+    }
+  }, {
+    key: "vectorization",
+    value: function vectorization(X, Y, nx) {
+      var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 40;
+      var m = X.length;
+      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix3D(m, tx, nx).setZeros();
+      var y = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(m, nx).setZeros();
+      var chars = this.getCharIndices();
+      X.forEach(function (sentence, i) {
+        sentence.split("").forEach(function (_char2, t) {
+          x.data[i][t][chars[_char2]] = 1;
+        });
+        y.data[i][chars[Y[i]]] = 1;
+      });
+      return [x, y];
+    }
+  }]);
+
+  return DatasetVocabulary;
+}();
+
+/***/ }),
+
 /***/ "./src/typescript/Dataset/index.ts":
 /*!*****************************************!*\
   !*** ./src/typescript/Dataset/index.ts ***!
@@ -1460,10 +1575,10 @@ var DatasetBuilder = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts":
-/*!*********************************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts ***!
-  \*********************************************************************************************/
+/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts":
+/*!********************************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts ***!
+  \********************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1488,7 +1603,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DatasetBuilderSourceCSV": () => (/* binding */ DatasetBuilderSourceCSV)
 /* harmony export */ });
-/* harmony import */ var _AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDocumentBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDocumentBuilderSource.ts");
+/* harmony import */ var _AbstractDatasetBuilderSource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts");
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! csvtojson */ "csvtojson");
 /* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_2__);
@@ -1648,7 +1763,7 @@ var DatasetBuilderSourceCSV = /*#__PURE__*/function (_AbstractDatasetBuild) {
   }]);
 
   return DatasetBuilderSourceCSV;
-}(_AbstractDocumentBuilderSource__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetBuilderSource);
+}(_AbstractDatasetBuilderSource__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetBuilderSource);
 
 /***/ }),
 
@@ -1668,6 +1783,163 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts":
+/*!*******************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetVocabularyBuilder": () => (/* binding */ DatasetVocabularyBuilder)
+/* harmony export */ });
+/* harmony import */ var _Dataset_DatasetVocabulary__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Dataset/DatasetVocabulary */ "./src/typescript/Dataset/DatasetVocabulary.ts");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var DatasetVocabularyBuilder = /*#__PURE__*/function () {
+  function DatasetVocabularyBuilder() {
+    _classCallCheck(this, DatasetVocabularyBuilder);
+  }
+
+  _createClass(DatasetVocabularyBuilder, null, [{
+    key: "fromSource",
+    value: function fromSource(sourcePromise) {
+      return new Promise(function (resolve) {
+        sourcePromise.then(function (source) {
+          var str = source.parse();
+          resolve(new _Dataset_DatasetVocabulary__WEBPACK_IMPORTED_MODULE_0__.DatasetVocabulary(str));
+        });
+      });
+    }
+  }]);
+
+  return DatasetVocabularyBuilder;
+}();
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts":
+/*!****************************************************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractDatasetVocabularyBuilderSource": () => (/* binding */ AbstractDatasetVocabularyBuilderSource)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AbstractDatasetVocabularyBuilderSource = function AbstractDatasetVocabularyBuilderSource() {
+  _classCallCheck(this, AbstractDatasetVocabularyBuilderSource);
+};
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts":
+/*!****************************************************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetVocabularyBuilderSourceTextFile": () => (/* binding */ DatasetVocabularyBuilderSourceTextFile)
+/* harmony export */ });
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AbstractDatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractDatasetVocabularyBuilderSource */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+var DatasetVocabularyBuilderSourceTextFile = /*#__PURE__*/function (_AbstractDatasetVocab) {
+  _inherits(DatasetVocabularyBuilderSourceTextFile, _AbstractDatasetVocab);
+
+  var _super = _createSuper(DatasetVocabularyBuilderSourceTextFile);
+
+  function DatasetVocabularyBuilderSourceTextFile(data) {
+    var _this;
+
+    _classCallCheck(this, DatasetVocabularyBuilderSourceTextFile);
+
+    _this = _super.call(this);
+
+    _defineProperty(_assertThisInitialized(_this), "data", "");
+
+    _this.data = data;
+    return _this;
+  }
+
+  _createClass(DatasetVocabularyBuilderSourceTextFile, [{
+    key: "parse",
+    value: function parse() {
+      return this.data;
+    }
+  }], [{
+    key: "fromLocalFile",
+    value: function fromLocalFile(path) {
+      return new Promise(function (resolve, reject) {
+        fs__WEBPACK_IMPORTED_MODULE_0__.readFile(path, function (err, buffer) {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(new DatasetVocabularyBuilderSourceTextFile(buffer.toString("utf-8")));
+        });
+      });
+    }
+  }]);
+
+  return DatasetVocabularyBuilderSourceTextFile;
+}(_AbstractDatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_1__.AbstractDatasetVocabularyBuilderSource);
+
+/***/ }),
+
+/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts":
+/*!*******************************************************************************!*\
+  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DatasetVocabularyBuilderSourceTextFile": () => (/* reexport safe */ _DatasetVocabularyBuilderSourceTextFile__WEBPACK_IMPORTED_MODULE_0__.DatasetVocabularyBuilderSourceTextFile)
+/* harmony export */ });
+/* harmony import */ var _DatasetVocabularyBuilderSourceTextFile__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetVocabularyBuilderSourceTextFile */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts");
+
+
+
+/***/ }),
+
 /***/ "./src/typescript/DatasetBuilder/index.ts":
 /*!************************************************!*\
   !*** ./src/typescript/DatasetBuilder/index.ts ***!
@@ -1676,9 +1948,12 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _DatasetBuilder__WEBPACK_IMPORTED_MODULE_0__.DatasetBuilder)
+/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _DatasetBuilder__WEBPACK_IMPORTED_MODULE_0__.DatasetBuilder),
+/* harmony export */   "DatasetVocabularyBuilder": () => (/* reexport safe */ _DatasetVocabularyBuilder__WEBPACK_IMPORTED_MODULE_1__.DatasetVocabularyBuilder)
 /* harmony export */ });
 /* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/DatasetBuilder/DatasetBuilder.ts");
+/* harmony import */ var _DatasetVocabularyBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatasetVocabularyBuilder */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts");
+
 
 
 
@@ -1694,8 +1969,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AbstractLayer": () => (/* binding */ AbstractLayer)
 /* harmony export */ });
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1703,9 +1976,6 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-
 
 var AbstractLayer = /*#__PURE__*/function () {
   function AbstractLayer() {
@@ -1720,19 +1990,6 @@ var AbstractLayer = /*#__PURE__*/function () {
     _defineProperty(this, "previousLayer", null);
 
     _defineProperty(this, "backPropagation", null);
-
-    this.W = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.A = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.Z = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.gW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.gb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.vW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.vb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.sW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.sb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.dW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
-    this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix();
   }
 
   _createClass(AbstractLayer, [{
@@ -1745,13 +2002,6 @@ var AbstractLayer = /*#__PURE__*/function () {
     key: "getBackPropagation",
     value: function getBackPropagation() {
       return this.backPropagation;
-    }
-  }, {
-    key: "forward",
-    value: function forward(input) {
-      this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
-      this.A = this.activation(this.Z);
-      return this.A;
     }
   }, {
     key: "setWidth",
@@ -1792,11 +2042,6 @@ var AbstractLayer = /*#__PURE__*/function () {
       this.previousLayer = previousLayer;
       return this;
     }
-  }, {
-    key: "penalty",
-    value: function penalty() {
-      return (0,_Computation__WEBPACK_IMPORTED_MODULE_1__.getComputation)().execute("penalty", this.W);
-    }
   }]);
 
   return AbstractLayer;
@@ -1817,6 +2062,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractLayer1D": () => (/* binding */ AbstractLayer1D)
 /* harmony export */ });
 /* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1847,6 +2093,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
   _inherits(AbstractLayer1D, _AbstractLayer);
 
@@ -1857,14 +2104,22 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
 
     _classCallCheck(this, AbstractLayer1D);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
+    _this = _super.call(this);
 
     _defineProperty(_assertThisInitialized(_this), "depth", 1);
 
+    _this.W = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.A = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.Z = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.gW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.gb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.vW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.vb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.sW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.sb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.dW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
     return _this;
   }
 
@@ -1891,6 +2146,13 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       this.dW = this.dW.setZeros();
       this.db.resize(this.getHeight(), 1);
       this.db = this.db.setZeros();
+    }
+  }, {
+    key: "forward",
+    value: function forward(input) {
+      this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
+      this.A = this.activation(this.Z);
+      return this.A;
     }
   }, {
     key: "is1D",
@@ -1941,6 +2203,11 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
     value: function getOutputDepth() {
       return 1;
     }
+  }, {
+    key: "penalty",
+    value: function penalty() {
+      return this.W.pow(2).sum();
+    }
   }]);
 
   return AbstractLayer1D;
@@ -1961,6 +2228,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AbstractLayer3D": () => (/* binding */ AbstractLayer3D)
 /* harmony export */ });
 /* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1989,15 +2257,31 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
   _inherits(AbstractLayer3D, _AbstractLayer);
 
   var _super = _createSuper(AbstractLayer3D);
 
   function AbstractLayer3D() {
+    var _this;
+
     _classCallCheck(this, AbstractLayer3D);
 
-    return _super.apply(this, arguments);
+    _this = _super.call(this);
+    _this.W = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.A = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.Z = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.gW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.gb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.vW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.vb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.sW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.sb = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.dW = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    _this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix();
+    return _this;
   }
 
   _createClass(AbstractLayer3D, [{
@@ -2037,6 +2321,11 @@ var AbstractLayer3D = /*#__PURE__*/function (_AbstractLayer) {
     key: "getSize",
     value: function getSize() {
       return [this.getWidth(), this.getHeight(), this.getDepth()];
+    }
+  }, {
+    key: "penalty",
+    value: function penalty() {
+      return this.W.pow(2).sum();
     }
   }]);
 
@@ -2707,7 +2996,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 
       for (var i = 0; i < input.cols; i += 1) {
         var conv = (0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
-        console.log(conv.rows, conv.cols);
+        console.log(conv.rows, conv.cols, this.W.rows, this.W.cols);
         process.exit();
         var tmp = this.W.dot(conv).add(this.b.replicate(1, conv.cols));
         result.setCol(i, tmp.rollToColMatrix());
@@ -2728,14 +3017,9 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       return _types__WEBPACK_IMPORTED_MODULE_2__.LayerType.conv;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta;
-    }
-  }, {
-    key: "setSize",
-    value: function setSize(dimension) {
-      return this;
     }
   }]);
 
@@ -2858,8 +3142,8 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
       return this;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta;
     }
   }]);
@@ -2930,8 +3214,8 @@ var LogisticLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.logistic;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta.multiply(this.activation(delta).multiply(this.activation(delta.minusOne())));
     }
   }]);
@@ -3080,8 +3364,8 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       return _types__WEBPACK_IMPORTED_MODULE_2__.LayerType.maxpool;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta;
     }
   }]);
@@ -3090,6 +3374,233 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
 }(_AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__.AbstractLayer3D);
 
 
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/Purelin.ts":
+/*!*****************************************!*\
+  !*** ./src/typescript/Layer/Purelin.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "PurelinLayer": () => (/* binding */ PurelinLayer)
+/* harmony export */ });
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractLayer1D */ "./src/typescript/Layer/AbstractLayer1D.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+var PurelinLayer = /*#__PURE__*/function (_AbstractLayer1D) {
+  _inherits(PurelinLayer, _AbstractLayer1D);
+
+  var _super = _createSuper(PurelinLayer);
+
+  function PurelinLayer() {
+    _classCallCheck(this, PurelinLayer);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(PurelinLayer, [{
+    key: "activation",
+    value: function activation(m) {
+      return m;
+    }
+  }, {
+    key: "getType",
+    value: function getType() {
+      return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.purelin;
+    }
+  }, {
+    key: "derivative",
+    value: function derivative(delta) {
+      return delta.setOnes();
+    }
+  }]);
+
+  return PurelinLayer;
+}(_AbstractLayer1D__WEBPACK_IMPORTED_MODULE_1__.AbstractLayer1D);
+
+
+
+/***/ }),
+
+/***/ "./src/typescript/Layer/RNN.ts":
+/*!*************************************!*\
+  !*** ./src/typescript/Layer/RNN.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "RNNLayer": () => (/* binding */ RNNLayer)
+/* harmony export */ });
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
+/* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
+  _inherits(RNNLayer, _AbstractLayer);
+
+  var _super = _createSuper(RNNLayer);
+
+  function RNNLayer() {
+    var _this;
+
+    _classCallCheck(this, RNNLayer);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "Wax", null);
+
+    _defineProperty(_assertThisInitialized(_this), "Waa", null);
+
+    _defineProperty(_assertThisInitialized(_this), "Wya", null);
+
+    _defineProperty(_assertThisInitialized(_this), "b", null);
+
+    _defineProperty(_assertThisInitialized(_this), "by", null);
+
+    return _this;
+  }
+
+  _createClass(RNNLayer, [{
+    key: "configure",
+    value: function configure() {
+      this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
+      this.Wax = this.Wax.setRandom(this.getWidth());
+      this.Waa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
+      this.Waa = this.Waa.setRandom(this.getWidth());
+      this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
+      this.Wya = this.Wax.setRandom(this.getWidth());
+      this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
+      this.b = this.b.setZeros();
+      this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
+      this.by = this.by.setZeros();
+    }
+  }, {
+    key: "forward",
+    value: function forward(input, aPrev) {
+      var aNext = this.Wax.dot(input).add(this.Waa.dot(aPrev)).add(this.b);
+      var predicted = this.Wya.dot(aNext).add(this.by).softmax();
+      return [aNext, predicted];
+    }
+  }, {
+    key: "activation",
+    value: function activation(m) {
+      return m;
+    }
+  }, {
+    key: "getType",
+    value: function getType() {
+      return _types__WEBPACK_IMPORTED_MODULE_1__.LayerType.rnnlayer;
+    }
+  }, {
+    key: "derivative",
+    value: function derivative(delta) {
+      return delta;
+    }
+  }, {
+    key: "is1D",
+    value: function is1D() {
+      return true;
+    }
+  }, {
+    key: "is3D",
+    value: function is3D() {
+      return false;
+    }
+  }, {
+    key: "setSize",
+    value: function setSize(value) {
+      this.setWidth(value[0]);
+      this.setHeight(value[1]);
+      this.setDepth(value[2]);
+      return this;
+    }
+  }, {
+    key: "getSize",
+    value: function getSize() {
+      return this.height;
+    }
+  }, {
+    key: "getOutputWidth",
+    value: function getOutputWidth() {
+      return this.width;
+    }
+  }, {
+    key: "getOutputHeight",
+    value: function getOutputHeight() {
+      return this.height;
+    }
+  }, {
+    key: "getOutputDepth",
+    value: function getOutputDepth() {
+      return this.depth;
+    }
+  }, {
+    key: "penalty",
+    value: function penalty() {
+      return 0;
+    }
+  }]);
+
+  return RNNLayer;
+}(_AbstractLayer__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer);
 
 /***/ }),
 
@@ -3154,8 +3665,8 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.relu;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return (0,_Computation__WEBPACK_IMPORTED_MODULE_2__.getComputation)().execute("reluBackpropagation", delta, this.A);
     }
   }]);
@@ -3218,10 +3729,7 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(SoftmaxLayer, [{
     key: "activation",
     value: function activation(m) {
-      var max = m.max();
-      return m.forEach(function (num) {
-        return num - max;
-      }).exp().divide(m.rowwiseSum().replicate(1, m.cols).transpose());
+      return m.softmax();
     }
   }, {
     key: "getType",
@@ -3229,8 +3737,8 @@ var SoftmaxLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.softmax;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta.multiply(-1).add(1).fraction(1);
     }
   }]);
@@ -3301,8 +3809,8 @@ var SoftplusLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.softplus;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(delta) {
+    key: "derivative",
+    value: function derivative(delta) {
       return delta.multiply(-1).exp().add(1).fraction(1);
     }
   }]);
@@ -3365,7 +3873,7 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(TanhLayer, [{
     key: "activation",
     value: function activation(m) {
-      return m.exp().subtract(m.multiply(-1).exp()).divide(m.exp().add(m.multiply(-1).exp()));
+      return m.tanh();
     }
   }, {
     key: "getType",
@@ -3373,8 +3881,8 @@ var TanhLayer = /*#__PURE__*/function (_AbstractLayer1D) {
       return _types__WEBPACK_IMPORTED_MODULE_0__.LayerType.tanh;
     }
   }, {
-    key: "backpropagation",
-    value: function backpropagation(sigma) {
+    key: "derivative",
+    value: function derivative(sigma) {
       return this.activation(sigma).pow(2).minusOne();
     }
   }]);
@@ -3402,7 +3910,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SoftplusLayer": () => (/* reexport safe */ _Softplus__WEBPACK_IMPORTED_MODULE_5__.SoftplusLayer),
 /* harmony export */   "ConvLayer": () => (/* reexport safe */ _Conv__WEBPACK_IMPORTED_MODULE_6__.ConvLayer),
 /* harmony export */   "FullyConnectedLayer": () => (/* reexport safe */ _FullyConnected__WEBPACK_IMPORTED_MODULE_7__.FullyConnectedLayer),
-/* harmony export */   "MaxPoolLayer": () => (/* reexport safe */ _MaxPool__WEBPACK_IMPORTED_MODULE_8__.MaxPoolLayer)
+/* harmony export */   "MaxPoolLayer": () => (/* reexport safe */ _MaxPool__WEBPACK_IMPORTED_MODULE_8__.MaxPoolLayer),
+/* harmony export */   "RNNLayer": () => (/* reexport safe */ _RNN__WEBPACK_IMPORTED_MODULE_9__.RNNLayer),
+/* harmony export */   "PurelinLayer": () => (/* reexport safe */ _Purelin__WEBPACK_IMPORTED_MODULE_10__.PurelinLayer)
 /* harmony export */ });
 /* harmony import */ var _AbstractLayer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractLayer */ "./src/typescript/Layer/AbstractLayer.ts");
 /* harmony import */ var _Softmax__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Softmax */ "./src/typescript/Layer/Softmax.ts");
@@ -3413,6 +3923,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conv */ "./src/typescript/Layer/Conv.ts");
 /* harmony import */ var _FullyConnected__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FullyConnected */ "./src/typescript/Layer/FullyConnected.ts");
 /* harmony import */ var _MaxPool__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MaxPool */ "./src/typescript/Layer/MaxPool.ts");
+/* harmony import */ var _RNN__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./RNN */ "./src/typescript/Layer/RNN.ts");
+/* harmony import */ var _Purelin__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Purelin */ "./src/typescript/Layer/Purelin.ts");
+
+
 
 
 
@@ -3434,7 +3948,8 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Matrix": () => (/* binding */ Matrix)
+/* harmony export */   "Matrix": () => (/* binding */ Matrix),
+/* harmony export */   "Matrix3D": () => (/* binding */ Matrix3D)
 /* harmony export */ });
 /* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3554,6 +4069,19 @@ var Matrix = /*#__PURE__*/function () {
       }
 
       return new Matrix(1, this.rows, data);
+    }
+  }, {
+    key: "flatten",
+    value: function flatten() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        for (var col = 0; col < this.cols; col += 1) {
+          data.push(this.data[row][col]);
+        }
+      }
+
+      return data;
     }
   }, {
     key: "replicate",
@@ -3971,6 +4499,17 @@ var Matrix = /*#__PURE__*/function () {
       return Matrix.from(data);
     }
   }, {
+    key: "tanh",
+    value: function tanh() {
+      return this.exp().subtract(this.multiply(-1).exp()).divide(this.exp().add(this.multiply(-1).exp()));
+    }
+  }, {
+    key: "softmax",
+    value: function softmax() {
+      var max = this.max();
+      return this.subtract(max).exp().divide(this.rowwiseSum().replicate(1, this.cols).transpose());
+    }
+  }, {
     key: "exp",
     value: function exp() {
       var data = [];
@@ -4010,6 +4549,71 @@ var Matrix = /*#__PURE__*/function () {
   }]);
 
   return Matrix;
+}();
+var Matrix3D = /*#__PURE__*/function () {
+  function Matrix3D() {
+    var rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var cols = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var depth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    _classCallCheck(this, Matrix3D);
+
+    _defineProperty(this, "rows", 0);
+
+    _defineProperty(this, "cols", 0);
+
+    _defineProperty(this, "depth", 0);
+
+    _defineProperty(this, "data", null);
+
+    this.resize(rows, cols, depth);
+
+    if (data) {
+      this.data = data;
+    }
+  }
+
+  _createClass(Matrix3D, [{
+    key: "resize",
+    value: function resize(rows, cols, depth) {
+      this.rows = rows;
+      this.cols = cols;
+      this.depth = depth;
+      this.data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        this.data[row] = new Array(cols);
+
+        for (var col = 0; col < this.cols; col += 1) {
+          this.data[row][col] = new Array(depth);
+        }
+      }
+
+      return this;
+    }
+  }, {
+    key: "setZeros",
+    value: function setZeros() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = new Array(this.cols);
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = new Array(this.depth);
+
+          for (var depth = 0; depth < this.cols; depth += 1) {
+            data[row][col][depth] = 0;
+          }
+        }
+      }
+
+      return new Matrix3D(this.rows, this.cols, this.depth, data);
+    }
+  }]);
+
+  return Matrix3D;
 }();
 
 /***/ }),
@@ -4164,7 +4768,7 @@ var Network = /*#__PURE__*/function () {
       var sigma = predictions.subtract(Y);
 
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
-        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, this.layers[layer].backpropagation(sigma));
+        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, this.layers[layer].derivative(sigma));
       }
     }
   }, {
@@ -4206,6 +4810,134 @@ var Network = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/typescript/Network/NetworkRNN.ts":
+/*!**********************************************!*\
+  !*** ./src/typescript/Network/NetworkRNN.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "NetworkRNN": () => (/* binding */ NetworkRNN)
+/* harmony export */ });
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+var NetworkRNN = /*#__PURE__*/function () {
+  function NetworkRNN(dimensions) {
+    _classCallCheck(this, NetworkRNN);
+
+    _defineProperty(this, "dimensions", null);
+
+    _defineProperty(this, "size", 0);
+
+    _defineProperty(this, "layers", []);
+
+    this.dimensions = dimensions;
+  }
+
+  _createClass(NetworkRNN, [{
+    key: "addLayer",
+    value: function addLayer(layer) {
+      this.size++;
+      this.layers.push(layer);
+      return this;
+    }
+  }, {
+    key: "getLayers",
+    value: function getLayers() {
+      return this.layers;
+    }
+  }, {
+    key: "sample",
+    value: function sample(charIndices) {
+      var Waa = this.layers[0].Waa;
+      var Wax = this.layers[0].Wax;
+      var Wya = this.layers[0].Wya;
+      var by = this.layers[0].by;
+      var b = this.layers[0].b;
+      var vocabularySize = this.layers[0].getWidth();
+      var na = this.layers[0].getWidth();
+      var indices = [];
+      var newLineCharacter = charIndices["\n"];
+      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(vocabularySize, 1).setZeros();
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(na, 1).setZeros();
+      var idx = -1;
+      var counter = 0;
+
+      while (idx != newLineCharacter && counter != 50) {
+        var a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
+        var z = Wya.dot(a).add(by);
+        var y = z.softmax();
+        var flat = y.flatten();
+        idx = parseInt(String(Math.random() * vocabularySize));
+        indices.push(idx);
+        x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(vocabularySize, 1);
+        x.data[idx][0] = 1;
+        aPrev = a;
+        counter = +1;
+      }
+    }
+  }, {
+    key: "forward",
+    value: function forward(input, a0) {//const examples = input.getExamples();
+      //for (let t = 0; t < examples.length; t += 1) {
+      //const [_aNext, _predicted] = this.layers[0].forward(output, a);
+      //}
+      //return output;
+    }
+  }, {
+    key: "backward",
+    value: function backward(X, Y, predictions, regularization) {
+      var m = X.cols; //let sigma = Y.divide(predictions).multiply(-1).subtract(Y.minusOne().divide(predictions.minusOne()));
+
+      var sigma = predictions.subtract(Y);
+
+      for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
+        sigma = this.layers[layer].getBackPropagation().propagate(X, m, regularization, this.layers[layer].derivative(sigma));
+      }
+    }
+    /*save(path: string): Promise<string> {
+      const resultJSON = {
+        dimensions: this.dimensions,
+        layers: [],
+      };
+       this.layers.forEach((layer: Layers) => {
+        resultJSON.layers.push({
+          type: layer.getType(),
+          size: layer.getSize(),
+          weights: {
+            W: layer.W.data,
+            b: layer.b.data,
+          },
+        });
+      });
+       const result = JSON.stringify(resultJSON);
+       return new Promise((resolve, reject) => {
+        fs.writeFile(path, result, (err) => {
+          if (err) {
+            console.error(err);
+            reject();
+          }
+          resolve(result);
+        });
+      });
+    }*/
+
+  }]);
+
+  return NetworkRNN;
+}();
+
+/***/ }),
+
 /***/ "./src/typescript/Network/index.ts":
 /*!*****************************************!*\
   !*** ./src/typescript/Network/index.ts ***!
@@ -4214,9 +4946,12 @@ var Network = /*#__PURE__*/function () {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Network": () => (/* reexport safe */ _Network__WEBPACK_IMPORTED_MODULE_0__.Network)
+/* harmony export */   "Network": () => (/* reexport safe */ _Network__WEBPACK_IMPORTED_MODULE_0__.Network),
+/* harmony export */   "NetworkRNN": () => (/* reexport safe */ _NetworkRNN__WEBPACK_IMPORTED_MODULE_1__.NetworkRNN)
 /* harmony export */ });
 /* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/Network.ts");
+/* harmony import */ var _NetworkRNN__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NetworkRNN */ "./src/typescript/Network/NetworkRNN.ts");
+
 
 
 
@@ -5422,6 +6157,7 @@ var LayerType;
   LayerType["maxpool"] = "maxpool";
   LayerType["fullyconnected"] = "fullyconnected";
   LayerType["purelin"] = "purelin";
+  LayerType["rnnlayer"] = "rnnlayer";
 })(LayerType || (LayerType = {}));
 
 /***/ }),
@@ -5541,7 +6277,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Trainer": () => (/* binding */ Trainer),
 /* harmony export */   "DatasetModifier": () => (/* binding */ DatasetModifier),
 /* harmony export */   "Computation": () => (/* binding */ Computation),
-/* harmony export */   "DatasetBuilderSource": () => (/* binding */ DatasetBuilderSource)
+/* harmony export */   "DatasetBuilderSource": () => (/* binding */ DatasetBuilderSource),
+/* harmony export */   "Network": () => (/* binding */ Network)
 /* harmony export */ });
 /* harmony import */ var _NetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NetworkBuilder */ "./src/typescript/NetworkBuilder/index.ts");
 /* harmony import */ var _Layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Layer */ "./src/typescript/Layer/index.ts");
@@ -5553,6 +6290,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Dataset/DatasetModifier */ "./src/typescript/Dataset/DatasetModifier/index.ts");
 /* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Computation */ "./src/typescript/Computation/index.ts");
 /* harmony import */ var _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./DatasetBuilder/DatasetBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts");
+/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/index.ts");
+/* harmony import */ var _DatasetBuilder_DatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./DatasetBuilder/DatasetVocabularyBuilderSource */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts");
+
+
 
 
 
@@ -5578,10 +6319,12 @@ var Layer = {
   TanhLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.TanhLayer,
   ConvLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.ConvLayer,
   MaxPoolLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.MaxPoolLayer,
-  FullyConnectedLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.FullyConnectedLayer
+  FullyConnectedLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.FullyConnectedLayer,
+  RNNLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.RNNLayer
 };
 var DatasetBuilder = {
-  DatasetBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder
+  DatasetBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder,
+  DatasetVocabularyBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetVocabularyBuilder
 };
 var Optimizer = {
   OptimizerAdam: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
@@ -5609,7 +6352,11 @@ var Dataset = {
   Dataset: _Dataset__WEBPACK_IMPORTED_MODULE_3__.Dataset
 };
 var DatasetBuilderSource = {
-  DatasetBuilderSourceCSV: _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__.DatasetBuilderSourceCSV
+  DatasetBuilderSourceCSV: _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__.DatasetBuilderSourceCSV,
+  DatasetVocabularyBuilderSourceTextFile: _DatasetBuilder_DatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_11__.DatasetVocabularyBuilderSourceTextFile
+};
+var Network = {
+  NetworkRNN: _Network__WEBPACK_IMPORTED_MODULE_10__.NetworkRNN
 };
 
 })();

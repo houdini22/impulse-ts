@@ -1,10 +1,39 @@
 import { AbstractLayer } from "./AbstractLayer";
-import { Layers } from "../types";
-import { getComputation } from "../Computation";
+import { Dimension, Layers } from "../types";
 import { Matrix } from "../Math/Matrix";
+import { getComputation } from "../Computation";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;
+  public W: Matrix;
+  public b: Matrix;
+  public A: Matrix;
+  public Z: Matrix;
+  public gW: Matrix;
+  public gb: Matrix;
+  public vW: Matrix;
+  public sW: Matrix;
+  public vb: Matrix;
+  public sb: Matrix;
+  public dW: Matrix;
+  public db: Matrix;
+  public dZ: Matrix;
+
+  constructor() {
+    super();
+    this.W = new Matrix();
+    this.b = new Matrix();
+    this.A = new Matrix();
+    this.Z = new Matrix();
+    this.gW = new Matrix();
+    this.gb = new Matrix();
+    this.vW = new Matrix();
+    this.vb = new Matrix();
+    this.sW = new Matrix();
+    this.sb = new Matrix();
+    this.dW = new Matrix();
+    this.db = new Matrix();
+  }
 
   configure(): void {
     this.W.resize(this.getHeight(), this.getWidth());
@@ -36,6 +65,12 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
     this.db.resize(this.getHeight(), 1);
     this.db = this.db.setZeros();
+  }
+
+  forward(input: Matrix): Matrix {
+    this.Z = this.W.dot(input).add(this.b.replicate(1, input.cols));
+    this.A = this.activation(this.Z);
+    return this.A;
   }
 
   is1D(): boolean {
@@ -78,6 +113,10 @@ abstract class AbstractLayer1D extends AbstractLayer {
 
   getOutputDepth(): number {
     return 1;
+  }
+
+  penalty(): number {
+    return this.W.pow(2).sum();
   }
 }
 

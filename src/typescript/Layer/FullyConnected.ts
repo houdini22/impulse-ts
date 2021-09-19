@@ -60,7 +60,7 @@ class FullyConnectedLayer extends ConvLayer {
     return this;
   }
 
-  backpropagation(delta: Matrix): Matrix {
+  derivative(delta: Matrix): Matrix {
     return delta;
   }
 }
