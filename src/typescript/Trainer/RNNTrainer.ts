@@ -16,11 +16,7 @@ export class RNNTrainer {
     const examples: string[] = dataset.getExamples();
     const indices = dataset.getCharIndices();
 
-    let aPrev = new Matrix(dataset.getCharsLength(), 1)
-      .setRandom(1 / ((dataset.getVocabularySize() * dataset.getVocabularySize()) / 2))
-      .abs()
-      .setMax(dataset.getVocabularySize())
-      .setMin(0);
+    let aPrev = new Matrix(100, 1).setRandom(1).abs().setMax(dataset.getVocabularySize()).setMin(0);
 
     for (let j = 0; j < this.iterations; j += 1) {
       console.log(`Iteration ${j + 1}`);
@@ -31,8 +27,6 @@ export class RNNTrainer {
       loss = _loss;
       this.network.backward(x, y);
       const [currentLoss, _aPrev] = this.network.optimize(x, y, aPrev, this.learningRate);
-      console.log(_loss, currentLoss);
-      process.exit();
       aPrev = _aPrev;
       loss = loss * 0.999 + currentLoss * 0.001;
       if (j % 10 === 0) {

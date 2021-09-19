@@ -1525,24 +1525,40 @@ var DatasetVocabulary = /*#__PURE__*/function () {
   }, {
     key: "getExampleX",
     value: function getExampleX(exampleIndex) {
-      var example = this.getExamples()[exampleIndex].trim();
-      var data = [];
-      var indices = this.getCharIndices();
-      example.split("").forEach(function (ch, i) {
-        data[i] = [indices[ch]];
-      });
-      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
-    }
-  }, {
-    key: "getExampleY",
-    value: function getExampleY(exampleIndex) {
+      var _this2 = this;
+
       var example = this.getExamples()[exampleIndex];
       var data = [];
       var indices = this.getCharIndices();
       example.split("").forEach(function (ch, i) {
-        data[i] = [indices[ch]];
+        data[i] = [];
+
+        for (var col = 0; col < _this2.vocabularySize; col += 1) {
+          data[i][col] = 0;
+        }
+
+        data[i][indices[ch]] = 1;
       });
-      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
+      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data).transpose();
+    }
+  }, {
+    key: "getExampleY",
+    value: function getExampleY(exampleIndex) {
+      var _this3 = this;
+
+      var example = this.getExamples()[exampleIndex];
+      var data = [];
+      var indices = this.getCharIndices();
+      example.split("").forEach(function (ch, i) {
+        data[i] = [];
+
+        for (var col = 0; col < _this3.vocabularySize; col += 1) {
+          data[i][col] = 0;
+        }
+
+        data[i][indices[ch]] = 1;
+      });
+      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data).transpose();
     }
   }]);
 
@@ -3767,32 +3783,32 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
   _createClass(RNNLayer, [{
     key: "configure",
     value: function configure() {
-      this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
-      this.Wax = this.Wax.setRandom(this.getWidth());
-      this.Waa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
-      this.Waa = this.Waa.setRandom(this.getWidth());
-      this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getHeight(), this.getWidth());
-      this.Wya = this.Wya.setRandom(this.getWidth());
-      this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
-      this.b = this.b.setZeros();
-      this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getHeight(), 1);
-      this.by = this.by.setZeros();
-      this.dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
+      this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 27);
+      this.Wax = this.Wax.setRandom(1);
+      this.Waa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 100);
+      this.Waa = this.Waa.setRandom(1);
+      this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 100);
+      this.Wya = this.Wya.setRandom(1);
+      this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 1);
+      this.b = this.b.setRandom(1);
+      this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 1);
+      this.by = this.by.setRandom(1);
+      this.dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 27);
       this.dWax = this.dWax.setZeros();
-      this.dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
+      this.dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 100);
       this.dWaa = this.dWaa.setZeros();
-      this.dWya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
+      this.dWya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 100);
       this.dWya = this.dWya.setZeros();
-      this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
+      this.db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 1);
       this.db = this.db.setZeros();
-      this.dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
+      this.dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 1);
       this.dby = this.dby.setZeros();
     }
   }, {
     key: "forward",
     value: function forward(aPrev, x) {
       var aNext = this.Waa.dot(aPrev).add(this.Wax.dot(x)).add(this.b).tanh();
-      var y = this.Wya.dot(aNext).add(this.by).add(1e-8).softmax();
+      var y = this.Wya.dot(aNext).add(this.by).softmax();
       this.A.push(aNext);
       this.X.push(x);
       this.Y.push(y);
@@ -4457,11 +4473,13 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "row",
     value: function row(_row2) {
-      var data = this.data[_row2].map(function (num) {
-        return [num];
-      });
+      var data = [];
 
-      return new Matrix(data.length, data[0].length, data).transpose();
+      for (var col = 0; col < this.cols; col += 1) {
+        data[col] = [this.data[_row2][col]];
+      }
+
+      return new Matrix(this.cols, 1, data);
     }
   }, {
     key: "setCol",
@@ -4845,7 +4863,7 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "softmax",
     value: function softmax() {
-      var max = this.max();
+      var max = this.max() - 1e-8;
       return this.subtract(max).exp().divide(this.rowwiseSum().replicate(this.cols, 1).transpose());
     }
   }, {
@@ -5219,28 +5237,26 @@ var NetworkRNN = /*#__PURE__*/function () {
       var Wya = this.layers[0].Wya;
       var by = this.layers[0].by;
       var b = this.layers[0].b;
-      var vocabularySize = this.layers[0].by.rows;
+      var vocabularySize = dataset.getVocabularySize();
       var indices = [];
       var charIndices = dataset.getCharIndices();
       var newLineCharacter = charIndices["\n"];
       var chars = dataset.getChars();
-      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Wax.cols, 1).setZeros();
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Wax.rows, 1).setZeros();
+      var x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 1).setZeros();
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 1).setZeros();
       var idx = -1;
       var counter = 0;
 
       while (idx != newLineCharacter && counter != 50) {
-        var a = Wax.dot(x).add(Waa.dot(aPrev)); //.add(b).tanh();
-
+        var a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
         var z = Wya.dot(a).add(by);
         var y = z.softmax();
-        var flat = y.flatten();
-        idx = Math.floor(Math.random() * vocabularySize);
+        idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
         indices.push(idx);
-        x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(vocabularySize, 1);
-        x.data[idx][0] = 1;
+        x = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 1).setZeros();
+        x.data[y.colMaxCoeffIndex(0)][0] = 1;
         aPrev = a;
-        counter = +1;
+        counter += 1;
       }
 
       return indices.map(function (i) {
@@ -5257,7 +5273,8 @@ var NetworkRNN = /*#__PURE__*/function () {
       var loss = 0;
 
       for (var t = 1; t <= X.rows; t += 1) {
-        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Y.rows, 1, Y.col(t - 1).data);
+        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(27, 1).setZeros();
+        x[t].data[X.rowMaxCoeffIndex(t - 1)][0] = 1;
 
         var _this$layers$0$forwar = this.layers[0].forward(a[t - 1], x[t]),
             _this$layers$0$forwar2 = _slicedToArray(_this$layers$0$forwar, 2),
@@ -5265,8 +5282,8 @@ var NetworkRNN = /*#__PURE__*/function () {
             _yHat = _this$layers$0$forwar2[1];
 
         a[t] = _a;
-        yHat[t] = _yHat;
-        loss -= Math.log(Math.max(_yHat.data[t - 1][0], 1e-8));
+        yHat[t] = _yHat.setMin(1e-5);
+        loss -= Math.log(yHat[t].data[t - 1][0]);
       }
 
       this.layers[0].A = a;
@@ -5279,6 +5296,7 @@ var NetworkRNN = /*#__PURE__*/function () {
     value: function backward(X, Y) {
       var a = this.layers[0].A;
       var x = this.layers[0].X;
+      var yHat = this.layers[0].Y;
       this.layers[0].dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
       this.layers[0].dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
       this.layers[0].dWya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
@@ -5286,7 +5304,7 @@ var NetworkRNN = /*#__PURE__*/function () {
       this.layers[0].dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
 
       for (var t = X.rows - 1; t >= 1; t -= 1) {
-        var dy = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Y[t].rows, this.layers[0].Y[t].cols, this.layers[0].Y[t].data);
+        var dy = _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(yHat[t].data);
         this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
       }
     }
@@ -6480,7 +6498,7 @@ var RNNTrainer = /*#__PURE__*/function () {
       var loss = this.network.loss(dataset.getVocabularySize(), 7);
       var examples = dataset.getExamples();
       var indices = dataset.getCharIndices();
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(dataset.getCharsLength(), 1).setRandom(1 / (dataset.getVocabularySize() * dataset.getVocabularySize() / 2)).abs().setMax(dataset.getVocabularySize()).setMin(0);
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(100, 1).setRandom(1).abs().setMax(dataset.getVocabularySize()).setMin(0);
 
       for (var j = 0; j < this.iterations; j += 1) {
         console.log("Iteration ".concat(j + 1));
@@ -6500,8 +6518,6 @@ var RNNTrainer = /*#__PURE__*/function () {
             currentLoss = _this$network$optimiz2[0],
             _aPrev = _this$network$optimiz2[1];
 
-        console.log(_loss, currentLoss);
-        process.exit();
         aPrev = _aPrev;
         loss = loss * 0.999 + currentLoss * 0.001;
 

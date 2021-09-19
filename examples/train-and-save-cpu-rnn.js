@@ -13,8 +13,8 @@ DatasetVocabularyBuilder.fromSource(
 ).then(async (dataset) => {
   console.log("Vocabulary size: ", dataset.getVocabularySize());
   console.log("Chars size: ", dataset.getCharsLength());
-  const network = new NetworkRNN([27, 14, 20]);
-  const layer = new RNNLayer().setWidth(27).setHeight(14).setDepth(40);
+  const network = new NetworkRNN([14, 27, 20]);
+  const layer = new RNNLayer().setWidth(14).setHeight(27).setDepth(40);
   layer.configure();
   network.addLayer(layer);
 

@@ -1,4 +1,4 @@
-import { Matrix3D, Matrix } from "../Math/Matrix";
+import { Matrix } from "../Math/Matrix";
 
 export class DatasetVocabulary {
   public vocabularySize = 0;
@@ -80,13 +80,17 @@ export class DatasetVocabulary {
   }
 
   getExampleX(exampleIndex: number): Matrix {
-    const example = this.getExamples()[exampleIndex].trim();
+    const example = this.getExamples()[exampleIndex];
     const data = [];
     const indices = this.getCharIndices();
     example.split("").forEach((ch, i) => {
-      data[i] = [indices[ch]];
+      data[i] = [];
+      for (let col = 0; col < this.vocabularySize; col += 1) {
+        data[i][col] = 0;
+      }
+      data[i][indices[ch]] = 1;
     });
-    return Matrix.from(data);
+    return Matrix.from(data).transpose();
   }
 
   getExampleY(exampleIndex: number): Matrix {
@@ -94,8 +98,12 @@ export class DatasetVocabulary {
     const data = [];
     const indices = this.getCharIndices();
     example.split("").forEach((ch, i) => {
-      data[i] = [indices[ch]];
+      data[i] = [];
+      for (let col = 0; col < this.vocabularySize; col += 1) {
+        data[i][col] = 0;
+      }
+      data[i][indices[ch]] = 1;
     });
-    return Matrix.from(data);
+    return Matrix.from(data).transpose();
   }
 }

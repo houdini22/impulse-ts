@@ -23,40 +23,40 @@ export class RNNLayer extends AbstractLayer {
   public dba: Matrix | null = null;
 
   configure(): void {
-    this.Wax = new Matrix(this.getWidth(), this.getHeight());
-    this.Wax = this.Wax.setRandom(this.getWidth());
+    this.Wax = new Matrix(100, 27);
+    this.Wax = this.Wax.setRandom(1);
 
-    this.Waa = new Matrix(this.getWidth(), this.getWidth());
-    this.Waa = this.Waa.setRandom(this.getWidth());
+    this.Waa = new Matrix(100, 100);
+    this.Waa = this.Waa.setRandom(1);
 
-    this.Wya = new Matrix(this.getHeight(), this.getWidth());
-    this.Wya = this.Wya.setRandom(this.getWidth());
+    this.Wya = new Matrix(27, 100);
+    this.Wya = this.Wya.setRandom(1);
 
-    this.b = new Matrix(this.getWidth(), 1);
-    this.b = this.b.setZeros();
+    this.b = new Matrix(100, 1);
+    this.b = this.b.setRandom(1);
 
-    this.by = new Matrix(this.getHeight(), 1);
-    this.by = this.by.setZeros();
+    this.by = new Matrix(27, 1);
+    this.by = this.by.setRandom(1);
 
-    this.dWax = new Matrix(this.getWidth(), this.getHeight());
+    this.dWax = new Matrix(100, 27);
     this.dWax = this.dWax.setZeros();
 
-    this.dWaa = new Matrix(this.getWidth(), this.getWidth());
+    this.dWaa = new Matrix(100, 100);
     this.dWaa = this.dWaa.setZeros();
 
-    this.dWya = new Matrix(this.getDepth(), this.getWidth());
+    this.dWya = new Matrix(27, 100);
     this.dWya = this.dWya.setZeros();
 
-    this.db = new Matrix(this.getWidth(), 1);
+    this.db = new Matrix(100, 1);
     this.db = this.db.setZeros();
 
-    this.dby = new Matrix(this.getDepth(), 1);
+    this.dby = new Matrix(27, 1);
     this.dby = this.dby.setZeros();
   }
 
   forward(aPrev: Matrix, x: Matrix): Matrix[] {
     const aNext = this.Waa.dot(aPrev).add(this.Wax.dot(x)).add(this.b).tanh();
-    const y = this.Wya.dot(aNext).add(this.by).add(1e-8).softmax();
+    const y = this.Wya.dot(aNext).add(this.by).softmax();
     this.A.push(aNext);
     this.X.push(x);
     this.Y.push(y);

@@ -169,8 +169,11 @@ export class Matrix {
   }
 
   row(row: number): Matrix {
-    const data = this.data[row].map((num) => [num]);
-    return new Matrix(data.length, data[0].length, data).transpose();
+    const data = [];
+    for (let col = 0; col < this.cols; col += 1) {
+      data[col] = [this.data[row][col]];
+    }
+    return new Matrix(this.cols, 1, data);
   }
 
   setCol(col: number, tmp: Matrix): Matrix {
@@ -463,7 +466,7 @@ export class Matrix {
   }
 
   softmax(): Matrix {
-    const max = this.max();
+    const max = this.max() - 1e-8;
     return this.subtract(max).exp().divide(this.rowwiseSum().replicate(this.cols, 1).transpose());
   }
 

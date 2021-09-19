@@ -33,35 +33,32 @@ export class NetworkRNN {
     const Wya = this.layers[0].Wya;
     const by = this.layers[0].by;
     const b = this.layers[0].b;
-    const vocabularySize = this.layers[0].by.rows;
+    const vocabularySize = dataset.getVocabularySize();
     const indices = [];
     const charIndices = dataset.getCharIndices();
     const newLineCharacter = charIndices["\n"];
     const chars = dataset.getChars();
 
-    let x = new Matrix(Wax.cols, 1).setZeros();
-    let aPrev = new Matrix(Wax.rows, 1).setZeros();
+    let x = new Matrix(27, 1).setZeros();
+    let aPrev = new Matrix(100, 1).setZeros();
 
     let idx = -1;
     let counter = 0;
 
     while (idx != newLineCharacter && counter != 50) {
-      const a = Wax.dot(x).add(Waa.dot(aPrev)); //.add(b).tanh();
+      const a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
       const z = Wya.dot(a).add(by);
       const y = z.softmax();
-
-      const flat = y.flatten();
-
-      idx = Math.floor(Math.random() * vocabularySize);
+      idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
 
       indices.push(idx);
 
-      x = new Matrix(vocabularySize, 1);
-      x.data[idx][0] = 1;
+      x = new Matrix(27, 1).setZeros();
+      x.data[y.colMaxCoeffIndex(0)][0] = 1;
 
       aPrev = a;
 
-      counter = +1;
+      counter += 1;
     }
 
     return indices
@@ -77,13 +74,12 @@ export class NetworkRNN {
     const yHat = [null];
     let loss = 0;
     for (let t = 1; t <= X.rows; t += 1) {
-      x[t] = new Matrix(Y.rows, 1, Y.col(t - 1).data);
+      x[t] = new Matrix(27, 1).setZeros();
+      x[t].data[X.rowMaxCoeffIndex(t - 1)][0] = 1;
       const [_a, _yHat] = this.layers[0].forward(a[t - 1], x[t]);
       a[t] = _a;
-      yHat[t] = _yHat;
-      loss -= Math.log(Math.max(_yHat.data[t - 1][0], 1e-8));
-      console.log(_yHat.data);
-      process.exit();
+      yHat[t] = _yHat.setMin(1e-5);
+      loss -= Math.log(yHat[t].data[t - 1][0]);
     }
     this.layers[0].A = a;
     this.layers[0].X = x;
@@ -94,6 +90,7 @@ export class NetworkRNN {
   backward(X: Matrix, Y: Matrix): void {
     const a = this.layers[0].A;
     const x = this.layers[0].X;
+    const yHat = this.layers[0].Y;
 
     this.layers[0].dWax = new Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
     this.layers[0].dWaa = new Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
@@ -102,7 +99,7 @@ export class NetworkRNN {
     this.layers[0].dby = new Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
 
     for (let t = X.rows - 1; t >= 1; t -= 1) {
-      const dy = new Matrix(this.layers[0].Y[t].rows, this.layers[0].Y[t].cols, this.layers[0].Y[t].data);
+      const dy = Matrix.from(yHat[t].data);
       this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
     }
   }
