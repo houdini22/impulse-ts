@@ -13,10 +13,10 @@ export const im2col = (
   stride_h: number,
   stride_w: number
 ): Matrix => {
-  const rows = kernel_w * kernel_h * channels;
-  const cols = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
+  const cols = kernel_w * kernel_h * channels;
+  const rows = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
   let currentResultCol = 0;
-  const result = [[]];
+  const result = new Matrix(rows, cols);
 
   for (let boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
     for (let boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
@@ -26,7 +26,7 @@ export const im2col = (
         for (let y = 0; y < kernel_h; y++) {
           for (let x = 0; x < kernel_w; x++) {
             if (boundingY + y >= 0 && boundingX + x >= 0 && boundingX + x < width && boundingY + y < height) {
-              result[currentResultCol][currentResultRow] =
+              result.data[currentResultRow][currentResultCol] =
                 input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
             }
             currentResultRow++;
@@ -34,10 +34,9 @@ export const im2col = (
         }
       }
       currentResultCol++;
-      result[currentResultCol] = [];
     }
   }
-  return Matrix.from(result);
+  return result;
 };
 
 export const maxpool = (
@@ -55,10 +54,7 @@ export const maxpool = (
   const resultDepth = channels;
 
   let currentResultCol = 0;
-  const result = getComputation().execute(
-    "fillZeros",
-    new Matrix(resultWidth * resultHeight * resultDepth, 1)
-  ) as Matrix;
+  const result = new Matrix(resultWidth * resultHeight * resultDepth, 1).setZeros();
 
   for (let boundingY = 0; boundingY + kernel_h <= height; boundingY += stride_h) {
     for (let boundingX = 0; boundingX + kernel_w <= width; boundingX += stride_w) {
@@ -71,14 +67,12 @@ export const maxpool = (
             _max = Math.max(_max, input.data[inputOffset + (y + boundingY) * width + boundingX + x][0]);
           }
         }
-        if (result.data) {
-          result.data[outputOffset + currentResultCol][0] = _max;
-        }
+        result.data[outputOffset + currentResultCol][0] = _max;
       }
       currentResultCol++;
     }
   }
-  return new Matrix();
+  return result;
 };
 
 export const round = (num: number, decimalPlaces: number): number => {

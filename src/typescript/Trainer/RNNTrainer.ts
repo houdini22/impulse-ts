@@ -5,7 +5,7 @@ import { Matrix } from "../Math/Matrix";
 export class RNNTrainer {
   protected network: NetworkRNN | null = null;
   protected iterations: number = 1000;
-  protected learningRate: number = 0.01;
+  protected learningRate: number = 0.001;
 
   constructor(network: NetworkRNN) {
     this.network = network;
@@ -29,9 +29,7 @@ export class RNNTrainer {
       const [currentLoss, _aPrev] = this.network.optimize(x, y, aPrev, this.learningRate);
       aPrev = _aPrev;
       loss = loss * 0.999 + currentLoss * 0.001;
-      if (j % 10 === 0) {
-        console.log("Loss: ", loss, ", sample: ", this.network.sample(dataset));
-      }
+      console.log(`Iteration ${j + 1} | Loss: ${loss} | Sample: ${this.network.sample(dataset).trim()}`);
     }
     return [loss];
   }

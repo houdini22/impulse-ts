@@ -58,9 +58,9 @@ class MaxPoolLayer extends AbstractLayer3D {
         this.filterSize,
         this.stride,
         this.stride
-      ).rollToColMatrix();
+      );
 
-      result.setCol(i, pool);
+      result.setCol(i, pool.rollToColMatrix());
     }
 
     this.Z = result;

@@ -17,10 +17,7 @@ export class RNNLayer extends AbstractLayer {
   public A: Matrix[] = [];
   public X: Matrix[] = [];
   public daNext: Matrix | null = null;
-  public aPrev: Matrix | null = null;
   public dxt: Matrix | null = null;
-  public daPrev: Matrix | null = null;
-  public dba: Matrix | null = null;
 
   configure(): void {
     this.Wax = new Matrix(100, 27);

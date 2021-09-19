@@ -1,6 +1,6 @@
 const {
   NetworkBuilder: { NetworkBuilder3D },
-  Layer: { ConvLayer, FullyConnectedLayer, MaxPoolLayer, LogisticLayer },
+  Layer: { ConvLayer, FullyConnectedLayer, MaxPoolLayer, LogisticLayer, ReluLayer },
   DatasetBuilder: { DatasetBuilder },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
@@ -21,10 +21,10 @@ builder
     layer.setFilterSize(2).setStride(2);
   })
   .createLayer(FullyConnectedLayer, (layer) => {})
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(1024);
   })
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(256);
   })
   .createLayer(LogisticLayer, (layer) => {

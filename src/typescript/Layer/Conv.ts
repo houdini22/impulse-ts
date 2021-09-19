@@ -1,8 +1,7 @@
 import { Matrix } from "../Math/Matrix";
 import { im2col } from "../Math/math";
-import { Dimension, Layers, LayerType } from "../types";
+import { Layers, LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
-import { getComputation } from "../Computation";
 
 export class ConvLayer extends AbstractLayer3D {
   protected numFilters = 32;
@@ -12,28 +11,28 @@ export class ConvLayer extends AbstractLayer3D {
 
   configure(): void {
     this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-    this.W = getComputation().execute("fillRandom", this.W, this.width * this.height * this.depth) as Matrix;
+    this.W = this.W.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
 
     this.b.resize(this.numFilters, 1);
-    this.b = getComputation().execute("fillRandom", this.b, 0.01) as Matrix;
+    this.b = this.b.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
 
     this.gW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-    this.gW = getComputation().execute("fillZeros", this.gW) as Matrix;
+    this.gW = this.gW.setZeros();
 
     this.gb.resize(this.numFilters, 1);
-    this.gb = getComputation().execute("fillZeros", this.gb) as Matrix;
+    this.gb = this.gb.setZeros();
 
     this.sW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-    this.sW = getComputation().execute("fillZeros", this.gb) as Matrix;
+    this.sW = this.sW.setZeros();
 
     this.sb.resize(this.numFilters, 1);
-    this.sb = getComputation().execute("fillZeros", this.sb) as Matrix;
+    this.sb = this.sb.setZeros();
 
     this.vW.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-    this.vW = getComputation().execute("fillZeros", this.vW) as Matrix;
+    this.vW = this.vW.setZeros();
 
     this.vb.resize(this.numFilters, 1);
-    this.vb = getComputation().execute("fillZeros", this.vb) as Matrix;
+    this.vb = this.vb.setZeros();
   }
 
   getOutputHeight(): number {
@@ -85,7 +84,7 @@ export class ConvLayer extends AbstractLayer3D {
   }
 
   forward(input: Matrix): Matrix {
-    const result = new Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols);
+    const result = new Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols).setZeros();
 
     for (let i = 0; i < input.cols; i += 1) {
       const conv = im2col(
@@ -101,21 +100,20 @@ export class ConvLayer extends AbstractLayer3D {
         this.stride
       );
 
-      console.log(conv.rows, conv.cols, this.W.rows, this.W.cols);
-      process.exit();
 
-      const tmp = this.W.dot(conv).add(this.b.replicate(1, conv.cols));
+      const tmp = this.W.dot(conv.transpose()).add(this.b.replicate(1, conv.rows));
       result.setCol(i, tmp.rollToColMatrix());
     }
 
     this.Z = result;
-    this.activation(this.Z);
+    this.A = this.activation(this.Z);
+
 
     return this.A;
   }
 
   activation(m: Matrix): Matrix {
-    return m;
+    return m.setMin(0);
   }
 
   getType(): LayerType {
