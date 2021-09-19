@@ -1,8 +1,8 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: { LogisticLayer, ReluLayer, SoftmaxLayer, TanhLayer },
+  Layer: { LogisticLayer, ReluLayer },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerAdam, OptimizerGradientDescent, OptimizerAdagrad, OptimizerMomentum },
+  Optimizer: { OptimizerGradientDescent, OptimizerAdam, OptimizerMomentum, OptimizerRMSProp },
   Trainer: { MiniBatchTrainer, Trainer },
   Computation: { ComputationCPU, setComputation },
   DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
@@ -35,20 +35,16 @@ DatasetBuilder.fromSource(
     inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-    const trainer = new Trainer(network, new OptimizerGradientDescent());
+    const trainer = new Trainer(network, new OptimizerAdam());
 
     const result = network.forward(inputDataset.exampleAt(0));
     console.log("forward", result);
 
     console.log(trainer.cost(inputDataset.data, outputDataset.data));
 
-    trainer.setIterations(500);
-    trainer.setLearningRate(0.1);
-    //trainer.setBatchSize(100);
+    trainer.setIterations(100);
+    trainer.setLearningRate(0.02);
     trainer.setRegularization(0.7);
-    trainer.setStepCallback(() => {
-      console.log(network.forward(inputDataset.exampleAt(0)));
-    });
     trainer.train(inputDataset, outputDataset);
 
     await network.save(path.resolve(__dirname, "./data/mnist.json"));

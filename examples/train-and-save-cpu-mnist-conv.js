@@ -1,6 +1,6 @@
 const {
   NetworkBuilder: { NetworkBuilder3D },
-  Layer: { LogisticLayer, ConvLayer, FullyConnectedLayer, MaxPoolLayer, TanhLayer },
+  Layer: { ConvLayer, FullyConnectedLayer, MaxPoolLayer, LogisticLayer },
   DatasetBuilder: { DatasetBuilder },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("../dist/impulse-ts.dev");
@@ -9,7 +9,7 @@ const path = require("path");
 const builder = new NetworkBuilder3D([20, 20, 1]);
 builder
   .createLayer(ConvLayer, (layer) => {
-    layer.setFilterSize(4).setPadding(2).setStride(1).setNumFilters(32);
+    layer.setFilterSize(5).setPadding(2).setStride(1).setNumFilters(32);
   })
   .createLayer(MaxPoolLayer, (layer) => {
     layer.setFilterSize(2).setStride(2);
@@ -21,14 +21,14 @@ builder
     layer.setFilterSize(2).setStride(2);
   })
   .createLayer(FullyConnectedLayer, (layer) => {})
-  .createLayer(TanhLayer, (layer) => {
-    layer.setSize([1024]);
-  })
-  .createLayer(TanhLayer, (layer) => {
-    layer.setSize([256]);
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize(1024);
   })
   .createLayer(LogisticLayer, (layer) => {
-    layer.setSize([10]);
+    layer.setSize(256);
+  })
+  .createLayer(LogisticLayer, (layer) => {
+    layer.setSize(10);
   });
 
 const network = builder.getNetwork();

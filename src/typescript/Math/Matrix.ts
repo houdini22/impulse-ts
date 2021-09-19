@@ -155,18 +155,14 @@ export class Matrix {
 
   rollToColMatrix(): Matrix {
     const data = [];
-
     let _row = 0;
     for (let row = 0; row < this.rows; row += 1) {
-      data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        if (this.data) {
-          data[_row++][0] = this.data[row][col];
-        }
+        data[_row] = [];
+        data[_row++][0] = this.data[row][col];
       }
     }
-
-    return new Matrix(this.rows * this.cols, 1, data);
+    return Matrix.from(data);
   }
 
   mean() {

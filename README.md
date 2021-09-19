@@ -1,6 +1,6 @@
 # impulse-ts
 
-## This project is under heavy development and learning doesn't works for now.
+## This project is under heavy development and there is no stable version yet.
 
 ## Documentation
 Full API documentation available at [https://houdini22.github.io/impulse-ts/](https://houdini22.github.io/impulse-ts/).
@@ -9,6 +9,8 @@ Full API documentation available at [https://houdini22.github.io/impulse-ts/](ht
 ```
 OptimizerGradientDescent
 OptimizerMomentum
+OptimizerAdam
+OptimizerRMSProp
 ```
 
 ### Supported dataset modifiers:
@@ -24,7 +26,7 @@ NetworkBuilder1D
 
 ### Supported network builder sources
 ```
-DatasetBuilderSourceCSV
+DatasetBuilderSourceCSV::fromFile
 ```
 
 ### Supported layers:
@@ -111,10 +113,10 @@ const {
 ```javascript
 const {
     NetworkBuilder: { NetworkBuilder1D },
-    Layer: { LogisticLayer, ReluLayer, PurelinLayer },
+    Layer: { LogisticLayer, ReluLayer },
     DatasetBuilder: { DatasetBuilder },
-    Optimizer: { OptimizerGradientDescent, OptimizerMomentum },
-    Trainer: { Trainer },
+    Optimizer: { OptimizerGradientDescent, OptimizerAdam, OptimizerMomentum, OptimizerRMSProp },
+    Trainer: { MiniBatchTrainer, Trainer },
     Computation: { ComputationCPU, setComputation },
     DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
     DatasetBuilderSource: { DatasetBuilderSourceCSV },
@@ -146,19 +148,16 @@ DatasetBuilder.fromSource(
         inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-        const trainer = new Trainer(network, new OptimizerGradientDescent());
+        const trainer = new Trainer(network, new OptimizerAdam());
 
         const result = network.forward(inputDataset.exampleAt(0));
         console.log("forward", result);
 
         console.log(trainer.cost(inputDataset.data, outputDataset.data));
 
-        trainer.setIterations(2000);
-        trainer.setLearningRate(0.1);
+        trainer.setIterations(1000);
+        trainer.setLearningRate(0.01);
         trainer.setRegularization(0.7);
-        trainer.setStepCallback(() => {
-            console.log(network.forward(inputDataset.exampleAt(0)));
-        });
         trainer.train(inputDataset, outputDataset);
 
         await network.save(path.resolve(__dirname, "./data/mnist.json"));

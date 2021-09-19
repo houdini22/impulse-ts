@@ -1,6 +1,6 @@
 import { Matrix } from "../Math/Matrix";
 import { im2col } from "../Math/math";
-import { LayerType } from "../types";
+import { Dimension, Layers, LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
 import { getComputation } from "../Computation";
 
@@ -100,12 +100,11 @@ export class ConvLayer extends AbstractLayer3D {
         this.stride,
         this.stride
       );
-      const tmp = getComputation().execute(
-        "add",
-        getComputation().execute("multiply", this.W, conv) as Matrix,
-        this.b.replicate(1, input.cols)
-      ) as Matrix;
 
+      console.log(conv.rows, conv.cols);
+      process.exit();
+
+      const tmp = this.W.dot(conv).add(this.b.replicate(1, conv.cols));
       result.setCol(i, tmp.rollToColMatrix());
     }
 
@@ -116,7 +115,7 @@ export class ConvLayer extends AbstractLayer3D {
   }
 
   activation(m: Matrix): Matrix {
-    return getComputation().execute("reluActivation", m) as Matrix;
+    return m;
   }
 
   getType(): LayerType {
@@ -125,5 +124,9 @@ export class ConvLayer extends AbstractLayer3D {
 
   backpropagation(delta: Matrix): Matrix {
     return delta;
+  }
+
+  setSize(dimension: Dimension | number): Layers {
+    return this;
   }
 }

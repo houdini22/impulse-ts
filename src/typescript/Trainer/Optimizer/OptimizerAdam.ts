@@ -22,19 +22,19 @@ export class OptimizerAdam extends AbstractOptimizer {
   }
 
   adam(layer: Layers, learningRate: number, t: number): void {
-    layer.vW = layer.gW.multiply(this.beta1).add(layer.gW.multiply(1 - this.beta1));
-    layer.vb = layer.gb.multiply(this.beta1).add(layer.gb.multiply(1 - this.beta1));
+    layer.vW = layer.vW.multiply(this.beta1).add(layer.gW.multiply(1 - this.beta1));
+    layer.vb = layer.vb.multiply(this.beta1).add(layer.gb.multiply(1 - this.beta1));
 
-    layer.sW = layer.gW.multiply(this.beta2).add(layer.gW.multiply(1 - this.beta2));
-    layer.sb = layer.gb.multiply(this.beta2).add(layer.gb.multiply(1 - this.beta2));
+    layer.sW = layer.sW.multiply(this.beta2).add(layer.gW.pow(2).multiply(1 - this.beta2));
+    layer.sb = layer.sb.multiply(this.beta2).add(layer.gb.pow(2).multiply(1 - this.beta2));
 
-    const vWCorrected = layer.vW.divide(1 - this.beta1);
-    const vbCorrected = layer.vb.divide(1 - this.beta1);
+    const vWCorrected = layer.vW.divide(1 - Math.pow(this.beta1, 2));
+    const vbCorrected = layer.vb.divide(1 - Math.pow(this.beta1, 2));
 
-    const sWcorrected = layer.sW.divide(1 - this.beta2);
-    const sbCorrected = layer.sb.divide(1 - this.beta2);
+    const sWcorrected = layer.sW.divide(1 - Math.pow(this.beta2, 2));
+    const sbCorrected = layer.sb.divide(1 - Math.pow(this.beta2, 2));
 
-    layer.W = layer.W.subtract(vWCorrected.multiply(learningRate).divide(sWcorrected.add(1e-8)));
-    layer.b = layer.b.subtract(vbCorrected.multiply(learningRate).divide(sbCorrected.add(1e-8)));
+    layer.W = layer.W.subtract(vWCorrected.multiply(learningRate).divide(sWcorrected.sqrt().add(1e-8)));
+    layer.b = layer.b.subtract(vbCorrected.multiply(learningRate).divide(sbCorrected.sqrt().add(1e-8)));
   }
 }

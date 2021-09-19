@@ -70,7 +70,7 @@ class MaxPoolLayer extends AbstractLayer3D {
   }
 
   activation(m: Matrix): Matrix {
-    throw new Error("No activation for MAXPOOL Layer.");
+    return m;
   }
 
   getType(): LayerType {

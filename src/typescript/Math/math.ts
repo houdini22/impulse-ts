@@ -16,8 +16,7 @@ export const im2col = (
   const rows = kernel_w * kernel_h * channels;
   const cols = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
   let currentResultCol = 0;
-
-  const result = getComputation().execute("fillZeros", new Matrix(rows, cols)) as Matrix;
+  const result = [[]];
 
   for (let boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
     for (let boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
@@ -27,19 +26,18 @@ export const im2col = (
         for (let y = 0; y < kernel_h; y++) {
           for (let x = 0; x < kernel_w; x++) {
             if (boundingY + y >= 0 && boundingX + x >= 0 && boundingX + x < width && boundingY + y < height) {
-              if (result.data && input.data && result.data[currentResultRow]) {
-                result.data[currentResultRow][currentResultCol] =
-                  input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
-              }
+              result[currentResultCol][currentResultRow] =
+                input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
             }
             currentResultRow++;
           }
         }
       }
       currentResultCol++;
+      result[currentResultCol] = [];
     }
   }
-  return result;
+  return Matrix.from(result);
 };
 
 export const maxpool = (
