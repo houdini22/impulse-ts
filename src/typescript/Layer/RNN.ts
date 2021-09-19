@@ -67,7 +67,7 @@ export class RNNLayer extends AbstractLayer {
     this.dWya = this.dWya.add(dy.dot(a.transpose())).setMax(5).setMin(-5);
     this.dby = this.dby.add(dy).setMax(5).setMin(-5);
     const da = this.Wya.transpose().dot(dy).add(this.daNext);
-    const daraw = a.multiply(a).minusOne();
+    const daraw = a.multiply(a).minusOne().multiply(da);
     this.db = this.db.add(daraw).setMax(5).setMin(-5);
     this.dWax = this.dWax.add(daraw.dot(x.transpose())).setMax(5).setMin(-5);
     this.dWaa = this.dWaa.add(daraw.dot(aPrev.transpose())).setMax(5).setMin(-5);

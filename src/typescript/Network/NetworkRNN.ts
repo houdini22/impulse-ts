@@ -71,18 +71,17 @@ export class NetworkRNN {
       .join("");
   }
 
-  forward(X: Matrix[], Y: Matrix, a0: Matrix, vocabularySize: number = 20): [number] {
+  forward(X: Matrix, Y: Matrix, a0: Matrix, vocabularySize: number = 20): [number] {
     const x = [null];
     const a = [a0];
     const yHat = [null];
     let loss = 0;
-    for (let t = 1; t <= X.length; t += 1) {
-      x[t] = new Matrix(this.dimensions[1], 1).setZeros();
-      //x[t].data[t][0] = 1;
+    for (let t = 1; t <= X.rows; t += 1) {
+      x[t] = new Matrix(Y.rows, 1, Y.col(t - 1).data);
       const [_a, _yHat] = this.layers[0].forward(a[t - 1], x[t]);
       a[t] = _a;
       yHat[t] = _yHat;
-      loss -= _yHat.add(1e-8).log().sum();
+      loss -= Math.log(Math.max(_yHat.data[t - 1][0], 1e-8));
     }
     this.layers[0].A = a;
     this.layers[0].X = x;
@@ -90,7 +89,7 @@ export class NetworkRNN {
     return [loss];
   }
 
-  backward(X: Matrix[], Y: Matrix): void {
+  backward(X: Matrix, Y: Matrix): void {
     const a = this.layers[0].A;
     const x = this.layers[0].X;
 
@@ -100,13 +99,13 @@ export class NetworkRNN {
     this.layers[0].db = new Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
     this.layers[0].dby = new Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
 
-    for (let t = X.length - 1; t >= 1; t -= 1) {
+    for (let t = X.rows - 1; t >= 1; t -= 1) {
       const dy = new Matrix(this.layers[0].Y[t].rows, this.layers[0].Y[t].cols, this.layers[0].Y[t].data);
       this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
     }
   }
 
-  optimize(X: Matrix[], Y: Matrix, aPrev: Matrix, learningRate: number): [number, Matrix] {
+  optimize(X: Matrix, Y: Matrix, aPrev: Matrix, learningRate: number): [number, Matrix] {
     const [loss] = this.forward(X, Y, aPrev);
     this.backward(X, Y);
 
@@ -116,7 +115,7 @@ export class NetworkRNN {
     this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
     this.layers[0].by = this.layers[0].by.add(this.layers[0].dby.multiply(-learningRate));
 
-    return [loss, this.layers[0].A[X.length - 1]];
+    return [loss, this.layers[0].A[X.rows - 1]];
   }
 
   /*save(path: string): Promise<string> {

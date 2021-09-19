@@ -133,6 +133,20 @@ export class Matrix {
     return maxIndex;
   }
 
+  rowMaxCoeffIndex(row: number): number {
+    let maxIndex = -1;
+    let max = -Infinity;
+
+    for (let col = 0; col < this.cols; col += 1) {
+      if (this.data[row][col] > max) {
+        max = this.data[row][col];
+        maxIndex = col;
+      }
+    }
+
+    return maxIndex;
+  }
+
   block(startRow: number, startCol: number, blockRows: number, blockCols: number): Matrix {
     const data = [];
 
@@ -184,6 +198,17 @@ export class Matrix {
     return Matrix.from(data);
   }
 
+  abs(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.abs(this.data[row][col]);
+      }
+    }
+    return Matrix.from(data);
+  }
+
   mean() {
     let sum = 0;
     const numberOfElements = this.rows * this.cols;
@@ -212,7 +237,7 @@ export class Matrix {
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        data[row][col] = Math.max(this.data[row][col], max);
+        data[row][col] = Math.min(this.data[row][col], max);
       }
     }
     return Matrix.from(data);
@@ -223,7 +248,7 @@ export class Matrix {
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        data[row][col] = Math.min(this.data[row][col], min);
+        data[row][col] = Math.max(this.data[row][col], min);
       }
     }
     return Matrix.from(data);

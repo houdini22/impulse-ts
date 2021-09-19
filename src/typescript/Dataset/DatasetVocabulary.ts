@@ -78,4 +78,24 @@ export class DatasetVocabulary {
   getChars(): string[] {
     return this.chars;
   }
+
+  getExampleX(exampleIndex: number): Matrix {
+    const example = this.getExamples()[exampleIndex].trim();
+    const data = [];
+    const indices = this.getCharIndices();
+    example.split("").forEach((ch, i) => {
+      data[i] = [indices[ch]];
+    });
+    return Matrix.from(data);
+  }
+
+  getExampleY(exampleIndex: number): Matrix {
+    const example = this.getExamples()[exampleIndex];
+    const data = [];
+    const indices = this.getCharIndices();
+    example.split("").forEach((ch, i) => {
+      data[i] = [indices[ch]];
+    });
+    return Matrix.from(data);
+  }
 }

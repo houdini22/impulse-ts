@@ -1522,6 +1522,28 @@ var DatasetVocabulary = /*#__PURE__*/function () {
     value: function getChars() {
       return this.chars;
     }
+  }, {
+    key: "getExampleX",
+    value: function getExampleX(exampleIndex) {
+      var example = this.getExamples()[exampleIndex].trim();
+      var data = [];
+      var indices = this.getCharIndices();
+      example.split("").forEach(function (ch, i) {
+        data[i] = [indices[ch]];
+      });
+      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
+    }
+  }, {
+    key: "getExampleY",
+    value: function getExampleY(exampleIndex) {
+      var example = this.getExamples()[exampleIndex];
+      var data = [];
+      var indices = this.getCharIndices();
+      example.split("").forEach(function (ch, i) {
+        data[i] = [indices[ch]];
+      });
+      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
+    }
   }]);
 
   return DatasetVocabulary;
@@ -3782,7 +3804,7 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
       this.dWya = this.dWya.add(dy.dot(a.transpose())).setMax(5).setMin(-5);
       this.dby = this.dby.add(dy).setMax(5).setMin(-5);
       var da = this.Wya.transpose().dot(dy).add(this.daNext);
-      var daraw = a.multiply(a).minusOne();
+      var daraw = a.multiply(a).minusOne().multiply(da);
       this.db = this.db.add(daraw).setMax(5).setMin(-5);
       this.dWax = this.dWax.add(daraw.dot(x.transpose())).setMax(5).setMin(-5);
       this.dWaa = this.dWaa.add(daraw.dot(aPrev.transpose())).setMax(5).setMin(-5);
@@ -4392,6 +4414,21 @@ var Matrix = /*#__PURE__*/function () {
       return maxIndex;
     }
   }, {
+    key: "rowMaxCoeffIndex",
+    value: function rowMaxCoeffIndex(row) {
+      var maxIndex = -1;
+      var max = -Infinity;
+
+      for (var col = 0; col < this.cols; col += 1) {
+        if (this.data[row][col] > max) {
+          max = this.data[row][col];
+          maxIndex = col;
+        }
+      }
+
+      return maxIndex;
+    }
+  }, {
     key: "block",
     value: function block(startRow, startCol, blockRows, blockCols) {
       var data = [];
@@ -4458,6 +4495,21 @@ var Matrix = /*#__PURE__*/function () {
       return Matrix.from(data);
     }
   }, {
+    key: "abs",
+    value: function abs() {
+      var data = [];
+
+      for (var row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+
+        for (var col = 0; col < this.cols; col += 1) {
+          data[row][col] = Math.abs(this.data[row][col]);
+        }
+      }
+
+      return Matrix.from(data);
+    }
+  }, {
     key: "mean",
     value: function mean() {
       var sum = 0;
@@ -4493,7 +4545,7 @@ var Matrix = /*#__PURE__*/function () {
         data[row] = [];
 
         for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = Math.max(this.data[row][col], max);
+          data[row][col] = Math.min(this.data[row][col], max);
         }
       }
 
@@ -4508,7 +4560,7 @@ var Matrix = /*#__PURE__*/function () {
         data[row] = [];
 
         for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = Math.min(this.data[row][col], min);
+          data[row][col] = Math.max(this.data[row][col], min);
         }
       }
 
@@ -5204,8 +5256,8 @@ var NetworkRNN = /*#__PURE__*/function () {
       var yHat = [null];
       var loss = 0;
 
-      for (var t = 1; t <= X.length; t += 1) {
-        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[1], 1).setZeros(); //x[t].data[t][0] = 1;
+      for (var t = 1; t <= X.rows; t += 1) {
+        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(Y.rows, 1, Y.col(t - 1).data);
 
         var _this$layers$0$forwar = this.layers[0].forward(a[t - 1], x[t]),
             _this$layers$0$forwar2 = _slicedToArray(_this$layers$0$forwar, 2),
@@ -5214,7 +5266,7 @@ var NetworkRNN = /*#__PURE__*/function () {
 
         a[t] = _a;
         yHat[t] = _yHat;
-        loss -= _yHat.add(1e-8).log().sum();
+        loss -= Math.log(Math.max(_yHat.data[t - 1][0], 1e-8));
       }
 
       this.layers[0].A = a;
@@ -5233,7 +5285,7 @@ var NetworkRNN = /*#__PURE__*/function () {
       this.layers[0].db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
       this.layers[0].dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
 
-      for (var t = X.length - 1; t >= 1; t -= 1) {
+      for (var t = X.rows - 1; t >= 1; t -= 1) {
         var dy = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Y[t].rows, this.layers[0].Y[t].cols, this.layers[0].Y[t].data);
         this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
       }
@@ -5251,7 +5303,7 @@ var NetworkRNN = /*#__PURE__*/function () {
       this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
       this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
       this.layers[0].by = this.layers[0].by.add(this.layers[0].dby.multiply(-learningRate));
-      return [loss, this.layers[0].A[X.length - 1]];
+      return [loss, this.layers[0].A[X.rows - 1]];
     }
     /*save(path: string): Promise<string> {
       const resultJSON = {
@@ -6428,22 +6480,13 @@ var RNNTrainer = /*#__PURE__*/function () {
       var loss = this.network.loss(dataset.getVocabularySize(), 7);
       var examples = dataset.getExamples();
       var indices = dataset.getCharIndices();
-
-      var _dataset$buildData = dataset.buildData(40),
-          _dataset$buildData2 = _slicedToArray(_dataset$buildData, 2),
-          X = _dataset$buildData2[0],
-          Y = _dataset$buildData2[1];
-
-      var _dataset$vectorizatio = dataset.vectorization(X, Y),
-          _dataset$vectorizatio2 = _slicedToArray(_dataset$vectorizatio, 2),
-          x = _dataset$vectorizatio2[0],
-          y = _dataset$vectorizatio2[1];
-
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(dataset.getCharsLength(), 1).setZeros();
-      console.log(y.shape(), x.length, x[0].shape());
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(dataset.getCharsLength(), 1).setRandom(1 / (dataset.getVocabularySize() * dataset.getVocabularySize() / 2)).abs().setMax(dataset.getVocabularySize()).setMin(0);
 
       for (var j = 0; j < this.iterations; j += 1) {
         console.log("Iteration ".concat(j + 1));
+        var index = j % examples.length;
+        var x = dataset.getExampleX(index);
+        var y = dataset.getExampleY(index);
 
         var _this$network$forward = this.network.forward(x, y, aPrev),
             _this$network$forward2 = _slicedToArray(_this$network$forward, 1),
@@ -6458,6 +6501,7 @@ var RNNTrainer = /*#__PURE__*/function () {
             _aPrev = _this$network$optimiz2[1];
 
         console.log(_loss, currentLoss);
+        process.exit();
         aPrev = _aPrev;
         loss = loss * 0.999 + currentLoss * 0.001;
 
