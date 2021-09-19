@@ -22,72 +22,19 @@ export class OptimizerAdam extends AbstractOptimizer {
   }
 
   adam(layer: Layers, learningRate: number, t: number): void {
-    layer.vW = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.vW, this.beta1) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gW, 1 - this.beta1) as Matrix
-    ) as Matrix;
+    layer.vW = layer.gW.multiply(this.beta1).add(layer.gW.multiply(1 - this.beta1));
+    layer.vb = layer.gb.multiply(this.beta1).add(layer.gb.multiply(1 - this.beta1));
 
-    const vCorrected = getComputation().execute("divideNumber", layer.vW, 1 - Math.pow(this.beta1, t)) as Matrix;
+    layer.sW = layer.gW.multiply(this.beta2).add(layer.gW.multiply(1 - this.beta2));
+    layer.sb = layer.gb.multiply(this.beta2).add(layer.gb.multiply(1 - this.beta2));
 
-    layer.sW = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.sW, this.beta2) as Matrix,
-      getComputation().execute(
-        "multiplyNumber",
-        getComputation().execute("pow", layer.gW, 2) as Matrix,
-        1 - this.beta2
-      ) as Matrix
-    ) as Matrix;
+    const vWCorrected = layer.vW.divide(1 - this.beta1);
+    const vbCorrected = layer.vb.divide(1 - this.beta1);
 
-    const sCorrected = getComputation().execute("divideNumber", layer.sW, 1 - Math.pow(this.beta2, this.t)) as Matrix;
+    const sWcorrected = layer.sW.divide(1 - this.beta2);
+    const sbCorrected = layer.sb.divide(1 - this.beta2);
 
-    layer.W = getComputation().execute(
-      "subtract",
-      layer.W,
-      getComputation().execute(
-        "multiplyNumber",
-        getComputation().execute(
-          "elementWiseDivide",
-          vCorrected,
-          getComputation().execute("sqrt", sCorrected) as Matrix
-        ) as Matrix,
-        learningRate
-      ) as Matrix
-    ) as Matrix;
-
-    layer.vb = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.vb, this.beta1) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gb, 1 - this.beta1) as Matrix
-    ) as Matrix;
-
-    const vCorrected2 = getComputation().execute("divideNumber", layer.vb, 1 - Math.pow(this.beta1, t)) as Matrix;
-
-    layer.sb = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.sb, this.beta2) as Matrix,
-      getComputation().execute(
-        "multiplyNumber",
-        getComputation().execute("elementWiseMultiply", layer.gb, layer.gb) as Matrix,
-        1 - this.beta2
-      ) as Matrix
-    ) as Matrix;
-
-    const sCorrected2 = getComputation().execute("divideNumber", layer.sb, 1 - Math.pow(this.beta2, t)) as Matrix;
-
-    layer.b = getComputation().execute(
-      "subtract",
-      layer.b,
-      getComputation().execute(
-        "multiplyNumber",
-        getComputation().execute(
-          "elementWiseDivide",
-          vCorrected2,
-          getComputation().execute("sqrt", sCorrected2) as Matrix
-        ) as Matrix,
-        learningRate
-      ) as Matrix
-    ) as Matrix;
+    layer.W = layer.W.subtract(vWCorrected.multiply(learningRate).divide(sWcorrected.add(1e-8)));
+    layer.b = layer.b.subtract(vbCorrected.multiply(learningRate).divide(sbCorrected.add(1e-8)));
   }
 }

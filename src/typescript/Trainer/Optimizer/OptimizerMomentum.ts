@@ -1,7 +1,5 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
-import { getComputation } from "../../Computation/utils";
-import { Matrix } from "../../Math/Matrix";
 
 export class OptimizerMomentum extends AbstractOptimizer {
   protected beta = 0.9;
@@ -16,26 +14,10 @@ export class OptimizerMomentum extends AbstractOptimizer {
   }
 
   momentum(layer: Layers, learningRate: number): void {
-    layer.vW = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.vW, this.beta) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gW, 1 - this.beta) as Matrix
-    ) as Matrix;
-    layer.vb = getComputation().execute(
-      "add",
-      getComputation().execute("multiplyNumber", layer.vb, this.beta) as Matrix,
-      getComputation().execute("multiplyNumber", layer.gb, 1 - this.beta) as Matrix
-    ) as Matrix;
+    layer.vW = layer.gW.multiply(this.beta).add(layer.gW.multiply(1 - this.beta));
+    layer.vb = layer.gb.multiply(this.beta).add(layer.gb.multiply(1 - this.beta));
 
-    layer.W = getComputation().execute(
-      "subtract",
-      layer.W,
-      getComputation().execute("multiplyNumber", layer.vW, learningRate) as Matrix
-    ) as Matrix;
-    layer.b = getComputation().execute(
-      "subtract",
-      layer.b,
-      getComputation().execute("multiplyNumber", layer.vb, learningRate) as Matrix
-    ) as Matrix;
+    layer.W = layer.W.subtract(layer.vW.multiply(learningRate));
+    layer.b = layer.b.subtract(layer.vb.multiply(learningRate));
   }
 }

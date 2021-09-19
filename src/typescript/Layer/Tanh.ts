@@ -1,17 +1,13 @@
 import { Matrix } from "../Math/Matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./AbstractLayer1D";
-import { getComputation } from "../Computation";
-import { tanhActivation } from "../Computation/ComputationCPU";
 
 class TanhLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
     return m
-      .multiply(-2)
       .exp()
-      .add(1)
-      .forEach((num) => 2 / num)
-      .subtract(1);
+      .subtract(m.multiply(-1).exp())
+      .divide(m.exp().add(m.multiply(-1).exp()));
   }
 
   getType(): LayerType {
@@ -19,7 +15,7 @@ class TanhLayer extends AbstractLayer1D {
   }
 
   backpropagation(sigma: Matrix): Matrix {
-    return this.activation(this.A).pow(2).minusOne();
+    return this.activation(sigma).pow(2).minusOne();
   }
 }
 

@@ -1,4 +1,4 @@
-import { getComputation } from "../Computation/utils";
+import { getComputation } from "../Computation";
 
 export class Matrix {
   public rows = 0;
@@ -184,14 +184,23 @@ export class Matrix {
 
   max(): number {
     let max = -Infinity;
-
     for (let row = 0; row < this.rows; row += 1) {
       for (let col = 0; col < this.cols; col += 1) {
         max = Math.max(this.data[row][col], max);
       }
     }
-
     return max;
+  }
+
+  setMax(max: number): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.max(this.data[row][col], max);
+      }
+    }
+    return Matrix.from(data);
   }
 
   setZeros(): Matrix {
@@ -200,6 +209,17 @@ export class Matrix {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
         data[row][col] = 0;
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  setOnes(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = 1;
       }
     }
     return Matrix.from(data);
@@ -222,6 +242,17 @@ export class Matrix {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
         data[row][col] = num / this.data[row][col];
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  sqrt(): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.sqrt(this.data[row][col] + 1e-8);
       }
     }
     return Matrix.from(data);
@@ -299,6 +330,9 @@ export class Matrix {
       }
       return Matrix.from(data);
     } else {
+      if (num.rows !== this.rows || num.cols !== this.cols) {
+        throw new Error(`Dimensions error (${this.rows}, ${this.cols}) !== (${num.rows}, ${num.cols})`);
+      }
       const data = [];
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];

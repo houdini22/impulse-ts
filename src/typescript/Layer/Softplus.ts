@@ -5,11 +5,15 @@ import { getComputation } from "../Computation";
 
 class SoftplusLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return getComputation().execute("softplusActivation", m) as Matrix;
+    return m.exp().add(1).log();
   }
 
   getType(): LayerType {
     return LayerType.softplus;
+  }
+
+  backpropagation(delta: Matrix): Matrix {
+    return delta.multiply(-1).exp().add(1).fraction(1);
   }
 }
 

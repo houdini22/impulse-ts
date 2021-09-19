@@ -123,11 +123,7 @@ export class ConvLayer extends AbstractLayer3D {
     return LayerType.conv;
   }
 
-  loss(output: Matrix, predictions: Matrix): number {
-    throw new Error("Unsupported.");
-  }
-
-  error(m: number): number {
-    throw new Error("Unsupported.");
+  backpropagation(delta: Matrix): Matrix {
+    return delta;
   }
 }

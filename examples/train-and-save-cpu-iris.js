@@ -1,9 +1,9 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
-  Layer: { LogisticLayer, SoftmaxLayer, ReluLayer },
+  Layer: { LogisticLayer, ReluLayer },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerGradientDescent, OptimizerAdam, OptimizerMomentum },
-  Trainer: { MiniBatchTrainer },
+  Optimizer: { OptimizerGradientDescent, OptimizerMomentum },
+  Trainer: { Trainer },
   Computation: { ComputationCPU, setComputation },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
   DatasetModifier: { MissingDataScalingDatabaseModifier, MinMaxScalingDatabaseModifier },
@@ -14,8 +14,14 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([4]);
 builder
-  .createLayer(LogisticLayer, (layer) => {
-    layer.setSize(10);
+  .createLayer(ReluLayer, (layer) => {
+    layer.setSize(100);
+  })
+  .createLayer(ReluLayer, (layer) => {
+    layer.setSize(50);
+  })
+  .createLayer(ReluLayer, (layer) => {
+    layer.setSize(20);
   })
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize(3);
@@ -33,12 +39,11 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
         inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
-        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(5000);
-        trainer.setBatchSize(10);
-        trainer.setLearningRate(0.0007);
-        trainer.setRegularization(0.7);
-        console.log("cost", trainer.cost(inputDataset, outputDataset));
+        const trainer = new Trainer(network, new OptimizerGradientDescent());
+        trainer.setIterations(1500);
+        trainer.setLearningRate(0.05);
+        trainer.setRegularization(0.1);
+        console.log("cost", trainer.cost(inputDataset.data, outputDataset.data));
         trainer.train(inputDataset, outputDataset);
         await network.save(path.resolve(__dirname, "./data/iris.json"));
         console.log("forward", network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));

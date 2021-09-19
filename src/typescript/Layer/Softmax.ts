@@ -5,7 +5,10 @@ import { AbstractLayer1D } from "./AbstractLayer1D";
 class SoftmaxLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
     const max = m.max();
-    return m.forEach((num) => num - max).exp();
+    return m
+      .forEach((num) => num - max)
+      .exp()
+      .divide(m.rowwiseSum().replicate(1, m.cols).transpose());
   }
 
   getType(): LayerType {
@@ -13,7 +16,7 @@ class SoftmaxLayer extends AbstractLayer1D {
   }
 
   backpropagation(delta: Matrix): Matrix {
-    return this.A.exp().divide(this.A.sum());
+    return delta.multiply(-1).add(1).fraction(1);
   }
 }
 

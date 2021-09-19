@@ -1,8 +1,6 @@
 import { Matrix } from "../Math/Matrix";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./AbstractLayer1D";
-import { getComputation } from "../Computation";
-import { logisticActivation } from "../Computation/ComputationCPU";
 
 class LogisticLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
@@ -14,7 +12,7 @@ class LogisticLayer extends AbstractLayer1D {
   }
 
   backpropagation(delta: Matrix): Matrix {
-    return this.activation(delta).multiply(this.activation(delta).minusOne());
+    return delta.multiply(this.activation(delta).multiply(this.activation(delta.minusOne())));
   }
 }
 

@@ -77,12 +77,8 @@ class MaxPoolLayer extends AbstractLayer3D {
     return LayerType.maxpool;
   }
 
-  loss(output: Matrix, predictions: Matrix): number {
-    throw new Error("Unsupported.");
-  }
-
-  error(m: number): number {
-    throw new Error("Unsupported.");
+  backpropagation(delta: Matrix): Matrix {
+    return delta;
   }
 }
 

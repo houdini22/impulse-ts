@@ -26,9 +26,9 @@ export class MiniBatchTrainer extends AbstractTrainer {
         const startIterationTime2 = new Date().getTime();
         const input = inputDataset.getBatch(offset, this.batchSize);
         const output = outputDataset.getBatch(offset, this.batchSize);
-        const forward = this.network.forward(input.data);
+        const predictions = this.network.forward(input.data);
 
-        this.network.backward(input.data, output.data, forward, this.regularization);
+        this.network.backward(input.data, output.data, predictions, this.regularization);
 
         this.optimizer.setT(++t);
 
@@ -37,7 +37,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
         });
 
         if (this.verbose) {
-          const cost = this.cost(input, output);
+          const cost = this.cost(input.data, output.data);
           const endIterationTime = new Date().getTime();
           console.log(
             `Batch: ${offset} / ${numberOfExamples} | Batch time: ${
@@ -53,21 +53,19 @@ export class MiniBatchTrainer extends AbstractTrainer {
       if (this.verbose) {
         if ((i + 1) % this.verboseStep === 0) {
           const endTime = new Date().getTime();
-          const currentResult = this.cost(inputDataset, outputDataset);
+          const currentResult = this.cost(inputDataset.data, outputDataset.data);
 
           console.log(
             `Iteration: ${i + 1} | Cost: ${round(currentResult.cost, 5)} | Accuracy: ${
               currentResult.accuracy
-            }% | Time: ${(endTime - startTime) / 100} s.`
+            }% | Time: ${(endTime - startTime) / 1000} s.`
           );
         }
       }
 
-      if (typeof this.stepCallback === "function") {
-        this.stepCallback.call(null, {
-          iteration: i,
-        });
-      }
+      this.stepCallback({
+        iteration: i,
+      });
     }
 
     return this;

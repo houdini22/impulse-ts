@@ -5,11 +5,15 @@ import { getComputation } from "../Computation";
 
 class PurelinLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return (this.Z = this.A);
+    return m;
   }
 
   getType(): LayerType {
     return LayerType.purelin;
+  }
+
+  backpropagation(delta: Matrix): Matrix {
+    return delta.setOnes();
   }
 }
 

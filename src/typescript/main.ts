@@ -12,8 +12,8 @@ import {
 import { Matrix } from "./Math/Matrix";
 import { Dataset as DatasetDataset } from "./Dataset";
 import { DatasetBuilder as DatasetBuilderBuilder } from "./DatasetBuilder";
-import { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta, OptimizerMomentum } from "./Trainer/Optimizer";
-import { MiniBatchTrainer } from "./Trainer";
+import { OptimizerAdam, OptimizerGradientDescent, OptimizerAdagrad, OptimizerMomentum } from "./Trainer/Optimizer";
+import { MiniBatchTrainer, Trainer as TrainerTrainer } from "./Trainer";
 import {
   CallbackDatabaseModifier,
   MinMaxScalingDatabaseModifier,
@@ -42,11 +42,12 @@ const DatasetBuilder = {
 const Optimizer = {
   OptimizerAdam,
   OptimizerGradientDescent,
-  OptimizerAdadelta,
+  OptimizerAdagrad,
   OptimizerMomentum,
 };
 const Trainer = {
   MiniBatchTrainer,
+  Trainer: TrainerTrainer,
 };
 const DatasetModifier = {
   CallbackDatabaseModifier,

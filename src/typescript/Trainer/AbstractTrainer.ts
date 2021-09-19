@@ -16,9 +16,9 @@ export interface StepCallbackParameters {
 export abstract class AbstractTrainer {
   network: Network | null = null;
   optimizer: AbstractOptimizer | null = null;
-  regularization = 1e-8;
+  regularization = 1e-4;
   iterations = 1000;
-  learningRate = 0.01;
+  learningRate = 0.001;
   verbose = true;
   verboseStep = 1;
   stepCallback = (data: StepCallbackParameters): void => undefined;
@@ -60,8 +60,8 @@ export abstract class AbstractTrainer {
     return this;
   }
 
-  cost(inputDataset: Dataset, outputDataset: Dataset): CostResult {
-    const numberOfExamples = inputDataset.getNumberOfExamples();
+  cost(X: Matrix, Y: Matrix): CostResult {
+    const numberOfExamples = X.cols;
 
     let accuracy = 0;
     let penalty = 0;
@@ -70,22 +70,17 @@ export abstract class AbstractTrainer {
       penalty += layer.penalty();
     });
 
-    const predictedOutput = this.network.forward(inputDataset.data);
-    const correctOutput = outputDataset.data;
+    const predictions = this.network.forward(X);
+    const correctOutput = Y;
 
-    /*const error = predictedOutput
-      .transpose()
+    const error = Y.multiply(predictions.log())
+      .add(Y.minusOne().multiply(predictions.minusOne().log()))
       .multiply(-1)
-      .log()
-      .dot(correctOutput)
-      .add(correctOutput.transpose().subtractFromNumber(1).dot(predictedOutput.minusOne().log().multiply(-1)))
-      .sum();*/
-    const error = correctOutput.subtract(predictedOutput).sum();
-    const cost =
-      (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * inputDataset.getNumberOfExamples()));
+      .sum();
+    const cost = (1 / numberOfExamples) * error + this.regularization / (penalty * (2 * X.cols));
 
-    for (let col = 0; col < predictedOutput.cols; col += 1) {
-      const index1 = predictedOutput.colMaxCoeffIndex(col);
+    for (let col = 0; col < predictions.cols; col += 1) {
+      const index1 = predictions.colMaxCoeffIndex(col);
       const index2 = correctOutput.colMaxCoeffIndex(col);
 
       if (index1 === index2) {

@@ -1,5 +1,6 @@
 import { Dimension, LayerType } from "../types";
 import { ConvLayer } from "./Conv";
+import { Matrix } from "../Math/Matrix";
 
 class FullyConnectedLayer extends ConvLayer {
   configure(): void {
@@ -57,6 +58,10 @@ class FullyConnectedLayer extends ConvLayer {
 
   setNumFilters(value: number): FullyConnectedLayer {
     return this;
+  }
+
+  backpropagation(delta: Matrix): Matrix {
+    return delta;
   }
 }
 

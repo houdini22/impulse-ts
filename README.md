@@ -8,6 +8,7 @@ Full API documentation available at [https://houdini22.github.io/impulse-ts/](ht
 ### Supported learning optimizers:
 ```
 OptimizerGradientDescent
+OptimizerMomentum
 ```
 
 ### Supported dataset modifiers:
@@ -19,7 +20,11 @@ MinMaxScalingDatabaseModifier
 ### Supported network builders:
 ```
 NetworkBuilder1D
-NetworkBuilder1D
+```
+
+### Supported network builder sources
+```
+DatasetBuilderSourceCSV
 ```
 
 ### Supported layers:
@@ -31,12 +36,17 @@ ReluLayer
 
 ### Supported trainers:
 ```
-MiniBatchTrainer
+Trainer
 ```
 
 ### Supported Networks
 ```
 Network1D
+```
+
+### Supported Computations
+```
+ComputationCPU
 ```
 
 There are no errors using above.
@@ -76,10 +86,11 @@ const {
     Optimizer: {
         OptimizerGradientDescent,
         OptimizerAdam,
-        OptimizerAdadelta
+        OptimizerAdagrad
     },
     Trainer: {
-        MiniBatchTrainer
+        MiniBatchTrainer,
+        Trainer
     },
     DatasetModifier: {
         CallbackDatabaseModifier,
@@ -99,28 +110,14 @@ const {
 
 ```javascript
 const {
-    NetworkBuilder: {
-        NetworkBuilder1D
-    },
-    Layer: {
-        LogisticLayer
-    },
-    DatasetBuilder: {
-        DatasetBuilder
-    },
-    Optimizer: {
-        OptimizerGradientDescent
-    },
-    Trainer: {
-        MiniBatchTrainer
-    },
-    Computation: {
-        ComputationCPU,
-        setComputation
-    },
-    DatasetModifier: {
-        MinMaxScalingDatabaseModifier
-    },
+    NetworkBuilder: { NetworkBuilder1D },
+    Layer: { LogisticLayer, ReluLayer, PurelinLayer },
+    DatasetBuilder: { DatasetBuilder },
+    Optimizer: { OptimizerGradientDescent, OptimizerMomentum },
+    Trainer: { Trainer },
+    Computation: { ComputationCPU, setComputation },
+    DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
+    DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("impulse-ts");
 const path = require("path");
 
@@ -128,14 +125,8 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([400]);
 builder
-    .createLayer(LogisticLayer, (layer) => {
-        layer.setSize(1000);
-    })
-    .createLayer(LogisticLayer, (layer) => {
-        layer.setSize(500);
-    })
-    .createLayer(LogisticLayer, (layer) => {
-        layer.setSize(200);
+    .createLayer(ReluLayer, (layer) => {
+        layer.setSize(100);
     })
     .createLayer(LogisticLayer, (layer) => {
         layer.setSize(10);
@@ -155,22 +146,26 @@ DatasetBuilder.fromSource(
         inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-        const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+        const trainer = new Trainer(network, new OptimizerGradientDescent());
 
         const result = network.forward(inputDataset.exampleAt(0));
         console.log("forward", result);
 
-        console.log(trainer.cost(inputDataset, outputDataset));
+        console.log(trainer.cost(inputDataset.data, outputDataset.data));
 
-        trainer.setIterations(10);
-        trainer.setLearningRate(0.0007);
-        trainer.setBatchSize(100);
+        trainer.setIterations(2000);
+        trainer.setLearningRate(0.1);
+        trainer.setRegularization(0.7);
+        trainer.setStepCallback(() => {
+            console.log(network.forward(inputDataset.exampleAt(0)));
+        });
         trainer.train(inputDataset, outputDataset);
 
-        await network.save(path.resolve(__dirname, "./data/mnist2.json"));
+        await network.save(path.resolve(__dirname, "./data/mnist.json"));
+        console.log(trainer.cost(inputDataset.data, outputDataset.data));
+        console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
     });
 });
-
 ```
 
 ### Restore network and predict

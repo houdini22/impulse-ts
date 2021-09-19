@@ -1,6 +1,6 @@
 import { OptimizerAdam } from "./OptimizerAdam";
 import { OptimizerGradientDescent } from "./OptimizerGradientDescent";
-import { OptimizerAdadelta } from "./OptimizerAdadelta";
+import { OptimizerAdagrad } from "./OptimizerAdagrad";
 import { OptimizerMomentum } from "./OptimizerMomentum";
 
-export { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta, OptimizerMomentum };
+export { OptimizerAdam, OptimizerGradientDescent, OptimizerAdagrad, OptimizerMomentum };

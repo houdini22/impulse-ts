@@ -2,8 +2,8 @@ const {
   NetworkBuilder: { NetworkBuilder1D },
   Layer: { LogisticLayer, ReluLayer, SoftmaxLayer, TanhLayer },
   DatasetBuilder: { DatasetBuilder },
-  Optimizer: { OptimizerAdam, OptimizerGradientDescent, OptimizerAdadelta, OptimizerMomentum },
-  Trainer: { MiniBatchTrainer },
+  Optimizer: { OptimizerAdam, OptimizerGradientDescent, OptimizerAdagrad, OptimizerMomentum },
+  Trainer: { MiniBatchTrainer, Trainer },
   Computation: { ComputationCPU, setComputation },
   DatasetModifier: { MinMaxScalingDatabaseModifier, MissingDataScalingDatabaseModifier },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
@@ -14,10 +14,7 @@ setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([400]);
 builder
-  .createLayer(LogisticLayer, (layer) => {
-    layer.setSize(200);
-  })
-  .createLayer(LogisticLayer, (layer) => {
+  .createLayer(ReluLayer, (layer) => {
     layer.setSize(100);
   })
   .createLayer(LogisticLayer, (layer) => {
@@ -38,19 +35,24 @@ DatasetBuilder.fromSource(
     inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
     inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
 
-    const trainer = new MiniBatchTrainer(network, new OptimizerAdam());
+    const trainer = new Trainer(network, new OptimizerGradientDescent());
 
     const result = network.forward(inputDataset.exampleAt(0));
     console.log("forward", result);
 
-    console.log(trainer.cost(inputDataset, outputDataset));
+    console.log(trainer.cost(inputDataset.data, outputDataset.data));
 
-    trainer.setIterations(10000);
-    trainer.setLearningRate(0.0001);
-    trainer.setBatchSize(100);
+    trainer.setIterations(500);
+    trainer.setLearningRate(0.1);
+    //trainer.setBatchSize(100);
     trainer.setRegularization(0.7);
+    trainer.setStepCallback(() => {
+      console.log(network.forward(inputDataset.exampleAt(0)));
+    });
     trainer.train(inputDataset, outputDataset);
 
-    await network.save(path.resolve(__dirname, "./data/mnist2.json"));
+    await network.save(path.resolve(__dirname, "./data/mnist.json"));
+    console.log(trainer.cost(inputDataset.data, outputDataset.data));
+    console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
   });
 });
