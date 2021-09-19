@@ -73,11 +73,12 @@ export abstract class AbstractTrainer {
     const predictions = this.network.forward(X);
     const correctOutput = Y;
 
-    const error = Y.multiply(predictions.log())
+    /*const error = Y.multiply(predictions.log())
       .add(Y.minusOne().multiply(predictions.minusOne().log()))
       .multiply(-1)
-      .sum();
-    const cost = (1 / numberOfExamples) * error + this.regularization / (penalty * (2 * X.cols));
+      .sum();*/
+    const error = Y.multiply(predictions.log()).sum();
+    const cost = (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * X.cols));
 
     for (let col = 0; col < predictions.cols; col += 1) {
       const index1 = predictions.colMaxCoeffIndex(col);

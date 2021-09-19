@@ -4661,8 +4661,13 @@ var AbstractTrainer = /*#__PURE__*/function () {
       });
       var predictions = this.network.forward(X);
       var correctOutput = Y;
-      var error = Y.multiply(predictions.log()).add(Y.minusOne().multiply(predictions.minusOne().log())).multiply(-1).sum();
-      var cost = 1 / numberOfExamples * error + this.regularization / (penalty * (2 * X.cols));
+      /*const error = Y.multiply(predictions.log())
+        .add(Y.minusOne().multiply(predictions.minusOne().log()))
+        .multiply(-1)
+        .sum();*/
+
+      var error = Y.multiply(predictions.log()).sum();
+      var cost = -1 / numberOfExamples * error + this.regularization / (penalty * (2 * X.cols));
 
       for (var col = 0; col < predictions.cols; col += 1) {
         var index1 = predictions.colMaxCoeffIndex(col);

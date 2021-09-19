@@ -15,13 +15,10 @@ setComputation(new ComputationCPU());
 const builder = new NetworkBuilder1D([4]);
 builder
   .createLayer(ReluLayer, (layer) => {
-    layer.setSize(100);
+    layer.setSize(10);
   })
   .createLayer(ReluLayer, (layer) => {
-    layer.setSize(50);
-  })
-  .createLayer(ReluLayer, (layer) => {
-    layer.setSize(20);
+    layer.setSize(10);
   })
   .createLayer(LogisticLayer, (layer) => {
     layer.setSize(3);
@@ -40,7 +37,7 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
         inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
         const trainer = new Trainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(1500);
+        trainer.setIterations(2000);
         trainer.setLearningRate(0.05);
         trainer.setRegularization(0.1);
         console.log("cost", trainer.cost(inputDataset.data, outputDataset.data));
