@@ -82,6 +82,8 @@ export class NetworkRNN {
       a[t] = _a;
       yHat[t] = _yHat;
       loss -= Math.log(Math.max(_yHat.data[t - 1][0], 1e-8));
+      console.log(_yHat.data);
+      process.exit();
     }
     this.layers[0].A = a;
     this.layers[0].X = x;
