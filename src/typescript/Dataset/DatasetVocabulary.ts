@@ -44,7 +44,7 @@ export class DatasetVocabulary {
     const X = [];
     const Y = [];
 
-    for (let i = 0; i < this.data.length; i += stride) {
+    for (let i = 0; i < this.data.length - tx; i += stride) {
       X.push(this.data.substr(i, tx));
       Y.push(this.data[i + tx]);
     }
@@ -52,19 +52,30 @@ export class DatasetVocabulary {
     return [X, Y];
   }
 
-  vectorization(X: string[], Y: string[], nx: number, tx: number = 40) {
+  vectorization(X: string[], Y: string[], nx: number = 40): [Matrix[], Matrix] {
     const m = X.length;
-    const x = new Matrix3D(m, tx, nx).setZeros();
-    const y = new Matrix(m, nx).setZeros();
+    const x = new Array(m);
     const chars = this.getCharIndices();
+    const y = new Matrix(m, this.chars.length).setZeros();
+    let xIndex = 0;
+    let rowIndex = 0;
 
-    X.forEach((sentence, i) => {
+    X.forEach((sentence: string, _m) => {
+      x[_m] = new Matrix(sentence.length, this.chars.length).setZeros();
       sentence.split("").forEach((char, t) => {
-        x.data[i][t][chars[char]] = 1;
+        x[_m].data[t][chars[char]] = 1;
+        rowIndex++;
       });
-      y.data[i][chars[Y[i]]] = 1;
+      xIndex++;
+      rowIndex = 0;
+
+      y.data[_m][chars[Y[_m]]] = 1;
     });
 
     return [x, y];
+  }
+
+  getChars(): string[] {
+    return this.chars;
   }
 }

@@ -154,6 +154,11 @@ export class Matrix {
     return new Matrix(this.rows, 1, data);
   }
 
+  row(row: number): Matrix {
+    const data = this.data[row].map((num) => [num]);
+    return new Matrix(data.length, data[0].length, data).transpose();
+  }
+
   setCol(col: number, tmp: Matrix): Matrix {
     for (let row = 0; row < this.rows; row += 1) {
       if (this.data && tmp.data) {
@@ -161,6 +166,10 @@ export class Matrix {
       }
     }
     return this;
+  }
+
+  sigmoid() {
+    return this.multiply(-1).exp().add(1).fraction(1);
   }
 
   rollToColMatrix(): Matrix {
@@ -204,6 +213,17 @@ export class Matrix {
       data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
         data[row][col] = Math.max(this.data[row][col], max);
+      }
+    }
+    return Matrix.from(data);
+  }
+
+  setMin(min: number): Matrix {
+    const data = [];
+    for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
+      for (let col = 0; col < this.cols; col += 1) {
+        data[row][col] = Math.min(this.data[row][col], min);
       }
     }
     return Matrix.from(data);
@@ -314,15 +334,17 @@ export class Matrix {
     }
   }
 
-  forEach(cb: (num: number) => number): Matrix {
-    const data = [];
+  forEach(cb: (num: number) => void): Matrix {
     for (let row = 0; row < this.rows; row += 1) {
-      data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        data[row][col] = cb(this.data[row][col]);
+        cb(this.data[row][col]);
       }
     }
-    return Matrix.from(data);
+    return this;
+  }
+
+  shape(): number[] {
+    return [this.rows, this.cols];
   }
 
   divide(num: number | Matrix): Matrix {
@@ -417,7 +439,7 @@ export class Matrix {
 
   softmax(): Matrix {
     const max = this.max();
-    return this.subtract(max).exp().divide(this.rowwiseSum().replicate(1, this.cols).transpose());
+    return this.subtract(max).exp().divide(this.rowwiseSum().replicate(this.cols, 1).transpose());
   }
 
   exp(): Matrix {

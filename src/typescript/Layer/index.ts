@@ -9,6 +9,7 @@ import { FullyConnectedLayer } from "./FullyConnected";
 import { MaxPoolLayer } from "./MaxPool";
 import { RNNLayer } from "./RNN";
 import { PurelinLayer } from "./Purelin";
+import { LSTMLayer } from "./LSTM";
 
 export {
   AbstractLayer,
@@ -22,4 +23,5 @@ export {
   MaxPoolLayer,
   RNNLayer,
   PurelinLayer,
+  LSTMLayer,
 };

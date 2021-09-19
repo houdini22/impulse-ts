@@ -20,7 +20,7 @@ import {
   OptimizerMomentum,
   OptimizerRMSProp,
 } from "./Trainer/Optimizer";
-import { MiniBatchTrainer, Trainer as TrainerTrainer } from "./Trainer";
+import { MiniBatchTrainer, Trainer as TrainerTrainer, RNNTrainer } from "./Trainer";
 import {
   CallbackDatabaseModifier,
   MinMaxScalingDatabaseModifier,
@@ -60,6 +60,7 @@ const Optimizer = {
 const Trainer = {
   MiniBatchTrainer,
   Trainer: TrainerTrainer,
+  RNNTrainer,
 };
 const DatasetModifier = {
   CallbackDatabaseModifier,

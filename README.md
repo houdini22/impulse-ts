@@ -195,4 +195,4 @@ NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then(
         );
     }
 );
-``` 
+```

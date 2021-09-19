@@ -1,6 +1,8 @@
 const {
   Network: { NetworkRNN },
   Layer: { RNNLayer },
+  Trainer: { RNNTrainer },
+  Math: { Matrix },
   DatasetBuilder: { DatasetVocabularyBuilder },
   DatasetBuilderSource: { DatasetVocabularyBuilderSourceTextFile },
 } = require("../dist/impulse-ts.dev");
@@ -9,17 +11,23 @@ const path = require("path");
 DatasetVocabularyBuilder.fromSource(
   DatasetVocabularyBuilderSourceTextFile.fromLocalFile(path.resolve(__dirname, "./data/dinos.txt"))
 ).then(async (dataset) => {
-  const nX = dataset.getVocabularySize();
-  const nY = dataset.getVocabularySize();
-  const nA = 100;
-
-  const network = new NetworkRNN([nA, nX, nY]);
-  const layer = new RNNLayer().setWidth(nA).setHeight(nX).setDepth(nY);
+  console.log("Vocabulary size: ", dataset.getVocabularySize());
+  console.log("Chars size: ", dataset.getCharsLength());
+  const network = new NetworkRNN([dataset.getCharsLength(), 40, 40]);
+  const [X, Y] = dataset.buildData(40, 3);
+  const [x, y] = dataset.vectorization(X, Y);
+  const layer = new RNNLayer().setWidth(dataset.getCharsLength()).setHeight(40).setDepth(40);
   layer.configure();
   network.addLayer(layer);
 
-  const [X, Y] = dataset.buildData(40, 3);
-  const [x, y] = dataset.vectorization(X, Y, dataset.getCharsLength());
-
+  const trainer = new RNNTrainer(network).setIterations(35000);
+  //
+  console.log("Generating 5 samples...:\n");
+  console.log(network.sample(dataset).trim());
+  console.log(network.sample(dataset).trim());
+  console.log(network.sample(dataset).trim());
+  console.log(network.sample(dataset).trim());
+  console.log(network.sample(dataset).trim());
+  console.log(trainer.train(dataset));
   //network.sample(dataset.getCharIndices());
 });
