@@ -1,6 +1,7 @@
-import { AbstractTrainer } from "./AbstractTrainer";
+import { AbstractTrainer, CostResult } from "./AbstractTrainer";
 import { Dataset } from "../Dataset";
 import { round } from "../Math/math";
+import { Matrix } from "../Math/Matrix";
 
 export class MiniBatchTrainer extends AbstractTrainer {
   batchSize = 100;
@@ -8,6 +9,49 @@ export class MiniBatchTrainer extends AbstractTrainer {
   setBatchSize(batchSize: number): MiniBatchTrainer {
     this.batchSize = batchSize;
     return this;
+  }
+
+  cost(inputDataset: Dataset, outputDataset: Dataset): CostResult {
+    const batchSize = this.batchSize;
+    const numberOfExamples = inputDataset.getNumberOfExamples();
+    const numBatches = Math.ceil(numberOfExamples / batchSize);
+
+    let cost = 0.0;
+    let accuracy = 0.0;
+
+    // calculate penalty
+    let penalty = 0.0;
+
+    this.network.getLayers().forEach((layer) => {
+      penalty = layer.penalty();
+    });
+
+    const startTime = new Date().getTime();
+    const startIterationTime = new Date().getTime();
+
+    for (let batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
+      const startIterationTime2 = new Date().getTime();
+      const input = inputDataset.getBatch(offset, this.batchSize);
+      const correctOutput = outputDataset.getBatch(offset, this.batchSize);
+      const predictions = this.network.forward(input.data);
+
+      const error = correctOutput.data.multiply(predictions.log()).sum();
+      cost += (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * inputDataset.data.cols));
+
+      for (let col = 0; col < predictions.cols; col += 1) {
+        const index1 = predictions.colMaxCoeffIndex(col);
+        const index2 = correctOutput.data.colMaxCoeffIndex(col);
+
+        if (index1 === index2) {
+          accuracy++;
+        }
+      }
+    }
+
+    return {
+      cost,
+      accuracy: (accuracy / numberOfExamples) * 100,
+    };
   }
 
   train(inputDataset: Dataset, outputDataset: Dataset): MiniBatchTrainer {
@@ -37,7 +81,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
         });
 
         if (this.verbose) {
-          const cost = this.cost(input.data, output.data);
+          const cost = this.cost(input, output);
           const endIterationTime = new Date().getTime();
           console.log(
             `Batch: ${offset} / ${numberOfExamples} | Batch time: ${
@@ -53,7 +97,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
       if (this.verbose) {
         if ((i + 1) % this.verboseStep === 0) {
           const endTime = new Date().getTime();
-          const currentResult = this.cost(inputDataset.data, outputDataset.data);
+          const currentResult = this.cost(inputDataset, outputDataset);
 
           console.log(
             `Iteration: ${i + 1} | Cost: ${round(currentResult.cost, 5)} | Accuracy: ${

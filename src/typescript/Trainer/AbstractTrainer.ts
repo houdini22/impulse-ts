@@ -1,8 +1,6 @@
 import { Network } from "../Network";
 import { AbstractOptimizer } from "./Optimizer/AbstractOptimizer";
 import { Dataset } from "../Dataset";
-import { Matrix } from "../Math/Matrix";
-import { getComputation } from "../Computation";
 
 export interface CostResult {
   cost: number;
@@ -60,8 +58,8 @@ export abstract class AbstractTrainer {
     return this;
   }
 
-  cost(X: Matrix, Y: Matrix): CostResult {
-    const numberOfExamples = X.cols;
+  cost(inputDataset: Dataset, outputDataset: Dataset): CostResult {
+    const numberOfExamples = inputDataset.getNumberOfExamples();
 
     let accuracy = 0;
     let penalty = 0;
@@ -70,15 +68,15 @@ export abstract class AbstractTrainer {
       penalty += layer.penalty();
     });
 
-    const predictions = this.network.forward(X);
-    const correctOutput = Y;
+    const predictions = this.network.forward(inputDataset.data);
+    const correctOutput = outputDataset.data;
 
     /*const error = Y.multiply(predictions.log())
       .add(Y.minusOne().multiply(predictions.minusOne().log()))
       .multiply(-1)
       .sum();*/
-    const error = Y.multiply(predictions.log()).sum();
-    const cost = (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * X.cols));
+    const error = correctOutput.multiply(predictions.log()).sum();
+    const cost = (-1 / numberOfExamples) * error + this.regularization / (penalty * (2 * inputDataset.data.cols));
 
     for (let col = 0; col < predictions.cols; col += 1) {
       const index1 = predictions.colMaxCoeffIndex(col);

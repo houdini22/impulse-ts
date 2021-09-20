@@ -1108,7 +1108,7 @@ var AbstractDatasetModifier = function AbstractDatasetModifier(dataset) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CallbackDatabaseModifier": () => (/* binding */ CallbackDatabaseModifier)
+/* harmony export */   "CallbackDatasetModifier": () => (/* binding */ CallbackDatasetModifier)
 /* harmony export */ });
 /* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1136,15 +1136,15 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(CallbackDatabaseModifier, _AbstractDatasetModif);
+var CallbackDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(CallbackDatasetModifier, _AbstractDatasetModif);
 
-  var _super = _createSuper(CallbackDatabaseModifier);
+  var _super = _createSuper(CallbackDatasetModifier);
 
-  function CallbackDatabaseModifier() {
+  function CallbackDatasetModifier() {
     var _this;
 
-    _classCallCheck(this, CallbackDatabaseModifier);
+    _classCallCheck(this, CallbackDatasetModifier);
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -1159,7 +1159,7 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
     return _this;
   }
 
-  _createClass(CallbackDatabaseModifier, [{
+  _createClass(CallbackDatasetModifier, [{
     key: "apply",
     value: function apply() {
       for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
@@ -1182,7 +1182,7 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
     }
   }]);
 
-  return CallbackDatabaseModifier;
+  return CallbackDatasetModifier;
 }(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
 
 /***/ }),
@@ -1195,7 +1195,7 @@ var CallbackDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* binding */ MinMaxScalingDatabaseModifier)
+/* harmony export */   "MinMaxScalingDatasetModifier": () => (/* binding */ MinMaxScalingDatasetModifier)
 /* harmony export */ });
 /* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1221,25 +1221,25 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(MinMaxScalingDatabaseModifier, _AbstractDatasetModif);
+var MinMaxScalingDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(MinMaxScalingDatasetModifier, _AbstractDatasetModif);
 
-  var _super = _createSuper(MinMaxScalingDatabaseModifier);
+  var _super = _createSuper(MinMaxScalingDatasetModifier);
 
-  function MinMaxScalingDatabaseModifier() {
-    _classCallCheck(this, MinMaxScalingDatabaseModifier);
+  function MinMaxScalingDatasetModifier() {
+    _classCallCheck(this, MinMaxScalingDatasetModifier);
 
     return _super.apply(this, arguments);
   }
 
-  _createClass(MinMaxScalingDatabaseModifier, [{
+  _createClass(MinMaxScalingDatasetModifier, [{
     key: "apply",
-    value: function apply() {
+    value: function apply(dataset) {
       var min = Infinity;
       var max = -Infinity;
 
-      for (var col = 0; col < this.dataset.getNumberOfExamples(); col += 1) {
-        var example = this.dataset.exampleAt(col);
+      for (var col = 0; col < dataset.getNumberOfExamples(); col += 1) {
+        var example = dataset.exampleAt(col);
 
         for (var row = 0; row < example.rows; row += 1) {
           if (min > example.data[row][0]) {
@@ -1252,19 +1252,19 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
         }
       }
 
-      for (var _col = 0; _col < this.dataset.getNumberOfExamples(); _col += 1) {
-        var _example = this.dataset.exampleAt(_col);
+      for (var _col = 0; _col < dataset.getNumberOfExamples(); _col += 1) {
+        var _example = dataset.exampleAt(_col);
 
         for (var _row = 0; _row < _example.rows; _row += 1) {
-          this.dataset.data.data[_row][_col] = (_example.data[_row][0] - min) / (max - min);
+          dataset.data.data[_row][_col] = (_example.data[_row][0] - min) / (max - min);
         }
       }
 
-      return this.dataset;
+      return dataset;
     }
   }]);
 
-  return MinMaxScalingDatabaseModifier;
+  return MinMaxScalingDatasetModifier;
 }(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
 
 /***/ }),
@@ -1277,7 +1277,7 @@ var MinMaxScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* binding */ MissingDataScalingDatabaseModifier)
+/* harmony export */   "MissingDataScalingDatasetModifier": () => (/* binding */ MissingDataScalingDatasetModifier)
 /* harmony export */ });
 /* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1305,15 +1305,15 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(MissingDataScalingDatabaseModifier, _AbstractDatasetModif);
+var MissingDataScalingDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(MissingDataScalingDatasetModifier, _AbstractDatasetModif);
 
-  var _super = _createSuper(MissingDataScalingDatabaseModifier);
+  var _super = _createSuper(MissingDataScalingDatasetModifier);
 
-  function MissingDataScalingDatabaseModifier() {
+  function MissingDataScalingDatasetModifier() {
     var _this;
 
-    _classCallCheck(this, MissingDataScalingDatabaseModifier);
+    _classCallCheck(this, MissingDataScalingDatasetModifier);
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -1326,20 +1326,18 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
     return _this;
   }
 
-  _createClass(MissingDataScalingDatabaseModifier, [{
+  _createClass(MissingDataScalingDatasetModifier, [{
     key: "apply",
-    value: function apply() {
-      var _this2 = this;
-
+    value: function apply(dataset) {
       var rowsToFill = [];
       var correctExamplesCount = 0;
       var sum = 0;
       var valueToFill = 0;
 
-      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
-        var example = this.dataset.exampleAt(exampleIndex);
+      for (var exampleIndex = 0; exampleIndex < dataset.getNumberOfExamples(); exampleIndex += 1) {
+        var example = dataset.exampleAt(exampleIndex);
 
-        for (var row = 0; row < this.dataset.getExampleSize(); row += 1) {
+        for (var row = 0; row < dataset.getExampleSize(); row += 1) {
           if (isNaN(example.data[row][0]) || typeof example.data[row][0] === "undefined") {
             rowsToFill.push({
               row: row,
@@ -1359,12 +1357,9 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
       rowsToFill.forEach(function (_ref) {
         var row = _ref.row,
             col = _ref.col;
-
-        if (_this2.dataset && _this2.dataset.data && _this2.dataset.data.data) {
-          _this2.dataset.data.data[row][col] = valueToFill;
-        }
+        dataset.data.data[row][col] = valueToFill;
       });
-      return this.dataset;
+      return dataset;
     }
   }, {
     key: "setModificationType",
@@ -1374,7 +1369,88 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
     }
   }]);
 
-  return MissingDataScalingDatabaseModifier;
+  return MissingDataScalingDatasetModifier;
+}(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
+
+/***/ }),
+
+/***/ "./src/typescript/Dataset/DatasetModifier/Shuffle.ts":
+/*!***********************************************************!*\
+  !*** ./src/typescript/Dataset/DatasetModifier/Shuffle.ts ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ShuffleDatasetModifier": () => (/* binding */ ShuffleDatasetModifier)
+/* harmony export */ });
+/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
+/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Dataset */ "./src/typescript/Dataset/Dataset.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var ShuffleDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
+  _inherits(ShuffleDatasetModifier, _AbstractDatasetModif);
+
+  var _super = _createSuper(ShuffleDatasetModifier);
+
+  function ShuffleDatasetModifier(dataset) {
+    var _this;
+
+    _classCallCheck(this, ShuffleDatasetModifier);
+
+    _this = _super.call(this, dataset);
+
+    _defineProperty(_assertThisInitialized(_this), "sortList", []);
+
+    return _this;
+  }
+
+  _createClass(ShuffleDatasetModifier, [{
+    key: "apply",
+    value: function apply(dataset) {
+      var _this2 = this;
+
+      var index = 0;
+      var data = _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix.from(dataset.data.transpose().data.sort(function (exampleA, exampleB) {
+        if (typeof _this2.sortList[index] === "undefined") {
+          // first run
+          _this2.sortList[index] = Math.random() - 0.5;
+        }
+
+        index += 1;
+        return _this2.sortList[index - 1];
+      })).transpose().data;
+      return new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(dataset.getExampleSize(), dataset.getNumberOfExamples(), data);
+    }
+  }]);
+
+  return ShuffleDatasetModifier;
 }(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
 
 /***/ }),
@@ -1387,13 +1463,16 @@ var MissingDataScalingDatabaseModifier = /*#__PURE__*/function (_AbstractDataset
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CallbackDatabaseModifier": () => (/* reexport safe */ _Callback__WEBPACK_IMPORTED_MODULE_0__.CallbackDatabaseModifier),
-/* harmony export */   "MissingDataScalingDatabaseModifier": () => (/* reexport safe */ _MissingData__WEBPACK_IMPORTED_MODULE_2__.MissingDataScalingDatabaseModifier),
-/* harmony export */   "MinMaxScalingDatabaseModifier": () => (/* reexport safe */ _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__.MinMaxScalingDatabaseModifier)
+/* harmony export */   "CallbackDatasetModifier": () => (/* reexport safe */ _Callback__WEBPACK_IMPORTED_MODULE_0__.CallbackDatasetModifier),
+/* harmony export */   "MinMaxScalingDatasetModifier": () => (/* reexport safe */ _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__.MinMaxScalingDatasetModifier),
+/* harmony export */   "MissingDataScalingDatasetModifier": () => (/* reexport safe */ _MissingData__WEBPACK_IMPORTED_MODULE_2__.MissingDataScalingDatasetModifier),
+/* harmony export */   "ShuffleDatasetModifier": () => (/* reexport safe */ _Shuffle__WEBPACK_IMPORTED_MODULE_3__.ShuffleDatasetModifier)
 /* harmony export */ });
 /* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/Dataset/DatasetModifier/Callback.ts");
 /* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts");
 /* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/Dataset/DatasetModifier/MissingData.ts");
+/* harmony import */ var _Shuffle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Shuffle */ "./src/typescript/Dataset/DatasetModifier/Shuffle.ts");
+
 
 
 
@@ -2904,6 +2983,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Math_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Math/math */ "./src/typescript/Math/math.ts");
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _AbstractLayer3D__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbstractLayer3D */ "./src/typescript/Layer/AbstractLayer3D.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2927,6 +3007,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -3066,7 +3147,7 @@ var ConvLayer = /*#__PURE__*/function (_AbstractLayer3D) {
   }, {
     key: "derivative",
     value: function derivative(delta) {
-      return delta;
+      return (0,_Computation__WEBPACK_IMPORTED_MODULE_4__.getComputation)().execute("reluBackpropagation", delta, this.A);
     }
   }]);
 
@@ -3087,8 +3168,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Conv */ "./src/typescript/Layer/Conv.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Math_math__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Math/math */ "./src/typescript/Math/math.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3114,8 +3193,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
-
 var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
   _inherits(FullyConnectedLayer, _ConvLayer);
 
@@ -3128,34 +3205,6 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
   }
 
   _createClass(FullyConnectedLayer, [{
-    key: "configure",
-    value: function configure() {
-      this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
-      this.W = this.W.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
-      this.b.resize(this.numFilters, 1);
-      this.b = this.b.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
-    }
-  }, {
-    key: "forward",
-    value: function forward(input) {
-      var result = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols).setZeros();
-
-      for (var i = 0; i < input.cols; i += 1) {
-        var conv = (0,_Math_math__WEBPACK_IMPORTED_MODULE_3__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
-        var tmp = this.W.dot(conv.transpose()).add(this.b.replicate(1, conv.rows));
-        result.setCol(i, tmp.rollToColMatrix());
-      }
-
-      this.Z = result;
-      this.A = this.activation(this.Z);
-      return this.A;
-    }
-  }, {
-    key: "activation",
-    value: function activation(m) {
-      return m;
-    }
-  }, {
     key: "transition",
     value: function transition(previousLayer) {
       if (previousLayer.is3D()) {
@@ -3215,11 +3264,6 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
     key: "setNumFilters",
     value: function setNumFilters(value) {
       return this;
-    }
-  }, {
-    key: "derivative",
-    value: function derivative(delta) {
-      return delta;
     }
   }]);
 
@@ -5822,22 +5866,22 @@ var AbstractTrainer = /*#__PURE__*/function () {
     }
   }, {
     key: "cost",
-    value: function cost(X, Y) {
-      var numberOfExamples = X.cols;
+    value: function cost(inputDataset, outputDataset) {
+      var numberOfExamples = inputDataset.getNumberOfExamples();
       var accuracy = 0;
       var penalty = 0;
       this.network.getLayers().forEach(function (layer) {
         penalty += layer.penalty();
       });
-      var predictions = this.network.forward(X);
-      var correctOutput = Y;
+      var predictions = this.network.forward(inputDataset.data);
+      var correctOutput = outputDataset.data;
       /*const error = Y.multiply(predictions.log())
         .add(Y.minusOne().multiply(predictions.minusOne().log()))
         .multiply(-1)
         .sum();*/
 
-      var error = Y.multiply(predictions.log()).sum();
-      var cost = -1 / numberOfExamples * error + this.regularization / (penalty * (2 * X.cols));
+      var error = correctOutput.multiply(predictions.log()).sum();
+      var cost = -1 / numberOfExamples * error + this.regularization / (penalty * (2 * inputDataset.data.cols));
 
       for (var col = 0; col < predictions.cols; col += 1) {
         var index1 = predictions.colMaxCoeffIndex(col);
@@ -5926,6 +5970,45 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
       return this;
     }
   }, {
+    key: "cost",
+    value: function cost(inputDataset, outputDataset) {
+      var batchSize = this.batchSize;
+      var numberOfExamples = inputDataset.getNumberOfExamples();
+      var numBatches = Math.ceil(numberOfExamples / batchSize);
+      var cost = 0.0;
+      var accuracy = 0.0; // calculate penalty
+
+      var penalty = 0.0;
+      this.network.getLayers().forEach(function (layer) {
+        penalty = layer.penalty();
+      });
+      var startTime = new Date().getTime();
+      var startIterationTime = new Date().getTime();
+
+      for (var batch = 0, offset = 0; batch < numberOfExamples; batch += this.batchSize, offset += this.batchSize) {
+        var startIterationTime2 = new Date().getTime();
+        var input = inputDataset.getBatch(offset, this.batchSize);
+        var correctOutput = outputDataset.getBatch(offset, this.batchSize);
+        var predictions = this.network.forward(input.data);
+        var error = correctOutput.data.multiply(predictions.log()).sum();
+        cost += -1 / numberOfExamples * error + this.regularization / (penalty * (2 * inputDataset.data.cols));
+
+        for (var col = 0; col < predictions.cols; col += 1) {
+          var index1 = predictions.colMaxCoeffIndex(col);
+          var index2 = correctOutput.data.colMaxCoeffIndex(col);
+
+          if (index1 === index2) {
+            accuracy++;
+          }
+        }
+      }
+
+      return {
+        cost: cost,
+        accuracy: accuracy / numberOfExamples * 100
+      };
+    }
+  }, {
     key: "train",
     value: function train(inputDataset, outputDataset) {
       var _this2 = this;
@@ -5951,7 +6034,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
           });
 
           if (this.verbose) {
-            var cost = this.cost(input.data, output.data);
+            var cost = this.cost(input, output);
             var endIterationTime = new Date().getTime();
             console.log("Batch: ".concat(offset, " / ").concat(numberOfExamples, " | Batch time: ").concat(endIterationTime - startIterationTime2, "ms | Time from start: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)((endIterationTime - startIterationTime) / 1000, 1), "s. | Cost: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(cost.cost, 2), " | Acc: ").concat(cost.accuracy));
           }
@@ -5960,7 +6043,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
         if (this.verbose) {
           if ((i + 1) % this.verboseStep === 0) {
             var endTime = new Date().getTime();
-            var currentResult = this.cost(inputDataset.data, outputDataset.data);
+            var currentResult = this.cost(inputDataset, outputDataset);
             console.log("Iteration: ".concat(i + 1, " | Cost: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(currentResult.cost, 5), " | Accuracy: ").concat(currentResult.accuracy, "% | Time: ").concat((endTime - startTime) / 1000, " s."));
           }
         }
@@ -6625,7 +6708,7 @@ var Trainer = /*#__PURE__*/function (_AbstractTrainer) {
 
         if (this.verbose) {
           if ((i + 1) % this.verboseStep === 0) {
-            var currentResult = this.cost(inputDataset.data, outputDataset.data);
+            var currentResult = this.cost(inputDataset, outputDataset);
             var endTime = new Date().getTime();
             console.log("Iteration: ".concat(i + 1, " | Cost: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(currentResult.cost, 5), " | Accuracy: ").concat((0,_Math_math__WEBPACK_IMPORTED_MODULE_1__.round)(currentResult.accuracy, 2), "% | Time: ").concat((endTime - startTime) / 1000, " s."));
           }
@@ -6871,9 +6954,10 @@ var Trainer = {
   RNNTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.RNNTrainer
 };
 var DatasetModifier = {
-  CallbackDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.CallbackDatabaseModifier,
-  MinMaxScalingDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MinMaxScalingDatabaseModifier,
-  MissingDataScalingDatabaseModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MissingDataScalingDatabaseModifier
+  CallbackDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.CallbackDatasetModifier,
+  MinMaxScalingDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MinMaxScalingDatasetModifier,
+  MissingDataScalingDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MissingDataScalingDatasetModifier,
+  ShuffleDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.ShuffleDatasetModifier
 };
 var Computation = {
   ComputationCPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationCPU,

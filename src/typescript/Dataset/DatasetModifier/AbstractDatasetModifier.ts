@@ -7,5 +7,5 @@ export abstract class AbstractDatasetModifier {
     this.dataset = dataset;
   }
 
-  abstract apply(): Dataset;
+  abstract apply(dataset: Dataset): Dataset;
 }

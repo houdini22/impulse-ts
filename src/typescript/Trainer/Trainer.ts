@@ -25,7 +25,7 @@ export class Trainer extends AbstractTrainer {
 
       if (this.verbose) {
         if ((i + 1) % this.verboseStep === 0) {
-          const currentResult = this.cost(inputDataset.data, outputDataset.data);
+          const currentResult = this.cost(inputDataset, outputDataset);
           const endTime = new Date().getTime();
 
           console.log(

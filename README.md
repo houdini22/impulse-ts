@@ -15,8 +15,9 @@ OptimizerRMSProp
 
 ### Supported dataset modifiers:
 ```
-MissingDataScalingDatabaseModifier
-MinMaxScalingDatabaseModifier
+MinMaxScalingDatasetModifier
+MissingDataScalingDatasetModifier
+ShuffleDatasetModifier
 ```
 
 ### Supported network builders:
@@ -39,6 +40,7 @@ ReluLayer
 ### Supported trainers:
 ```
 Trainer
+MiniBatchTrainer
 ```
 
 ### Supported Networks
@@ -95,9 +97,9 @@ const {
         Trainer
     },
     DatasetModifier: {
-        CallbackDatabaseModifier,
-        MinMaxScalingDatabaseModifier,
-        MissingDataScalingDatabaseModifier,
+        MinMaxScalingDatasetModifier,
+        MissingDataScalingDatasetModifier,
+        ShuffleDatasetModifier,
     },
     Computation: {
         ComputationCPU,

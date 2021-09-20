@@ -2,6 +2,7 @@ import { Matrix } from "../Math/Matrix";
 import { im2col } from "../Math/math";
 import { Layers, LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
+import { getComputation } from "../Computation";
 
 export class ConvLayer extends AbstractLayer3D {
   protected numFilters = 32;
@@ -121,7 +122,7 @@ export class ConvLayer extends AbstractLayer3D {
     return LayerType.conv;
   }
 
-  derivative(delta: Matrix): Matrix {
-    return delta;
+  derivative(delta: Matrix) {
+    return getComputation().execute("reluBackpropagation", delta, this.A) as Matrix;
   }
 }

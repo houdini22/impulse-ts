@@ -22,9 +22,10 @@ import {
 } from "./Trainer/Optimizer";
 import { MiniBatchTrainer, Trainer as TrainerTrainer, RNNTrainer } from "./Trainer";
 import {
-  CallbackDatabaseModifier,
-  MinMaxScalingDatabaseModifier,
-  MissingDataScalingDatabaseModifier,
+  CallbackDatasetModifier,
+  MinMaxScalingDatasetModifier,
+  MissingDataScalingDatasetModifier,
+  ShuffleDatasetModifier,
 } from "./Dataset/DatasetModifier";
 import { ComputationCPU, ComputationGPU, setComputation, getComputation } from "./Computation";
 import { DatasetBuilderSourceCSV } from "./DatasetBuilder/DatasetBuilderSource";
@@ -63,9 +64,10 @@ const Trainer = {
   RNNTrainer,
 };
 const DatasetModifier = {
-  CallbackDatabaseModifier,
-  MinMaxScalingDatabaseModifier,
-  MissingDataScalingDatabaseModifier,
+  CallbackDatasetModifier,
+  MinMaxScalingDatasetModifier,
+  MissingDataScalingDatasetModifier,
+  ShuffleDatasetModifier,
 };
 const Computation = {
   ComputationCPU,

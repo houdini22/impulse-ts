@@ -1,5 +1,11 @@
-import { CallbackDatabaseModifier } from "./Callback";
-import { MinMaxScalingDatabaseModifier } from "./MinMaxScaling";
-import { MissingDataScalingDatabaseModifier } from "./MissingData";
+import { CallbackDatasetModifier } from "./Callback";
+import { MinMaxScalingDatasetModifier } from "./MinMaxScaling";
+import { MissingDataScalingDatasetModifier } from "./MissingData";
+import { ShuffleDatasetModifier } from "./Shuffle";
 
-export { CallbackDatabaseModifier, MissingDataScalingDatabaseModifier, MinMaxScalingDatabaseModifier };
+export {
+  CallbackDatasetModifier,
+  MinMaxScalingDatasetModifier,
+  MissingDataScalingDatasetModifier,
+  ShuffleDatasetModifier,
+};
