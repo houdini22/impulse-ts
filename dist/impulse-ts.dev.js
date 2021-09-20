@@ -3087,6 +3087,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
 /* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Conv */ "./src/typescript/Layer/Conv.ts");
+/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
+/* harmony import */ var _Math_math__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Math/math */ "./src/typescript/Math/math.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3112,6 +3114,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
+
 var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
   _inherits(FullyConnectedLayer, _ConvLayer);
 
@@ -3125,7 +3129,31 @@ var FullyConnectedLayer = /*#__PURE__*/function (_ConvLayer) {
 
   _createClass(FullyConnectedLayer, [{
     key: "configure",
-    value: function configure() {// do nothing
+    value: function configure() {
+      this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
+      this.W = this.W.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
+      this.b.resize(this.numFilters, 1);
+      this.b = this.b.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
+    }
+  }, {
+    key: "forward",
+    value: function forward(input) {
+      var result = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols).setZeros();
+
+      for (var i = 0; i < input.cols; i += 1) {
+        var conv = (0,_Math_math__WEBPACK_IMPORTED_MODULE_3__.im2col)(input.col(i), this.depth, this.height, this.width, this.filterSize, this.filterSize, this.padding, this.padding, this.stride, this.stride);
+        var tmp = this.W.dot(conv.transpose()).add(this.b.replicate(1, conv.rows));
+        result.setCol(i, tmp.rollToColMatrix());
+      }
+
+      this.Z = result;
+      this.A = this.activation(this.Z);
+      return this.A;
+    }
+  }, {
+    key: "activation",
+    value: function activation(m) {
+      return m;
     }
   }, {
     key: "transition",
@@ -3582,7 +3610,7 @@ var MaxPoolLayer = /*#__PURE__*/function (_AbstractLayer3D) {
       }
 
       this.Z = result;
-      this.activation(this.Z);
+      this.A = this.activation(this.Z);
       return this.A;
     }
   }, {
@@ -4982,12 +5010,12 @@ __webpack_require__.r(__webpack_exports__);
 var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w) {
   var cols = kernel_w * kernel_h * channels;
   var rows = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
-  var currentResultCol = 0;
-  var result = new _Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(rows, cols);
+  var currentResultRow = 0;
+  var result = new _Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(rows, cols).setZeros();
 
   for (var boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
     for (var boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
-      var currentResultRow = 0;
+      var currentResultCol = 0;
 
       for (var channel = 0; channel < channels; channel++) {
         var inputOffset = height * width * channel;
@@ -4998,12 +5026,12 @@ var im2col = function im2col(input, channels, height, width, kernel_h, kernel_w,
               result.data[currentResultRow][currentResultCol] = input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
             }
 
-            currentResultRow++;
+            currentResultCol++;
           }
         }
       }
 
-      currentResultCol++;
+      currentResultRow++;
     }
   }
 

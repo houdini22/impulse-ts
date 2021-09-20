@@ -64,7 +64,7 @@ class MaxPoolLayer extends AbstractLayer3D {
     }
 
     this.Z = result;
-    this.activation(this.Z);
+    this.A = this.activation(this.Z);
 
     return this.A;
   }

@@ -15,12 +15,12 @@ export const im2col = (
 ): Matrix => {
   const cols = kernel_w * kernel_h * channels;
   const rows = ((width - kernel_w + 2 * pad_w) / stride_w + 1) * ((height - kernel_h + 2 * pad_h) / stride_h + 1);
-  let currentResultCol = 0;
-  const result = new Matrix(rows, cols);
+  let currentResultRow = 0;
+  const result = new Matrix(rows, cols).setZeros();
 
   for (let boundingY = -pad_h; boundingY + kernel_h <= height + pad_h; boundingY += stride_h) {
     for (let boundingX = -pad_w; boundingX + kernel_w <= width + pad_w; boundingX += stride_w) {
-      let currentResultRow = 0;
+      let currentResultCol = 0;
       for (let channel = 0; channel < channels; channel++) {
         const inputOffset = height * width * channel;
         for (let y = 0; y < kernel_h; y++) {
@@ -29,11 +29,11 @@ export const im2col = (
               result.data[currentResultRow][currentResultCol] =
                 input.data[(y + boundingY) * width + boundingX + x + inputOffset][0];
             }
-            currentResultRow++;
+            currentResultCol++;
           }
         }
       }
-      currentResultCol++;
+      currentResultRow++;
     }
   }
   return result;

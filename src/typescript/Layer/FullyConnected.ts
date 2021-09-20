@@ -1,10 +1,49 @@
 import { Dimension, LayerType } from "../types";
 import { ConvLayer } from "./Conv";
 import { Matrix } from "../Math/Matrix";
+import { im2col } from "../Math/math";
 
 class FullyConnectedLayer extends ConvLayer {
   configure(): void {
-    // do nothing
+    this.W.resize(this.numFilters, this.filterSize * this.filterSize * this.depth);
+    this.W = this.W.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
+
+    this.b.resize(this.numFilters, 1);
+    this.b = this.b.setRandom(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth());
+  }
+
+  forward(input: Matrix): Matrix {
+    const result = new Matrix(
+      this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(),
+      input.cols
+    ).setZeros();
+
+    for (let i = 0; i < input.cols; i += 1) {
+      const conv = im2col(
+        input.col(i),
+        this.depth,
+        this.height,
+        this.width,
+        this.filterSize,
+        this.filterSize,
+        this.padding,
+        this.padding,
+        this.stride,
+        this.stride
+      );
+
+      const tmp = this.W.dot(conv.transpose()).add(this.b.replicate(1, conv.rows));
+      result.setCol(i, tmp.rollToColMatrix());
+    }
+
+    this.Z = result;
+    this.A = this.activation(this.Z);
+
+    return this.A;
+  }
+
+  activation(m: Matrix): Matrix {
+    return m;
   }
 
   transition(previousLayer: FullyConnectedLayer): FullyConnectedLayer {

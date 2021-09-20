@@ -3,6 +3,8 @@ const {
   Layer: { ConvLayer, FullyConnectedLayer, MaxPoolLayer, LogisticLayer, ReluLayer },
   DatasetBuilder: { DatasetBuilder },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
+  Trainer: { Trainer },
+  Optimizer: { OptimizerAdam },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -42,15 +44,20 @@ DatasetBuilder.fromSource(
   ).then(async (outputDataset) => {
     console.log("Loaded mnist_20x20_y.csv");
 
-    let timeStart = new Date().getTime();
+    const trainer = new Trainer(network, new OptimizerAdam());
+
     const result = network.forward(inputDataset.exampleAt(0));
     console.log("forward", result);
-    let timeEnd = new Date().getTime();
-    console.log(`${timeEnd - timeStart} ms`);
 
-    timeStart = new Date().getTime();
-    console.log("loss", network.loss(network.forward(inputDataset.data), outputDataset.data));
-    timeEnd = new Date().getTime();
-    console.log(`${timeEnd - timeStart} ms`);
+    console.log(trainer.cost(inputDataset.data, outputDataset.data));
+
+    trainer.setIterations(100);
+    trainer.setLearningRate(0.02);
+    trainer.setRegularization(0.7);
+    trainer.train(inputDataset, outputDataset);
+
+    await network.save(path.resolve(__dirname, "./data/mnist.json"));
+    console.log(trainer.cost(inputDataset.data, outputDataset.data));
+    console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
   });
 });

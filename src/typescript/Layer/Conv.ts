@@ -84,7 +84,10 @@ export class ConvLayer extends AbstractLayer3D {
   }
 
   forward(input: Matrix): Matrix {
-    const result = new Matrix(this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(), input.cols).setZeros();
+    const result = new Matrix(
+      this.getOutputWidth() * this.getOutputHeight() * this.getOutputDepth(),
+      input.cols
+    ).setZeros();
 
     for (let i = 0; i < input.cols; i += 1) {
       const conv = im2col(
@@ -100,14 +103,12 @@ export class ConvLayer extends AbstractLayer3D {
         this.stride
       );
 
-
       const tmp = this.W.dot(conv.transpose()).add(this.b.replicate(1, conv.rows));
       result.setCol(i, tmp.rollToColMatrix());
     }
 
     this.Z = result;
     this.A = this.activation(this.Z);
-
 
     return this.A;
   }
