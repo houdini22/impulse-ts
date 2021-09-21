@@ -1,6 +1,5 @@
-import { Dimension, Layers, LayersRNN } from "../types";
-import { Matrix, Matrix3D } from "../Math/Matrix";
-import * as fs from "fs";
+import { Dimension, LayersRNN } from "../types";
+import { Matrix } from "../Math/Matrix";
 import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
 
 export class NetworkRNN {
@@ -75,17 +74,17 @@ export class NetworkRNN {
       .join("");
   }
 
-  forward(X: Matrix, a0: Matrix, Y: Matrix): [number] {
+  forward(X: Matrix, Y: Matrix, a0: Matrix): [number] {
     const x = [null];
     const a = [a0];
     const yHat = [null];
     let loss = 0;
     for (let t = 1; t <= X.rows; t += 1) {
-      x[t] = new Matrix(this.dimensions[0], 1).setZeros();
+      x[t] = new Matrix(this.dimensions[1], this.dimensions[0]).setZeros();
       x[t].data[X.data[t - 1][0]][0] = 1;
-      const [_a, _yHat] = this.layers[0].forward(a[t - 1], x[t], Y);
+      const [_a, _yHat] = this.layers[0].forward(x[t], a[t - 1]);
       a[t] = _a;
-      yHat[t] = _yHat.setMin(1e-5);
+      yHat[t] = _yHat; //.setMin(1e-5);
       loss -= Math.log(yHat[t].data[Y.data[t][0]][0]);
     }
     this.layers[0].A = a;
@@ -99,29 +98,45 @@ export class NetworkRNN {
     const x = this.layers[0].X;
     const yHat = this.layers[0].Y;
 
-    this.layers[0].dWax = new Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
-    this.layers[0].dWaa = new Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
-    this.layers[0].dWya = new Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
-    this.layers[0].db = new Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
-    this.layers[0].dby = new Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
+    let _dWax = new Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
+    let _dWaa = new Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
+    let _dWya = new Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
+    let _db = new Matrix(this.layers[0].db.rows, this.layers[0].db.cols).setZeros();
+    let _dby = new Matrix(this.layers[0].dby.rows, this.layers[0].dby.cols).setZeros();
+    let _daNext = new Matrix(this.layers[0].daNext.rows, this.layers[0].daNext.rows).setZeros();
 
     for (let t = da.rows - 1; t >= 1; t -= 1) {
-      const dy = Matrix.from(yHat[t].data);
+      // loop over examples
+      const dy = new Matrix(this.getDimensions()[0], this.getDimensions()[0]).setZeros();
       dy.data[da.data[t - 1][0]][0] -= 1;
-      this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
+      const { dWax, dWya, dWaa, db, dby, daNext } = this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
+      _dWax = _dWax.add(dWax.replicate(1, _dWax.cols));
+      _dWaa = _dWaa.add(dWaa.replicate(1, _dWaa.cols));
+      _dWya = _dWya.add(dWya);
+      _db = _db.add(db);
+      _dby = _dby.add(dby);
+      _daNext = _daNext.add(daNext);
     }
+
+    // gradient clipping
+    this.layers[0].dWax = _dWax.setMin(-5).setMax(5);
+    this.layers[0].dWaa = _dWaa.setMin(-5).setMax(5);
+    this.layers[0].dWya = _dWya.setMin(-5).setMax(5);
+    this.layers[0].db = _dby.setMin(-5).setMax(5);
+    this.layers[0].dby = _dby.setMin(-5).setMax(5);
+    this.layers[0].daNext = _daNext.setMin(-5).setMax(5);
   }
 
   optimize(X: Matrix, Y: Matrix, aPrev: Matrix, learningRate: number): [number, Matrix] {
-    const [loss] = this.forward(X, aPrev, Y);
+    const [loss] = this.forward(X, Y, aPrev);
     this.backward(X);
 
     this.layers[0].Wax = this.layers[0].Wax.add(
       this.layers[0].dWax.replicate(1, this.getDimensions()[2]).multiply(-learningRate)
     );
     this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate));
-    this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
-    this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
+    //this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
+    //this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
     this.layers[0].by = this.layers[0].by.add(
       this.layers[0].dby.multiply(-learningRate).rowwiseSum().divide(this.layers[0].dby.cols).transpose()
     );

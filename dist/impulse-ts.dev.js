@@ -3739,15 +3739,15 @@ var PurelinLayer = /*#__PURE__*/function (_AbstractLayer1D) {
 
 /***/ }),
 
-/***/ "./src/typescript/Layer/RNN.ts":
-/*!*************************************!*\
-  !*** ./src/typescript/Layer/RNN.ts ***!
-  \*************************************/
+/***/ "./src/typescript/Layer/Recurrent.ts":
+/*!*******************************************!*\
+  !*** ./src/typescript/Layer/Recurrent.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "RNNLayer": () => (/* binding */ RNNLayer)
+/* harmony export */   "RecurrentLayer": () => (/* binding */ RecurrentLayer)
 /* harmony export */ });
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../types */ "./src/typescript/types.ts");
@@ -3779,15 +3779,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
-  _inherits(RNNLayer, _AbstractLayer);
+var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
+  _inherits(RecurrentLayer, _AbstractLayer);
 
-  var _super = _createSuper(RNNLayer);
+  var _super = _createSuper(RecurrentLayer);
 
-  function RNNLayer() {
+  function RecurrentLayer() {
     var _this;
 
-    _classCallCheck(this, RNNLayer);
+    _classCallCheck(this, RecurrentLayer);
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -3823,26 +3823,26 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
 
     _defineProperty(_assertThisInitialized(_this), "aNext", null);
 
-    _defineProperty(_assertThisInitialized(_this), "daNext", null);
+    _defineProperty(_assertThisInitialized(_this), "aPrev", null);
 
-    _defineProperty(_assertThisInitialized(_this), "dxt", null);
+    _defineProperty(_assertThisInitialized(_this), "daNext", null);
 
     return _this;
   }
 
-  _createClass(RNNLayer, [{
+  _createClass(RecurrentLayer, [{
     key: "configure",
     value: function configure() {
       this.Wax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
-      this.Wax = this.Wax.setRandom(1);
+      this.Wax = this.Wax.setRandom(2);
       this.Waa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
-      this.Waa = this.Waa.setRandom(1);
+      this.Waa = this.Waa.setRandom(2);
       this.Wya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
-      this.Wya = this.Wya.setRandom(1);
+      this.Wya = this.Wya.setRandom(2);
       this.b = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
-      this.b = this.b.setRandom(1);
+      this.b = this.b.setRandom(2);
       this.by = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
-      this.by = this.by.setRandom(1);
+      this.by = this.by.setRandom(2);
       this.dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
       this.dWax = this.dWax.setZeros();
       this.dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
@@ -3853,34 +3853,41 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
       this.db = this.db.setZeros();
       this.dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
       this.dby = this.dby.setZeros();
+      this.daNext = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
+      this.daNext = this.daNext.setZeros();
     }
   }, {
     key: "forward",
-    value: function forward(aPrev, x, Y) {
-      var aNext = this.Waa.dot(aPrev).replicate(1, this.getWidth()).add(this.Wax.dot(x.transpose().replicate(this.getHeight(), 1))).add(this.b.replicate(1, this.getWidth())).tanh();
-      var y = this.Wya.dot(aNext).add(this.by.replicate(1, this.getWidth())).softmax();
+    value: function forward(x, aPrev) {
+      var aNext = this.Wax.dot(x).add(this.Waa.dot(aPrev).replicate(1, this.getWidth())).add(this.b.replicate(1, x.cols)).tanh();
+      var y = this.Wya.dot(aNext).add(this.by.replicate(1, x.cols)).softmax();
       this.A.push(aNext);
       this.X.push(x);
       this.Y.push(y);
+      this.aPrev = aPrev;
       return [aNext, y];
     }
   }, {
     key: "backward",
     value: function backward(dy, x, a, aPrev) {
-      var da = this.Wya.transpose().dot(dy).add(this.daNext);
-      var dtanh = a.multiply(a).minusOne().multiply(da);
-      var dWax = dtanh.dot(x);
-      var dWaa = dtanh.dot(a.transpose());
-      var db = this.db.add(dtanh.colwiseSum().divide(dtanh.cols));
-      var dby = this.dby.replicate(1, this.getWidth()).add(dy);
-      var dWya = this.dWya.add(dy.dot(a.transpose()));
-      var daNext = this.Waa.transpose().dot(dtanh);
-      this.dWax = dWax.setMin(-5).setMax(5);
-      this.dWaa = dWaa.setMin(-5).setMax(5);
-      this.dWya = dWya.setMin(-5).setMax(5);
-      this.db = db.setMin(-5).setMax(5);
-      this.dby = dby.setMin(-5).setMax(5);
-      this.daNext = daNext.setMin(-5).setMax(5);
+      var dTanh = a.pow(2).minusOne().multiply(dy);
+      var dWax = dTanh.dot(x.transpose());
+      var dWaa = dTanh.dot(aPrev.transpose());
+      var db = this.db; //.add(dtanh.colwiseSum().divide(dtanh.cols)).setMin(-5).setMax(5);
+
+      var dby = this.dby; //.replicate(1, this.getWidth()).add(dy).setMin(-5).setMax(5);
+
+      var dWya = this.dWya; //.add(dy.dot(a.transpose())).setMin(-5).setMax(5);
+
+      var daNext = this.Waa.transpose().dot(dTanh);
+      return {
+        dWax: dWax,
+        dWya: dWya,
+        dWaa: dWaa,
+        db: db,
+        dby: dby,
+        daNext: daNext
+      };
     }
   }, {
     key: "activation",
@@ -3947,7 +3954,7 @@ var RNNLayer = /*#__PURE__*/function (_AbstractLayer) {
     }
   }]);
 
-  return RNNLayer;
+  return RecurrentLayer;
 }(_AbstractLayer__WEBPACK_IMPORTED_MODULE_2__.AbstractLayer);
 
 /***/ }),
@@ -4259,7 +4266,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ConvLayer": () => (/* reexport safe */ _Conv__WEBPACK_IMPORTED_MODULE_6__.ConvLayer),
 /* harmony export */   "FullyConnectedLayer": () => (/* reexport safe */ _FullyConnected__WEBPACK_IMPORTED_MODULE_7__.FullyConnectedLayer),
 /* harmony export */   "MaxPoolLayer": () => (/* reexport safe */ _MaxPool__WEBPACK_IMPORTED_MODULE_8__.MaxPoolLayer),
-/* harmony export */   "RNNLayer": () => (/* reexport safe */ _RNN__WEBPACK_IMPORTED_MODULE_9__.RNNLayer),
+/* harmony export */   "RecurrentLayer": () => (/* reexport safe */ _Recurrent__WEBPACK_IMPORTED_MODULE_9__.RecurrentLayer),
 /* harmony export */   "PurelinLayer": () => (/* reexport safe */ _Purelin__WEBPACK_IMPORTED_MODULE_10__.PurelinLayer),
 /* harmony export */   "LSTMLayer": () => (/* reexport safe */ _LSTM__WEBPACK_IMPORTED_MODULE_11__.LSTMLayer)
 /* harmony export */ });
@@ -4272,7 +4279,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Conv__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conv */ "./src/typescript/Layer/Conv.ts");
 /* harmony import */ var _FullyConnected__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FullyConnected */ "./src/typescript/Layer/FullyConnected.ts");
 /* harmony import */ var _MaxPool__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MaxPool */ "./src/typescript/Layer/MaxPool.ts");
-/* harmony import */ var _RNN__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./RNN */ "./src/typescript/Layer/RNN.ts");
+/* harmony import */ var _Recurrent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Recurrent */ "./src/typescript/Layer/Recurrent.ts");
 /* harmony import */ var _Purelin__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Purelin */ "./src/typescript/Layer/Purelin.ts");
 /* harmony import */ var _LSTM__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./LSTM */ "./src/typescript/Layer/LSTM.ts");
 
@@ -4299,8 +4306,7 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Matrix": () => (/* binding */ Matrix),
-/* harmony export */   "Matrix3D": () => (/* binding */ Matrix3D)
+/* harmony export */   "Matrix": () => (/* binding */ Matrix)
 /* harmony export */ });
 /* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Computation */ "./src/typescript/Computation/index.ts");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4971,71 +4977,6 @@ var Matrix = /*#__PURE__*/function () {
 
   return Matrix;
 }();
-var Matrix3D = /*#__PURE__*/function () {
-  function Matrix3D() {
-    var rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var cols = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var depth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-
-    _classCallCheck(this, Matrix3D);
-
-    _defineProperty(this, "rows", 0);
-
-    _defineProperty(this, "cols", 0);
-
-    _defineProperty(this, "depth", 0);
-
-    _defineProperty(this, "data", null);
-
-    this.resize(rows, cols, depth);
-
-    if (data) {
-      this.data = data;
-    }
-  }
-
-  _createClass(Matrix3D, [{
-    key: "resize",
-    value: function resize(rows, cols, depth) {
-      this.rows = rows;
-      this.cols = cols;
-      this.depth = depth;
-      this.data = [];
-
-      for (var row = 0; row < this.rows; row += 1) {
-        this.data[row] = new Array(cols);
-
-        for (var col = 0; col < this.cols; col += 1) {
-          this.data[row][col] = new Array(depth);
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: "setZeros",
-    value: function setZeros() {
-      var data = [];
-
-      for (var row = 0; row < this.rows; row += 1) {
-        data[row] = new Array(this.cols);
-
-        for (var col = 0; col < this.cols; col += 1) {
-          data[row][col] = new Array(this.depth);
-
-          for (var depth = 0; depth < this.cols; depth += 1) {
-            data[row][col][depth] = 0;
-          }
-        }
-      }
-
-      return new Matrix3D(this.rows, this.cols, this.depth, data);
-    }
-  }]);
-
-  return Matrix3D;
-}();
 
 /***/ }),
 
@@ -5334,23 +5275,24 @@ var NetworkRNN = /*#__PURE__*/function () {
     }
   }, {
     key: "forward",
-    value: function forward(X, a0, Y) {
+    value: function forward(X, Y, a0) {
       var x = [null];
       var a = [a0];
       var yHat = [null];
       var loss = 0;
 
       for (var t = 1; t <= X.rows; t += 1) {
-        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[0], 1).setZeros();
+        x[t] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[1], this.dimensions[0]).setZeros();
         x[t].data[X.data[t - 1][0]][0] = 1;
 
-        var _this$layers$0$forwar = this.layers[0].forward(a[t - 1], x[t], Y),
+        var _this$layers$0$forwar = this.layers[0].forward(x[t], a[t - 1]),
             _this$layers$0$forwar2 = _slicedToArray(_this$layers$0$forwar, 2),
             _a = _this$layers$0$forwar2[0],
             _yHat = _this$layers$0$forwar2[1];
 
         a[t] = _a;
-        yHat[t] = _yHat.setMin(1e-5);
+        yHat[t] = _yHat; //.setMin(1e-5);
+
         loss -= Math.log(yHat[t].data[Y.data[t][0]][0]);
       }
 
@@ -5365,30 +5307,60 @@ var NetworkRNN = /*#__PURE__*/function () {
       var a = this.layers[0].A;
       var x = this.layers[0].X;
       var yHat = this.layers[0].Y;
-      this.layers[0].dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
-      this.layers[0].dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
-      this.layers[0].dWya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
-      this.layers[0].db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
-      this.layers[0].dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
+
+      var _dWax = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
+
+      var _dWaa = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
+
+      var _dWya = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
+
+      var _db = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].db.rows, this.layers[0].db.cols).setZeros();
+
+      var _dby = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].dby.rows, this.layers[0].dby.cols).setZeros();
+
+      var _daNext = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].daNext.rows, this.layers[0].daNext.rows).setZeros();
 
       for (var t = da.rows - 1; t >= 1; t -= 1) {
-        var dy = _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(yHat[t].data);
+        // loop over examples
+        var dy = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDimensions()[0], this.getDimensions()[0]).setZeros();
         dy.data[da.data[t - 1][0]][0] -= 1;
-        this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
-      }
+
+        var _this$layers$0$backwa = this.layers[0].backward(dy, x[t], a[t], a[t - 1]),
+            dWax = _this$layers$0$backwa.dWax,
+            dWya = _this$layers$0$backwa.dWya,
+            dWaa = _this$layers$0$backwa.dWaa,
+            db = _this$layers$0$backwa.db,
+            dby = _this$layers$0$backwa.dby,
+            daNext = _this$layers$0$backwa.daNext;
+
+        _dWax = _dWax.add(dWax.replicate(1, _dWax.cols));
+        _dWaa = _dWaa.add(dWaa.replicate(1, _dWaa.cols));
+        _dWya = _dWya.add(dWya);
+        _db = _db.add(db);
+        _dby = _dby.add(dby);
+        _daNext = _daNext.add(daNext);
+      } // gradient clipping
+
+
+      this.layers[0].dWax = _dWax.setMin(-5).setMax(5);
+      this.layers[0].dWaa = _dWaa.setMin(-5).setMax(5);
+      this.layers[0].dWya = _dWya.setMin(-5).setMax(5);
+      this.layers[0].db = _dby.setMin(-5).setMax(5);
+      this.layers[0].dby = _dby.setMin(-5).setMax(5);
+      this.layers[0].daNext = _daNext.setMin(-5).setMax(5);
     }
   }, {
     key: "optimize",
     value: function optimize(X, Y, aPrev, learningRate) {
-      var _this$forward = this.forward(X, aPrev, Y),
+      var _this$forward = this.forward(X, Y, aPrev),
           _this$forward2 = _slicedToArray(_this$forward, 1),
           loss = _this$forward2[0];
 
       this.backward(X);
       this.layers[0].Wax = this.layers[0].Wax.add(this.layers[0].dWax.replicate(1, this.getDimensions()[2]).multiply(-learningRate));
-      this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate));
-      this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
-      this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
+      this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate)); //this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
+      //this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
+
       this.layers[0].by = this.layers[0].by.add(this.layers[0].dby.multiply(-learningRate).rowwiseSum().divide(this.layers[0].dby.cols).transpose());
       return [loss, this.layers[0].A[X.rows - 1]];
     }
@@ -6600,7 +6572,7 @@ var RNNTrainer = /*#__PURE__*/function () {
 
     _defineProperty(this, "iterations", 1000);
 
-    _defineProperty(this, "learningRate", 0.001);
+    _defineProperty(this, "learningRate", 0.01);
 
     this.network = network;
   }
@@ -6609,7 +6581,6 @@ var RNNTrainer = /*#__PURE__*/function () {
     key: "train",
     value: function train(dataset) {
       var loss = this.network.loss(dataset.getVocabularySize(), 7);
-      var examples = dataset.getExamples();
 
       var _dataset$buildData = dataset.buildData(100),
           _dataset$buildData2 = _slicedToArray(_dataset$buildData, 2),
@@ -6621,12 +6592,12 @@ var RNNTrainer = /*#__PURE__*/function () {
           x = _dataset$vectorizatio2[0],
           y = _dataset$vectorizatio2[1];
 
-      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], 1).setZeros();
+      var aPrev = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
 
       for (var iteration = 0; iteration < this.iterations; iteration += 1) {
         var index = iteration % x.length;
 
-        var _this$network$forward = this.network.forward(x[index], aPrev, y),
+        var _this$network$forward = this.network.forward(x[index], y, aPrev),
             _this$network$forward2 = _slicedToArray(_this$network$forward, 1),
             _loss = _this$network$forward2[0];
 
@@ -6958,7 +6929,7 @@ var Layer = {
   ConvLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.ConvLayer,
   MaxPoolLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.MaxPoolLayer,
   FullyConnectedLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.FullyConnectedLayer,
-  RNNLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.RNNLayer
+  RecurrentLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.RecurrentLayer
 };
 var DatasetBuilder = {
   DatasetBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder,

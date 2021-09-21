@@ -5,7 +5,7 @@ import { FullyConnectedLayer } from "./Layer/";
 import { PurelinLayer } from "./Layer";
 import { AbstractLayer3D } from "./Layer/AbstractLayer3D";
 import { AbstractLayer1D } from "./Layer/AbstractLayer1D";
-import { RNNLayer } from "./Layer";
+import { RecurrentLayer } from "./Layer";
 import { LSTMLayer } from "./Layer";
 
 export type Dimension = [number] | [number, number, number];
@@ -37,5 +37,5 @@ export type Layers =
   | AbstractLayer1D;
 export type Layers1D = LogisticLayer | SoftmaxLayer | TanhLayer | ReluLayer | SoftplusLayer | PurelinLayer;
 export type Layers3D = ConvLayer | MaxPoolLayer | FullyConnectedLayer | AbstractLayer3D;
-export type LayersRNN = RNNLayer;
+export type LayersRNN = RecurrentLayer;
 export type LayersLSTM = LSTMLayer;

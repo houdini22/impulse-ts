@@ -13,15 +13,15 @@ export class RNNTrainer {
 
   train(dataset: DatasetVocabulary): [number] {
     let loss = this.network.loss(dataset.getVocabularySize(), 7);
-    const examples: string[] = dataset.getExamples();
 
     const [X, Y] = dataset.buildData(100);
     const [x, y] = dataset.vectorization(X, Y);
-    let aPrev = new Matrix(this.network.getDimensions()[0], 1).setZeros();
+
+    let aPrev = new Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
 
     for (let iteration = 0; iteration < this.iterations; iteration += 1) {
       const index = iteration % x.length;
-      const [_loss] = this.network.forward(x[index], aPrev, y);
+      const [_loss] = this.network.forward(x[index], y, aPrev);
       loss = _loss;
       const [currentLoss, _aPrev] = this.network.optimize(x[index], y, aPrev, this.learningRate);
       aPrev = _aPrev;

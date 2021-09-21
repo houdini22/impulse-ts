@@ -22,4 +22,4 @@ console.log("multiply", getComputation().execute("multiply", m1, m2));
 console.log("add", getComputation().execute("add", m1, m2));
 console.log("colwiseSum", m3.data, m3.colwiseSum());
 console.log("rowwiseSum", m3.data, m3.rowwiseSum());
-console.log('tanh', m4.data, m4.tanh());
+console.log("tanh", m4.data, m4.tanh());

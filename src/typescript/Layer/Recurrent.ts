@@ -1,8 +1,17 @@
 import { Matrix } from "../Math/Matrix";
-import { Dimension, Layers, LayerType } from "../types";
+import { Dimension, LayerType } from "../types";
 import { AbstractLayer } from "./AbstractLayer";
 
-export class RNNLayer extends AbstractLayer {
+export interface GradientResult {
+  dWax: Matrix;
+  dWya: Matrix;
+  dWaa: Matrix;
+  db: Matrix;
+  dby: Matrix;
+  daNext: Matrix;
+}
+
+export class RecurrentLayer extends AbstractLayer {
   public Wax: Matrix | null = null;
   public Waa: Matrix | null = null;
   public Wya: Matrix | null = null;
@@ -17,24 +26,24 @@ export class RNNLayer extends AbstractLayer {
   public A: Matrix[] = [];
   public X: Matrix[] = [];
   public aNext: Matrix | null = null;
+  public aPrev: Matrix | null = null;
   public daNext: Matrix | null = null;
-  public dxt: Matrix | null = null;
 
   configure(): void {
     this.Wax = new Matrix(this.getWidth(), this.getHeight());
-    this.Wax = this.Wax.setRandom(1);
+    this.Wax = this.Wax.setRandom(2);
 
     this.Waa = new Matrix(this.getWidth(), this.getWidth());
-    this.Waa = this.Waa.setRandom(1);
+    this.Waa = this.Waa.setRandom(2);
 
     this.Wya = new Matrix(this.getDepth(), this.getWidth());
-    this.Wya = this.Wya.setRandom(1);
+    this.Wya = this.Wya.setRandom(2);
 
     this.b = new Matrix(this.getWidth(), 1);
-    this.b = this.b.setRandom(1);
+    this.b = this.b.setRandom(2);
 
     this.by = new Matrix(this.getDepth(), 1);
-    this.by = this.by.setRandom(1);
+    this.by = this.by.setRandom(2);
 
     this.dWax = new Matrix(this.getWidth(), this.getHeight());
     this.dWax = this.dWax.setZeros();
@@ -50,37 +59,42 @@ export class RNNLayer extends AbstractLayer {
 
     this.dby = new Matrix(this.getDepth(), 1);
     this.dby = this.dby.setZeros();
+
+    this.daNext = new Matrix(this.getWidth(), this.getWidth());
+    this.daNext = this.daNext.setZeros();
   }
 
-  forward(aPrev: Matrix, x: Matrix, Y: Matrix): Matrix[] {
-    const aNext = this.Waa.dot(aPrev)
-      .replicate(1, this.getWidth())
-      .add(this.Wax.dot(x.transpose().replicate(this.getHeight(), 1)))
-      .add(this.b.replicate(1, this.getWidth()))
+  forward(x: Matrix, aPrev: Matrix): Matrix[] {
+    const aNext = this.Wax.dot(x)
+      .add(this.Waa.dot(aPrev).replicate(1, this.getWidth()))
+      .add(this.b.replicate(1, x.cols))
       .tanh();
-    const y = this.Wya.dot(aNext).add(this.by.replicate(1, this.getWidth())).softmax();
+    const y = this.Wya.dot(aNext).add(this.by.replicate(1, x.cols)).softmax();
     this.A.push(aNext);
     this.X.push(x);
     this.Y.push(y);
+    this.aPrev = aPrev;
     return [aNext, y];
   }
 
-  backward(dy: Matrix, x: Matrix, a: Matrix, aPrev: Matrix): void {
-    const da = this.Wya.transpose().dot(dy).add(this.daNext);
-    const dtanh = a.multiply(a).minusOne().multiply(da);
-    const dWax = dtanh.dot(x);
-    const dWaa = dtanh.dot(a.transpose());
-    const db = this.db.add(dtanh.colwiseSum().divide(dtanh.cols));
-    const dby = this.dby.replicate(1, this.getWidth()).add(dy);
-    const dWya = this.dWya.add(dy.dot(a.transpose()));
-    const daNext = this.Waa.transpose().dot(dtanh);
+  backward(dy: Matrix, x: Matrix, a: Matrix, aPrev: Matrix): GradientResult {
+    const dTanh = a.pow(2).minusOne().multiply(dy);
 
-    this.dWax = dWax.setMin(-5).setMax(5);
-    this.dWaa = dWaa.setMin(-5).setMax(5);
-    this.dWya = dWya.setMin(-5).setMax(5);
-    this.db = db.setMin(-5).setMax(5);
-    this.dby = dby.setMin(-5).setMax(5);
-    this.daNext = daNext.setMin(-5).setMax(5);
+    const dWax = dTanh.dot(x.transpose());
+    const dWaa = dTanh.dot(aPrev.transpose());
+    const db = this.db; //.add(dtanh.colwiseSum().divide(dtanh.cols)).setMin(-5).setMax(5);
+    const dby = this.dby; //.replicate(1, this.getWidth()).add(dy).setMin(-5).setMax(5);
+    const dWya = this.dWya; //.add(dy.dot(a.transpose())).setMin(-5).setMax(5);
+    const daNext = this.Waa.transpose().dot(dTanh);
+
+    return {
+      dWax,
+      dWya,
+      dWaa,
+      db,
+      dby,
+      daNext,
+    };
   }
 
   activation(m: Matrix): Matrix {
@@ -103,7 +117,7 @@ export class RNNLayer extends AbstractLayer {
     return false;
   }
 
-  setSize(value: Dimension): RNNLayer {
+  setSize(value: Dimension): RecurrentLayer {
     this.setWidth(value[0]);
     this.setHeight(value[1]);
     this.setDepth(value[2]);

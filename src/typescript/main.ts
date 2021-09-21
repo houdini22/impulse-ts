@@ -8,7 +8,7 @@ import {
   ConvLayer,
   FullyConnectedLayer,
   MaxPoolLayer,
-  RNNLayer,
+  RecurrentLayer,
 } from "./Layer";
 import { Matrix } from "./Math/Matrix";
 import { Dataset as DatasetDataset } from "./Dataset";
@@ -45,7 +45,7 @@ const Layer = {
   ConvLayer,
   MaxPoolLayer,
   FullyConnectedLayer,
-  RNNLayer,
+  RecurrentLayer,
 };
 const DatasetBuilder = {
   DatasetBuilder: DatasetBuilderBuilder,

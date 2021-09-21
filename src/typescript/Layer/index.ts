@@ -7,7 +7,7 @@ import { SoftplusLayer } from "./Softplus";
 import { ConvLayer } from "./Conv";
 import { FullyConnectedLayer } from "./FullyConnected";
 import { MaxPoolLayer } from "./MaxPool";
-import { RNNLayer } from "./RNN";
+import { RecurrentLayer } from "./Recurrent";
 import { PurelinLayer } from "./Purelin";
 import { LSTMLayer } from "./LSTM";
 
@@ -21,7 +21,7 @@ export {
   ConvLayer,
   FullyConnectedLayer,
   MaxPoolLayer,
-  RNNLayer,
+  RecurrentLayer,
   PurelinLayer,
   LSTMLayer,
 };
