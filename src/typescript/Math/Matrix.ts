@@ -328,6 +328,9 @@ export class Matrix {
       }
       return Matrix.from(data);
     } else {
+      if (num.rows !== this.rows || this.cols !== num.cols) {
+        throw new Error(`Dimension error: ${this.shape()} !== ${num.shape()}`);
+      }
       const data = [];
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];
@@ -362,13 +365,15 @@ export class Matrix {
     }
   }
 
-  forEach(cb: (num: number) => void): Matrix {
+  forEach(cb: (num: number) => number): Matrix {
+    const data = [];
     for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        cb(this.data[row][col]);
+        data[row][col] = cb(this.data[row][col]);
       }
     }
-    return this;
+    return Matrix.from(data);
   }
 
   shape(): number[] {

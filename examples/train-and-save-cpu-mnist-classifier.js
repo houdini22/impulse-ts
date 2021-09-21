@@ -42,7 +42,7 @@ DatasetBuilder.fromSource(
     const trainer2 = new MiniBatchTrainer(network, new OptimizerGradientDescent());
 
     const result = network.forward(inputDataset.exampleAt(0));
-    console.log("forward", result);
+    console.log("forward", result, outputDataset.exampleAt(0));
     let startTime = new Date().getTime();
     console.log(trainer.cost(inputDataset, outputDataset));
     let endTime = new Date().getTime();
@@ -54,10 +54,13 @@ DatasetBuilder.fromSource(
 
     trainer2.setBatchSize(100);
     trainer2.setIterations(100);
-    trainer2.setLearningRate(0.1);
-    trainer2.setRegularization(0.7);
+    trainer2.setLearningRate(0.02);
+    trainer2.setRegularization(0.1);
     trainer2.setStepCallback(() => {
-      console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
+      console.log(
+        network.forward(inputDataset.exampleAt(0)).colMaxCoeffIndex(0),
+        outputDataset.exampleAt(0).colMaxCoeffIndex(0)
+      );
     });
     trainer2.train(inputDataset, outputDataset);
 

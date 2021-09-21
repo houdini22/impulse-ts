@@ -1,6 +1,5 @@
-import { Dimension, Layers, LayersLSTM, LayersRNN } from "../types";
-import { Matrix, Matrix3D } from "../Math/Matrix";
-import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
+import { Dimension, Layers, LayersLSTM } from "../types";
+import { Matrix } from "../Math/Matrix";
 
 export class NetworkLSTM {
   private readonly dimensions: Dimension | null = null;
@@ -18,7 +17,7 @@ export class NetworkLSTM {
     return this;
   }
 
-  getLayers(): Layers[] {
+  getLayers(): LayersLSTM[] {
     return this.layers;
   }
 

@@ -13,34 +13,14 @@ DatasetVocabularyBuilder.fromSource(
 ).then(async (dataset) => {
   console.log("Vocabulary size: ", dataset.getVocabularySize());
   console.log("Chars size: ", dataset.getCharsLength());
-  const network = new NetworkRNN([14, 27, 20]);
-  const layer = new RNNLayer().setWidth(14).setHeight(27).setDepth(40);
+  const network = new NetworkRNN([100, dataset.getVocabularySize(), dataset.getVocabularySize()]);
+  const layer = new RNNLayer()
+    .setWidth(100)
+    .setHeight(dataset.getVocabularySize())
+    .setDepth(dataset.getVocabularySize());
   layer.configure();
   network.addLayer(layer);
-
   const trainer = new RNNTrainer(network).setIterations(35000);
-  //
-  console.log("Generating 1 sample...:\n");
-  console.log(network.sample(dataset).trim());
-  console.log(trainer.train(dataset));
-
-  /*const aPrev = new Matrix(100, 1)
-    .setRandom(1 / ((dataset.getVocabularySize() * dataset.getVocabularySize()) / 2))
-    .abs()
-    .setMax(dataset.getVocabularySize())
-    .setMin(0);
-  const _X = [12, 3, 5, 11, 22, 3];
-  const _Y = [4, 14, 11, 22, 25, 26];
-  const cols = 27;
-  const __X = [new Matrix(_X.length, cols).setZeros()];
-  const __Y = new Matrix(_Y.length, cols).setZeros();
-  _X.forEach((x, i) => {
-    __X[0].data[i][x] = 1;
-  });
-  _Y.forEach((y, i) => {
-    __Y.data[i][y] = 1;
-  });
-  //console.log(__X, __Y, aPrev);
-  const [loss, aLast] = network.optimize(__X, __Y, aPrev, 0.01);
-  console.log(loss);*/
+  //console.log(`Generated sample: ${network.sample(dataset)}`);
+  trainer.train(dataset);
 });

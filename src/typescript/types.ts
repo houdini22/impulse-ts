@@ -33,18 +33,9 @@ export type Layers =
   | MaxPoolLayer
   | FullyConnectedLayer
   | PurelinLayer
-  | AbstractLayer
-  | AbstractLayer1D
-  | AbstractLayer3D;
-export type Layers1D =
-  | LogisticLayer
-  | SoftmaxLayer
-  | TanhLayer
-  | ReluLayer
-  | SoftplusLayer
-  | PurelinLayer
-  | AbstractLayer
+  | AbstractLayer3D
   | AbstractLayer1D;
+export type Layers1D = LogisticLayer | SoftmaxLayer | TanhLayer | ReluLayer | SoftplusLayer | PurelinLayer;
 export type Layers3D = ConvLayer | MaxPoolLayer | FullyConnectedLayer | AbstractLayer3D;
 export type LayersRNN = RNNLayer;
 export type LayersLSTM = LSTMLayer;
