@@ -31,19 +31,19 @@ export class RecurrentLayer extends AbstractLayer {
 
   configure(): void {
     this.Wax = new Matrix(this.getWidth(), this.getHeight());
-    this.Wax = this.Wax.setRandom(2);
+    this.Wax = this.Wax.setRandom(this.getWidth());
 
     this.Waa = new Matrix(this.getWidth(), this.getWidth());
-    this.Waa = this.Waa.setRandom(2);
+    this.Waa = this.Waa.setRandom(this.getWidth());
 
     this.Wya = new Matrix(this.getDepth(), this.getWidth());
-    this.Wya = this.Wya.setRandom(2);
+    this.Wya = this.Wya.setRandom(this.getDepth());
 
     this.b = new Matrix(this.getWidth(), 1);
-    this.b = this.b.setRandom(2);
+    this.b = this.b.setRandom(this.getWidth());
 
     this.by = new Matrix(this.getDepth(), 1);
-    this.by = this.by.setRandom(2);
+    this.by = this.by.setRandom(this.getDepth());
 
     this.dWax = new Matrix(this.getWidth(), this.getHeight());
     this.dWax = this.dWax.setZeros();
