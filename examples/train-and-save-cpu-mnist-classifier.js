@@ -47,10 +47,6 @@ DatasetBuilder.fromSource(
     console.log(trainer.cost(inputDataset, outputDataset));
     let endTime = new Date().getTime();
     console.log(endTime - startTime);
-    startTime = new Date().getTime();
-    console.log(trainer2.cost(inputDataset, outputDataset));
-    endTime = new Date().getTime();
-    console.log(endTime - startTime);
 
     trainer2.setBatchSize(100);
     trainer2.setIterations(100);

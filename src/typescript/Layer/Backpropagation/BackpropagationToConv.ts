@@ -1,12 +1,12 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../Math/Matrix";
-import { Layers3D } from "../../types";
+import {Layers, Layers3D} from "../../types";
 import { getComputation } from "../../Computation/utils";
 
 export class BackpropagationToConv extends AbstractBackPropagation {
   protected previousLayer: Layers3D | null = null;
 
-  propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
+  propagate(input: Matrix, numberOfExamples: number, regularization: number, layer: Layers, sigma: Matrix): Matrix {
     const previousLayer = this.previousLayer;
 
     if (previousLayer) {

@@ -6,7 +6,7 @@ const {
   Trainer: { Trainer },
   Computation: { ComputationCPU, setComputation },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
-  DatasetModifier: { MissingDataScalingDatabaseModifier, MinMaxScalingDatabaseModifier },
+    DatasetModifier: { MinMaxScalingDatasetModifier, MissingDataScalingDatasetModifier, ShuffleDatasetModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 
@@ -33,14 +33,15 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
       async (outputDataset) => {
         console.log("Loaded iris_y.csv");
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
-        inputDataset = new MissingDataScalingDatabaseModifier(inputDataset).apply();
-        inputDataset = new MinMaxScalingDatabaseModifier(inputDataset).apply();
+        //inputDataset = new MissingDataScalingDatasetModifier(inputDataset).apply();
+        inputDataset = new MinMaxScalingDatasetModifier().apply(inputDataset);
+        outputDataset = new MinMaxScalingDatasetModifier().apply(outputDataset);
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
         const trainer = new Trainer(network, new OptimizerGradientDescent());
         trainer.setIterations(2000);
         trainer.setLearningRate(0.05);
         trainer.setRegularization(0.1);
-        console.log("cost", trainer.cost(inputDataset.data, outputDataset.data));
+        console.log("cost", trainer.cost(inputDataset, outputDataset));
         trainer.train(inputDataset, outputDataset);
         await network.save(path.resolve(__dirname, "./data/iris.json"));
         console.log("forward", network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
