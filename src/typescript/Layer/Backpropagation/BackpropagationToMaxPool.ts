@@ -1,12 +1,12 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../Math/Matrix";
-import { Layers3D } from "../../types";
+import {Layers, Layers3D} from "../../types";
 import { getComputation } from "../../Computation/utils";
 
 export class BackpropagationToMaxPool extends AbstractBackPropagation {
   protected previousLayer: Layers3D | null = null;
 
-  propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
+  propagate(input: Matrix, numberOfExamples: number, regularization: number, layer: Layers, sigma: Matrix): Matrix {
     const prevLayer = this.previousLayer;
     if (prevLayer) {
       const result = getComputation().execute("fillZeros", new Matrix(prevLayer.Z.rows, prevLayer.Z.cols)) as Matrix;

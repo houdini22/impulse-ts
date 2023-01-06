@@ -1,7 +1,5 @@
 import { AbstractOptimizer } from "./AbstractOptimizer";
 import { Layers } from "../../types";
-import { getComputation } from "../../Computation";
-import { Matrix } from "../../Math/Matrix";
 
 export class OptimizerAdam extends AbstractOptimizer {
   protected beta1 = 0.9;
@@ -25,16 +23,16 @@ export class OptimizerAdam extends AbstractOptimizer {
     layer.vW = layer.vW.multiply(this.beta1).add(layer.gW.multiply(1 - this.beta1));
     layer.vb = layer.vb.multiply(this.beta1).add(layer.gb.multiply(1 - this.beta1));
 
-    layer.sW = layer.sW.multiply(this.beta2).add(layer.gW.pow(2).multiply(1 - this.beta2));
-    layer.sb = layer.sb.multiply(this.beta2).add(layer.gb.pow(2).multiply(1 - this.beta2));
+    layer.sW = layer.sW.multiply(this.beta2).add(layer.sW.pow(2).multiply(1 - this.beta2));
+    layer.sb = layer.sb.multiply(this.beta2).add(layer.sb.pow(2).multiply(1 - this.beta2));
 
     const vWCorrected = layer.vW.divide(1 - Math.pow(this.beta1, 2));
     const vbCorrected = layer.vb.divide(1 - Math.pow(this.beta1, 2));
 
-    const sWcorrected = layer.sW.divide(1 - Math.pow(this.beta2, 2));
-    const sbCorrected = layer.sb.divide(1 - Math.pow(this.beta2, 2));
+    const sWCorrected = layer.sW.add(1e-8).sqrt();
+    const sbCorrected = layer.sb.add(1e-8).sqrt();
 
-    layer.W = layer.W.subtract(vWCorrected.multiply(learningRate).divide(sWcorrected.sqrt().add(1e-8)));
-    layer.b = layer.b.subtract(vbCorrected.multiply(learningRate).divide(sbCorrected.sqrt().add(1e-8)));
+    layer.W = layer.W.subtract(vWCorrected.divide(sWCorrected).multiply(learningRate));
+    layer.b = layer.b.subtract(vbCorrected.divide(sbCorrected).multiply(learningRate));
   }
 }

@@ -1,6 +1,6 @@
 const {
   Network: { NetworkRNN },
-  Layer: { RNNLayer },
+  Layer: { RecurrentLayer },
   Trainer: { RNNTrainer },
   Math: { Matrix },
   DatasetBuilder: { DatasetVocabularyBuilder },
@@ -13,34 +13,29 @@ DatasetVocabularyBuilder.fromSource(
 ).then(async (dataset) => {
   console.log("Vocabulary size: ", dataset.getVocabularySize());
   console.log("Chars size: ", dataset.getCharsLength());
-  const network = new NetworkRNN([14, 27, 20]);
-  const layer = new RNNLayer().setWidth(14).setHeight(27).setDepth(40);
+  const network = new NetworkRNN([100, dataset.getVocabularySize(), dataset.getVocabularySize()]);
+  const layer = new RecurrentLayer()
+    .setWidth(100)
+    .setHeight(dataset.getVocabularySize())
+    .setDepth(dataset.getVocabularySize());
   layer.configure();
+  /*const [aNext, y] = layer.forward(
+    new Matrix(3, 10).setRandom(),
+    new Matrix(5, 10).setRandom(),
+    new Matrix(5, 10).setRandom()
+  );
+  layer.backward(
+    new Matrix(5, 10).setRandom(),
+    layer.X[layer.X.length - 1],
+    layer.A[layer.A.length - 1],
+    layer.A[layer.A.length - 1]
+  );*/
   network.addLayer(layer);
 
+  const [X, Y] = dataset.buildData(100);
+  const [x, y] = dataset.vectorization(X, Y);
+  const [loss] = network.forward(x, y, new Matrix(100, 100).setZeros());
+  console.log(`Loss: ${loss}`);
   const trainer = new RNNTrainer(network).setIterations(35000);
-  //
-  console.log("Generating 1 sample...:\n");
-  console.log(network.sample(dataset).trim());
-  console.log(trainer.train(dataset));
-
-  /*const aPrev = new Matrix(100, 1)
-    .setRandom(1 / ((dataset.getVocabularySize() * dataset.getVocabularySize()) / 2))
-    .abs()
-    .setMax(dataset.getVocabularySize())
-    .setMin(0);
-  const _X = [12, 3, 5, 11, 22, 3];
-  const _Y = [4, 14, 11, 22, 25, 26];
-  const cols = 27;
-  const __X = [new Matrix(_X.length, cols).setZeros()];
-  const __Y = new Matrix(_Y.length, cols).setZeros();
-  _X.forEach((x, i) => {
-    __X[0].data[i][x] = 1;
-  });
-  _Y.forEach((y, i) => {
-    __Y.data[i][y] = 1;
-  });
-  //console.log(__X, __Y, aPrev);
-  const [loss, aLast] = network.optimize(__X, __Y, aPrev, 0.01);
-  console.log(loss);*/
+  trainer.train(dataset);
 });

@@ -12,7 +12,7 @@ const path = require("path");
 
 setComputation(new ComputationCPU());
 
-const builder = new NetworkBuilder1D([400]);
+const builder = new NetworkBuilder1D([20*20]);
 builder
   .createLayer(ReluLayer, (layer) => {
     layer.setSize(100);
@@ -33,36 +33,34 @@ DatasetBuilder.fromSource(
     console.log("Loaded mnist_20x20_y.csv");
 
     inputDataset = new MinMaxScalingDatasetModifier().apply(inputDataset);
-    inputDataset = new MissingDataScalingDatasetModifier().apply(inputDataset);
+    //inputDataset = new MissingDataScalingDatasetModifier().apply(inputDataset);
     const shuffle = new ShuffleDatasetModifier(inputDataset);
     inputDataset = shuffle.apply(inputDataset);
     outputDataset = shuffle.apply(outputDataset);
 
     const trainer = new Trainer(network, new OptimizerAdam());
-    const trainer2 = new MiniBatchTrainer(network, new OptimizerGradientDescent());
 
     const result = network.forward(inputDataset.exampleAt(0));
-    console.log("forward", result);
+    console.log("forward", result, outputDataset.exampleAt(0));
     let startTime = new Date().getTime();
     console.log(trainer.cost(inputDataset, outputDataset));
     let endTime = new Date().getTime();
     console.log(endTime - startTime);
-    startTime = new Date().getTime();
-    console.log(trainer2.cost(inputDataset, outputDataset));
-    endTime = new Date().getTime();
-    console.log(endTime - startTime);
 
-    trainer2.setBatchSize(100);
-    trainer2.setIterations(100);
-    trainer2.setLearningRate(0.1);
-    trainer2.setRegularization(0.7);
-    trainer2.setStepCallback(() => {
-      console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
-    });
-    trainer2.train(inputDataset, outputDataset);
+    //trainer.setBatchSize(200);
+    trainer.setIterations(250);
+    trainer.setLearningRate(0.0005);
+    trainer.setRegularization(0.1);
+    /*trainer.setStepCallback(() => {
+      console.log(
+        network.forward(inputDataset.exampleAt(0)).colMaxCoeffIndex(0),
+        outputDataset.exampleAt(0).colMaxCoeffIndex(0)
+      );
+    });*/
+    trainer.train(inputDataset, outputDataset);
 
-    await network.save(path.resolve(__dirname, "./data/mnist.json"));
-    console.log(trainer2.cost(inputDataset, outputDataset));
+    await network.save(path.resolve(__dirname, "./data/iris.json"));
+    console.log(trainer.cost(inputDataset, outputDataset));
     console.log(network.forward(inputDataset.exampleAt(0)), outputDataset.exampleAt(0));
   });
 });

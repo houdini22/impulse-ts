@@ -25,15 +25,15 @@ NetworkBuilder1D.fromJSON(path.resolve(__dirname, "./data/mnist.json")).then((ne
       console.log("forward", result);
       let timeEnd2 = new Date().getTime();
       console.log(`${timeEnd2 - timeStart} ms`);
-      const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
+      //const trainer = new MiniBatchTrainer(network, new OptimizerGradientDescent());
 
-      trainer.setIterations(10);
-      trainer.setLearningRate(0.001);
-      trainer.setBatchSize(100);
-      trainer.setRegularization(0.2);
-      trainer.train(inputDataset, outputDataset);
+      //trainer.setIterations(10);
+      //trainer.setLearningRate(0.001);
+      //trainer.setBatchSize(100);
+      //trainer.setRegularization(0.2);
+      //trainer.train(inputDataset, outputDataset);
 
-      await network.save(path.resolve(__dirname, "./data/mnist2.json"));
+      //await network.save(path.resolve(__dirname, "./data/mnist2.json"));
     });
   });
 });

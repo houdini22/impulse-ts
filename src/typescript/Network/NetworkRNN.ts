@@ -1,6 +1,5 @@
-import { Dimension, Layers, LayersRNN } from "../types";
-import { Matrix, Matrix3D } from "../Math/Matrix";
-import * as fs from "fs";
+import { Dimension, LayersRNN } from "../types";
+import { Matrix } from "../Math/Matrix";
 import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
 
 export class NetworkRNN {
@@ -19,7 +18,7 @@ export class NetworkRNN {
     return this;
   }
 
-  getLayers(): Layers[] {
+  getLayers(): LayersRNN[] {
     return this.layers;
   }
 
@@ -33,32 +32,39 @@ export class NetworkRNN {
     const Wya = this.layers[0].Wya;
     const by = this.layers[0].by;
     const b = this.layers[0].b;
-    const vocabularySize = dataset.getVocabularySize();
     const indices = [];
     const charIndices = dataset.getCharIndices();
     const newLineCharacter = charIndices["\n"];
     const chars = dataset.getChars();
 
-    let x = new Matrix(27, 1).setZeros();
-    let aPrev = new Matrix(100, 1).setZeros();
+    let x = new Matrix(this.dimensions[1], 1).setZeros();
+    let aPrev = new Matrix(this.dimensions[0], 1).setRandom(this.dimensions[1]);
 
     let idx = -1;
     let counter = 0;
 
     while (idx != newLineCharacter && counter != 50) {
-      const a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
+      const a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).setMin(1e-3).tanh();
       const z = Wya.dot(a).add(by);
       const y = z.softmax();
+
       idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
+      x = new Matrix(this.dimensions[1], 1).setZeros();
+      let maxIndex = y.colMaxCoeffIndex(0);
+      if (maxIndex === -1) {
+        maxIndex = Math.floor(Math.random() * this.dimensions[1]);
+        idx = charIndices[chars[maxIndex]];
+      }
+      x.data[maxIndex][0] = 1;
 
       indices.push(idx);
-
-      x = new Matrix(27, 1).setZeros();
-      x.data[y.colMaxCoeffIndex(0)][0] = 1;
-
       aPrev = a;
 
       counter += 1;
+    }
+
+    if (counter === 50) {
+      indices.push(newLineCharacter);
     }
 
     return indices
@@ -68,18 +74,18 @@ export class NetworkRNN {
       .join("");
   }
 
-  forward(X: Matrix, Y: Matrix, a0: Matrix, vocabularySize: number = 20): [number] {
+  forward(X: Matrix, Y: Matrix, a0: Matrix): [number] {
     const x = [null];
     const a = [a0];
     const yHat = [null];
     let loss = 0;
     for (let t = 1; t <= X.rows; t += 1) {
-      x[t] = new Matrix(27, 1).setZeros();
-      x[t].data[X.rowMaxCoeffIndex(t - 1)][0] = 1;
-      const [_a, _yHat] = this.layers[0].forward(a[t - 1], x[t]);
+      x[t] = new Matrix(this.dimensions[1], this.dimensions[0]).setZeros();
+      x[t].data[X.data[t - 1][0]][0] = 1;
+      const [_a, _yHat] = this.layers[0].forward(x[t], a[t - 1]);
       a[t] = _a;
-      yHat[t] = _yHat.setMin(1e-5);
-      loss -= Math.log(yHat[t].data[t - 1][0]);
+      yHat[t] = _yHat; //.setMin(1e-5);
+      loss += 0; // todo
     }
     this.layers[0].A = a;
     this.layers[0].X = x;
@@ -87,34 +93,59 @@ export class NetworkRNN {
     return [loss];
   }
 
-  backward(X: Matrix, Y: Matrix): void {
+  backward(X: Matrix): void {
     const a = this.layers[0].A;
     const x = this.layers[0].X;
     const yHat = this.layers[0].Y;
 
-    this.layers[0].dWax = new Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
-    this.layers[0].dWaa = new Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
-    this.layers[0].dWya = new Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
-    this.layers[0].db = new Matrix(this.layers[0].b.rows, this.layers[0].b.cols).setZeros();
-    this.layers[0].dby = new Matrix(this.layers[0].by.rows, this.layers[0].by.cols).setZeros();
+    let _dWax = new Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
+    let _dWaa = new Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
+    let _dWya = new Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
+    let _db = new Matrix(this.layers[0].db.rows, this.layers[0].db.cols).setZeros();
+    let _dby = new Matrix(this.layers[0].dby.rows, this.layers[0].dby.cols).setZeros();
+    let _daNext = new Matrix(this.layers[0].daNext.rows, this.layers[0].daNext.rows).setZeros();
 
     for (let t = X.rows - 1; t >= 1; t -= 1) {
-      const dy = Matrix.from(yHat[t].data);
-      this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
+      // loop over examples
+      const dy = Matrix.from(a[t].data);
+      dy.data[X.data[t - 1][0]][0] -= 1;
+      const { dWax, dWya, dWaa, db, dby, daNext } = this.layers[0].backward(dy, x[t], a[t], a[t - 1]);
+      _dWax = _dWax.add(dWax.replicate(1, _dWax.cols));
+      _dWaa = _dWaa.add(dWaa.replicate(1, _dWaa.cols));
+      _dWya = _dWya.add(dWya);
+      _db = _db.add(db);
+      _dby = _dby.add(dby);
+      _daNext = _daNext.add(daNext);
     }
+
+    // gradient clipping
+    this.layers[0].dWax = _dWax.setMin(-5).setMax(5);
+    this.layers[0].dWaa = _dWaa.setMin(-5).setMax(5);
+    this.layers[0].dWya = _dWya.setMin(-5).setMax(5);
+    this.layers[0].db = _dby.setMin(-5).setMax(5);
+    this.layers[0].dby = _dby.setMin(-5).setMax(5);
+    this.layers[0].daNext = _daNext.setMin(-5).setMax(5);
   }
 
   optimize(X: Matrix, Y: Matrix, aPrev: Matrix, learningRate: number): [number, Matrix] {
     const [loss] = this.forward(X, Y, aPrev);
-    this.backward(X, Y);
+    this.backward(X);
 
-    this.layers[0].Wax = this.layers[0].Wax.add(this.layers[0].dWax.multiply(-learningRate));
+    this.layers[0].Wax = this.layers[0].Wax.add(
+      this.layers[0].dWax.replicate(1, this.getDimensions()[2]).multiply(-learningRate)
+    );
     this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate));
     this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
-    this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
-    this.layers[0].by = this.layers[0].by.add(this.layers[0].dby.multiply(-learningRate));
+    //this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
+    //this.layers[0].by = this.layers[0].by.add(
+    //  this.layers[0].dby.multiply(-learningRate).rowwiseSum().divide(this.layers[0].dby.cols).transpose()
+    //);
 
     return [loss, this.layers[0].A[X.rows - 1]];
+  }
+
+  getDimensions(): Dimension {
+    return this.dimensions;
   }
 
   /*save(path: string): Promise<string> {

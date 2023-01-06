@@ -82,28 +82,18 @@ export class DatasetVocabulary {
   getExampleX(exampleIndex: number): Matrix {
     const example = this.getExamples()[exampleIndex];
     const data = [];
-    const indices = this.getCharIndices();
-    example.split("").forEach((ch, i) => {
-      data[i] = [];
-      for (let col = 0; col < this.vocabularySize; col += 1) {
-        data[i][col] = 0;
-      }
-      data[i][indices[ch]] = 1;
+    example.split("").forEach((ch, row) => {
+      data[row] = [this.getCharIndices()[ch]];
     });
-    return Matrix.from(data).transpose();
+    return Matrix.from(data);
   }
 
   getExampleY(exampleIndex: number): Matrix {
     const example = this.getExamples()[exampleIndex];
     const data = [];
-    const indices = this.getCharIndices();
-    example.split("").forEach((ch, i) => {
-      data[i] = [];
-      for (let col = 0; col < this.vocabularySize; col += 1) {
-        data[i][col] = 0;
-      }
-      data[i][indices[ch]] = 1;
+    example.split("").forEach((ch, row) => {
+      data[row] = [this.getCharIndices()[ch]];
     });
-    return Matrix.from(data).transpose();
+    return Matrix.from(data);
   }
 }

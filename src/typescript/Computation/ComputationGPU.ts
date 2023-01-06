@@ -1,9 +1,9 @@
 import { AbstractComputation } from "./AbstractComputation";
 import { Matrix } from "../Math/Matrix";
 
-import { GPU } from "gpu.js";
+/*import { GPU } from "gpu.js";*/
 
-export const gpu = new GPU({ mode: "gpu" });
+//export const gpu = new GPU({ mode: "gpu" });
 
 export const elementWiseDivide = (m1: Matrix, m2: Matrix): Matrix => {
   if (m1.rows !== m2.rows) {

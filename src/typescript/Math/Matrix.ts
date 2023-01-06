@@ -328,6 +328,9 @@ export class Matrix {
       }
       return Matrix.from(data);
     } else {
+      if (num.rows !== this.rows || this.cols !== num.cols) {
+        throw new Error(`Dimension error: ${this.shape()} !== ${num.shape()}`);
+      }
       const data = [];
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];
@@ -342,6 +345,9 @@ export class Matrix {
 
   subtract(m: Matrix | number): Matrix {
     if (m instanceof Matrix) {
+      if (this.rows !== m.rows || this.cols !== m.cols) {
+        throw new Error(`Dimensions error: ${this.rows}, ${this.cols} !== ${m.rows}, ${m.cols}`);
+      }
       const data = [];
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];
@@ -362,13 +368,15 @@ export class Matrix {
     }
   }
 
-  forEach(cb: (num: number) => void): Matrix {
+  forEach(cb: (num: number) => number): Matrix {
+    const data = [];
     for (let row = 0; row < this.rows; row += 1) {
+      data[row] = [];
       for (let col = 0; col < this.cols; col += 1) {
-        cb(this.data[row][col]);
+        data[row][col] = cb(this.data[row][col]);
       }
     }
-    return this;
+    return Matrix.from(data);
   }
 
   shape(): number[] {
@@ -494,48 +502,5 @@ export class Matrix {
 
   static from(arr: number[][]): Matrix {
     return new Matrix(arr.length, arr[0]?.length || 0, arr);
-  }
-}
-
-export class Matrix3D {
-  public rows = 0;
-  public cols = 0;
-  public depth = 0;
-  public data: number[][][] | null = null;
-
-  constructor(rows = 0, cols = 0, depth: number = 0, data: number[][][] | null = null) {
-    this.resize(rows, cols, depth);
-    if (data) {
-      this.data = data;
-    }
-  }
-
-  resize(rows: number, cols: number, depth: number): Matrix3D {
-    this.rows = rows;
-    this.cols = cols;
-    this.depth = depth;
-    this.data = [];
-    for (let row = 0; row < this.rows; row += 1) {
-      this.data[row] = new Array(cols);
-      for (let col = 0; col < this.cols; col += 1) {
-        this.data[row][col] = new Array(depth);
-      }
-    }
-
-    return this;
-  }
-
-  setZeros() {
-    const data = [];
-    for (let row = 0; row < this.rows; row += 1) {
-      data[row] = new Array(this.cols);
-      for (let col = 0; col < this.cols; col += 1) {
-        data[row][col] = new Array(this.depth);
-        for (let depth = 0; depth < this.cols; depth += 1) {
-          data[row][col][depth] = 0;
-        }
-      }
-    }
-    return new Matrix3D(this.rows, this.cols, this.depth, data);
   }
 }

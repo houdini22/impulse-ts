@@ -1,26 +1,20 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../Math/Matrix";
 import { getComputation } from "../../Computation";
+import {Layers} from "../../types";
 
 export class Backpropagation1Dto1D extends AbstractBackPropagation {
-  propagate(input: Matrix, numberOfExamples: number, regularization: number, sigma: Matrix): Matrix {
+  propagate(input: Matrix, numberOfExamples: number, regularization: number, layer: Layers, sigma: Matrix): Matrix {
     const previousActivations = this.previousLayer !== null ? this.previousLayer.A : input;
-    this.layer.gW = sigma.dot(previousActivations.transpose()).divide(numberOfExamples);
-    this.layer.gW = this.layer.gW.add(this.layer.W.multiply(regularization).divide(numberOfExamples));
+
+    const delta = sigma.dot(previousActivations.transpose());
+    this.layer.gW = delta.divide(numberOfExamples).add(layer.W.multiply(regularization / numberOfExamples));
     this.layer.gb = sigma.rowwiseSum().transpose().divide(numberOfExamples);
 
     if (this.previousLayer !== null) {
       // @ts-ignore
       const result = this.layer.W.transpose().dot(sigma);
       if (result.rows !== previousActivations.rows || result.cols !== previousActivations.cols) {
-        console.log(
-          this.layer.W.rows,
-          this.layer.W.cols,
-          sigma.rows,
-          sigma.cols,
-          this.layer.gW.rows,
-          this.layer.gW.cols
-        );
         throw new Error(
           `Dimension error 1. (${result.rows}, ${result.cols}) | (${previousActivations.rows}, ${previousActivations.cols})`
         );
