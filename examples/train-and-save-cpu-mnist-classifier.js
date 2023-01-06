@@ -48,7 +48,7 @@ DatasetBuilder.fromSource(
     let endTime = new Date().getTime();
     console.log(endTime - startTime);
 
-    trainer2.setBatchSize(100);
+    trainer2.setBatchSize(500);
     trainer2.setIterations(100);
     trainer2.setLearningRate(0.02);
     trainer2.setRegularization(0.1);
