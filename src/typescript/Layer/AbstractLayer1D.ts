@@ -43,7 +43,7 @@ abstract class AbstractLayer1D extends AbstractLayer {
     this.b = this.b.setRandom(this.previousLayer ? (this.previousLayer.getHeight() as number) : this.getHeight());
 
     this.gW.resize(this.getHeight(), this.getWidth());
-    this.gW = this.W.setZeros();
+    this.gW = this.gW.setZeros();
 
     this.gb.resize(this.getHeight(), 1);
     this.gb = this.gb.setZeros();

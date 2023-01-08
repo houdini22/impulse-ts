@@ -1,6 +1,6 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../Math/Matrix";
-import {Layers, Layers3D} from "../../types";
+import { Layers, Layers3D } from "../../types";
 import { getComputation } from "../../Computation/utils";
 
 export class BackpropagationToMaxPool extends AbstractBackPropagation {

@@ -15,7 +15,7 @@ export class Matrix {
   resize(rows: number, cols: number): Matrix {
     this.rows = rows;
     this.cols = cols;
-    this.data = [];
+    this.data = new Array(this.rows);
     for (let row = 0; row < this.rows; row += 1) {
       this.data[row] = new Array(this.cols);
     }
@@ -32,15 +32,14 @@ export class Matrix {
       for (let row = 0; row < this.rows; row += 1) {
         if (typeof arr[row] === "number") {
           data[row][col] = arr[row];
-        } else if (arr[row] instanceof Float32Array) {
-          data[row][col] = arr[row][col];
-        } else if (arr[row] && typeof arr[row][col] === "number") {
-          data[row][col] = arr[row][col];
         } else if (typeof arr[row][col] === "string") {
-          // @ts-ignore
-          data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
+          if (/^[-0-9.e]+$/.test(String(arr[row][col]))) {
+            data[row][col] = Number(arr[row][col]);
+          } else {
+            data[row][col] = arr[row][col];
+          }
         } else {
-          data[row][col] = NaN;
+          data[row][col] = arr[row][col];
         }
       }
     }
@@ -279,7 +278,7 @@ export class Matrix {
     return Matrix.from(data);
   }
 
-  setRandom(parameter: number = 1): Matrix {
+  setRandom(parameter = 1): Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = [];
@@ -290,7 +289,7 @@ export class Matrix {
     return Matrix.from(data);
   }
 
-  fraction(num: number = 1): Matrix {
+  fraction(num = 1): Matrix {
     const data = [];
     for (let row = 0; row < this.rows; row += 1) {
       data[row] = [];
@@ -322,7 +321,6 @@ export class Matrix {
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];
         for (let col = 0; col < this.cols; col += 1) {
-          // @ts-ignore
           data[row][col] = this.data[row][col] * num;
         }
       }
@@ -335,7 +333,6 @@ export class Matrix {
       for (let row = 0; row < this.rows; row += 1) {
         data[row] = [];
         for (let col = 0; col < this.cols; col += 1) {
-          // @ts-ignore
           data[row][col] = this.data[row][col] * num.data[row][col];
         }
       }
@@ -344,7 +341,16 @@ export class Matrix {
   }
 
   subtract(m: Matrix | number): Matrix {
-    if (m instanceof Matrix) {
+    if (typeof m === "number") {
+      const data = [];
+      for (let row = 0; row < this.rows; row += 1) {
+        data[row] = [];
+        for (let col = 0; col < this.cols; col += 1) {
+          data[row][col] = this.data[row][col] - m;
+        }
+      }
+      return Matrix.from(data);
+    } else {
       if (this.rows !== m.rows || this.cols !== m.cols) {
         throw new Error(`Dimensions error: ${this.rows}, ${this.cols} !== ${m.rows}, ${m.cols}`);
       }
@@ -353,15 +359,6 @@ export class Matrix {
         data[row] = [];
         for (let col = 0; col < this.cols; col += 1) {
           data[row][col] = this.data[row][col] - m.data[row][col];
-        }
-      }
-      return Matrix.from(data);
-    } else {
-      const data = [];
-      for (let row = 0; row < this.rows; row += 1) {
-        data[row] = [];
-        for (let col = 0; col < this.cols; col += 1) {
-          data[row][col] = this.data[row][col] - m;
         }
       }
       return Matrix.from(data);
@@ -498,6 +495,18 @@ export class Matrix {
       }
     }
     return Matrix.from(data);
+  }
+
+  value(row, col, value = undefined) {
+    if (value === undefined) {
+      return this.data[row][col];
+    }
+    this.data[row][col] = value;
+    return this;
+  }
+
+  copy() {
+    return Matrix.from(this.data);
   }
 
   static from(arr: number[][]): Matrix {

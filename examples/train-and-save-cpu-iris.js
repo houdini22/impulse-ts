@@ -1,13 +1,15 @@
 const {
   NetworkBuilder: { NetworkBuilder1D },
   Layer: { LogisticLayer, ReluLayer },
-  DatasetBuilder: { DatasetBuilder },
   Optimizer: { OptimizerGradientDescent, OptimizerMomentum },
   Trainer: { Trainer },
   Computation: { ComputationCPU, setComputation },
-  DatasetBuilderSource: { DatasetBuilderSourceCSV },
-    DatasetModifier: { MinMaxScalingDatasetModifier, MissingDataScalingDatasetModifier, ShuffleDatasetModifier },
 } = require("../dist/impulse-ts.dev");
+const {
+  DatasetBuilder: { DatasetBuilder },
+  DatasetBuilderSource: { DatasetBuilderSourceCSV },
+  DatasetModifier: { MinMaxScalingDatasetModifier, MissingDataScalingDatasetModifier, ShuffleDatasetModifier },
+} = require("impulse-dataset-ts");
 const path = require("path");
 
 setComputation(new ComputationCPU());
@@ -31,15 +33,11 @@ DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__d
     console.log("Loaded iris_x.csv");
     DatasetBuilder.fromSource(DatasetBuilderSourceCSV.fromLocalFile(path.resolve(__dirname, "./data/iris_y.csv"))).then(
       async (outputDataset) => {
-        console.log("Loaded iris_y.csv");
         console.log("forward", network.forward(inputDataset.exampleAt(0)));
-        //inputDataset = new MissingDataScalingDatasetModifier(inputDataset).apply();
         inputDataset = new MinMaxScalingDatasetModifier().apply(inputDataset);
-        outputDataset = new MinMaxScalingDatasetModifier().apply(outputDataset);
-        console.log("forward", network.forward(inputDataset.exampleAt(0)));
         const trainer = new Trainer(network, new OptimizerGradientDescent());
-        trainer.setIterations(2000);
-        trainer.setLearningRate(0.05);
+        trainer.setIterations(750);
+        trainer.setLearningRate(0.15);
         trainer.setRegularization(0.1);
         console.log("cost", trainer.cost(inputDataset, outputDataset));
         trainer.train(inputDataset, outputDataset);

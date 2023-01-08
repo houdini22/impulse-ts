@@ -121,7 +121,7 @@ export const reluBackpropagation = (sigma: Matrix, oldY: Matrix): Matrix => {
     data[row] = [];
     for (let col = 0; col < sigma.cols; col += 1) {
       if (sigma.data) {
-        data[row][col] = oldY.data[row][col] > 0 ? 1 : 0;
+        data[row][col] = oldY.data[row][col] >= 0 ? 1 : 0;
       }
     }
   }

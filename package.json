@@ -29,7 +29,8 @@
   },
   "license": "Copyright Michał Baniowski",
   "dependencies": {
-    "csvtojson": "^2.0.10"
+    "csvtojson": "^2.0.10",
+    "impulse-dataset-ts": "^0.0.2"
   },
   "main": "./dist/impulse-ts.js"
 }

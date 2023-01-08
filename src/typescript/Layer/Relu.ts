@@ -5,7 +5,7 @@ import { getComputation } from "../Computation";
 
 class ReluLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {
-    return m.setMax(0.0);
+    return m.setMin(0.0);
   }
 
   getType(): LayerType {

@@ -33,8 +33,9 @@ class Network {
     return output;
   }
 
-  backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
+  backward(X: Matrix, Y: Matrix, regularization: number): void {
     const m = X.cols;
+    const predictions = this.forward(X);
     //let sigma = Y.divide(predictions).multiply(-1).subtract(Y.minusOne().divide(predictions.minusOne()));
     let sigma = predictions.subtract(Y);
 

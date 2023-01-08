@@ -1,7 +1,6 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
 import { Matrix } from "../../Math/Matrix";
-import { getComputation } from "../../Computation";
-import {Layers} from "../../types";
+import { Layers } from "../../types";
 
 export class Backpropagation1Dto1D extends AbstractBackPropagation {
   propagate(input: Matrix, numberOfExamples: number, regularization: number, layer: Layers, sigma: Matrix): Matrix {

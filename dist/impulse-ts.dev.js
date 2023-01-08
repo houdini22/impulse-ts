@@ -201,7 +201,7 @@ var reluBackpropagation = function reluBackpropagation(sigma, oldY) {
     data[row] = [];
     for (var col = 0; col < sigma.cols; col += 1) {
       if (sigma.data) {
-        data[row][col] = oldY.data[row][col] > 0 ? 1 : 0;
+        data[row][col] = oldY.data[row][col] >= 0 ? 1 : 0;
       }
     }
   }
@@ -807,948 +807,6 @@ var getComputation = function getComputation() {
 
 /***/ }),
 
-/***/ "./src/typescript/Dataset/Dataset.ts":
-/*!*******************************************!*\
-  !*** ./src/typescript/Dataset/Dataset.ts ***!
-  \*******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Dataset": () => (/* binding */ Dataset)
-/* harmony export */ });
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var Dataset = /*#__PURE__*/function () {
-  function Dataset() {
-    var exampleSize = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var numberOfExamples = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var arr = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    _classCallCheck(this, Dataset);
-    _defineProperty(this, "exampleSize", 0);
-    _defineProperty(this, "numberOfExamples", 0);
-    _defineProperty(this, "data", null);
-    this.exampleSize = exampleSize;
-    this.numberOfExamples = numberOfExamples;
-    if (arr) {
-      var data = [];
-      for (var row = 0; row < exampleSize; row += 1) {
-        data[row] = new Array(numberOfExamples);
-        for (var col = 0; col < numberOfExamples; col += 1) {
-          if (typeof arr[row][col] === "string") {
-            // @ts-ignore
-            data[row][col] = arr[row][col].length ? Number(arr[row][col]) : NaN;
-          } else if (typeof arr[row][col] === "number") {
-            data[row][col] = arr[row][col];
-          }
-        }
-      }
-      this.data = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.exampleSize, this.numberOfExamples, data);
-    }
-  }
-  _createClass(Dataset, [{
-    key: "exampleAt",
-    value: function exampleAt(index) {
-      return this.data.col(index);
-    }
-  }, {
-    key: "getNumberOfExamples",
-    value: function getNumberOfExamples() {
-      return this.numberOfExamples;
-    }
-  }, {
-    key: "getExampleSize",
-    value: function getExampleSize() {
-      return this.exampleSize;
-    }
-  }, {
-    key: "getBatch",
-    value: function getBatch(offset, batchSize) {
-      var data = this.data.block(0, offset, this.data.rows, batchSize);
-      return Dataset.fromMatrix(data);
-    }
-  }], [{
-    key: "fromMatrix",
-    value: function fromMatrix(m) {
-      var instance = new Dataset();
-      instance.exampleSize = m.rows;
-      instance.numberOfExamples = m.cols;
-      instance.data = m;
-      return instance;
-    }
-  }]);
-  return Dataset;
-}();
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts":
-/*!***************************************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AbstractDatasetModifier": () => (/* binding */ AbstractDatasetModifier)
-/* harmony export */ });
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var AbstractDatasetModifier = /*#__PURE__*/_createClass(function AbstractDatasetModifier(dataset) {
-  _classCallCheck(this, AbstractDatasetModifier);
-  _defineProperty(this, "dataset", null);
-  this.dataset = dataset;
-});
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/Callback.ts":
-/*!************************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/Callback.ts ***!
-  \************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CallbackDatasetModifier": () => (/* binding */ CallbackDatasetModifier)
-/* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var CallbackDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(CallbackDatasetModifier, _AbstractDatasetModif);
-  var _super = _createSuper(CallbackDatasetModifier);
-  function CallbackDatasetModifier() {
-    var _this;
-    _classCallCheck(this, CallbackDatasetModifier);
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    _this = _super.call.apply(_super, [this].concat(args));
-    _defineProperty(_assertThisInitialized(_this), "callback", function (example) {
-      return example;
-    });
-    return _this;
-  }
-  _createClass(CallbackDatasetModifier, [{
-    key: "apply",
-    value: function apply() {
-      for (var exampleIndex = 0; exampleIndex < this.dataset.getNumberOfExamples(); exampleIndex += 1) {
-        var _example = this.callback(this.dataset.exampleAt(exampleIndex));
-        for (var row = 0; row < this.dataset.data.rows; row += 1) {
-          if (_example) {
-            this.dataset.data.data[row][exampleIndex] = _example.data[row][0];
-          }
-        }
-      }
-      return this.dataset;
-    }
-  }, {
-    key: "setCallback",
-    value: function setCallback(callback) {
-      this.callback = callback;
-      return this;
-    }
-  }]);
-  return CallbackDatasetModifier;
-}(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts":
-/*!*****************************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MinMaxScalingDatasetModifier": () => (/* binding */ MinMaxScalingDatasetModifier)
-/* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-var MinMaxScalingDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(MinMaxScalingDatasetModifier, _AbstractDatasetModif);
-  var _super = _createSuper(MinMaxScalingDatasetModifier);
-  function MinMaxScalingDatasetModifier() {
-    _classCallCheck(this, MinMaxScalingDatasetModifier);
-    return _super.apply(this, arguments);
-  }
-  _createClass(MinMaxScalingDatasetModifier, [{
-    key: "apply",
-    value: function apply(dataset) {
-      var min = Infinity;
-      var max = -Infinity;
-      for (var col = 0; col < dataset.getNumberOfExamples(); col += 1) {
-        var example = dataset.exampleAt(col);
-        for (var row = 0; row < example.rows; row += 1) {
-          if (min > example.data[row][0]) {
-            min = example.data[row][0];
-          }
-          if (max < example.data[row][0]) {
-            max = example.data[row][0];
-          }
-        }
-      }
-      for (var _col = 0; _col < dataset.getNumberOfExamples(); _col += 1) {
-        var _example = dataset.exampleAt(_col);
-        for (var _row = 0; _row < _example.rows; _row += 1) {
-          dataset.data.data[_row][_col] = (_example.data[_row][0] - min) / (max - min);
-        }
-      }
-      return dataset;
-    }
-  }]);
-  return MinMaxScalingDatasetModifier;
-}(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/MissingData.ts":
-/*!***************************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/MissingData.ts ***!
-  \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MissingDataScalingDatasetModifier": () => (/* binding */ MissingDataScalingDatasetModifier)
-/* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var MissingDataScalingDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(MissingDataScalingDatasetModifier, _AbstractDatasetModif);
-  var _super = _createSuper(MissingDataScalingDatasetModifier);
-  function MissingDataScalingDatasetModifier() {
-    var _this;
-    _classCallCheck(this, MissingDataScalingDatasetModifier);
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    _this = _super.call.apply(_super, [this].concat(args));
-    _defineProperty(_assertThisInitialized(_this), "modificationType", "mean");
-    return _this;
-  }
-  _createClass(MissingDataScalingDatasetModifier, [{
-    key: "apply",
-    value: function apply(dataset) {
-      var rowsToFill = [];
-      var correctExamplesCount = 0;
-      var sum = 0;
-      var valueToFill = 0;
-      for (var exampleIndex = 0; exampleIndex < dataset.getNumberOfExamples(); exampleIndex += 1) {
-        var example = dataset.exampleAt(exampleIndex);
-        for (var row = 0; row < dataset.getExampleSize(); row += 1) {
-          if (isNaN(example.data[row][0]) || typeof example.data[row][0] === "undefined") {
-            rowsToFill.push({
-              row: row,
-              col: example
-            });
-          } else {
-            sum += example.data[row][0];
-            correctExamplesCount++;
-          }
-        }
-      }
-      if (this.modificationType === "mean") {
-        valueToFill = sum / correctExamplesCount;
-      }
-      rowsToFill.forEach(function (_ref) {
-        var row = _ref.row,
-          col = _ref.col;
-        dataset.data.data[row][col] = valueToFill;
-      });
-      return dataset;
-    }
-  }, {
-    key: "setModificationType",
-    value: function setModificationType(type) {
-      this.modificationType = type;
-      return this;
-    }
-  }]);
-  return MissingDataScalingDatasetModifier;
-}(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/Shuffle.ts":
-/*!***********************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/Shuffle.ts ***!
-  \***********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ShuffleDatasetModifier": () => (/* binding */ ShuffleDatasetModifier)
-/* harmony export */ });
-/* harmony import */ var _AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetModifier */ "./src/typescript/Dataset/DatasetModifier/AbstractDatasetModifier.ts");
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Dataset */ "./src/typescript/Dataset/Dataset.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-
-
-var ShuffleDatasetModifier = /*#__PURE__*/function (_AbstractDatasetModif) {
-  _inherits(ShuffleDatasetModifier, _AbstractDatasetModif);
-  var _super = _createSuper(ShuffleDatasetModifier);
-  function ShuffleDatasetModifier(dataset) {
-    var _this;
-    _classCallCheck(this, ShuffleDatasetModifier);
-    _this = _super.call(this, dataset);
-    _defineProperty(_assertThisInitialized(_this), "sortList", []);
-    return _this;
-  }
-  _createClass(ShuffleDatasetModifier, [{
-    key: "apply",
-    value: function apply(dataset) {
-      var _this2 = this;
-      var index = 0;
-      var data = _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__.Matrix.from(dataset.data.transpose().data.sort(function (exampleA, exampleB) {
-        if (typeof _this2.sortList[index] === "undefined") {
-          // first run
-          _this2.sortList[index] = Math.random() - 0.5;
-        }
-        index += 1;
-        return _this2.sortList[index - 1];
-      })).transpose().data;
-      return new _Dataset__WEBPACK_IMPORTED_MODULE_1__.Dataset(dataset.getExampleSize(), dataset.getNumberOfExamples(), data);
-    }
-  }]);
-  return ShuffleDatasetModifier;
-}(_AbstractDatasetModifier__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetModifier);
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetModifier/index.ts":
-/*!*********************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetModifier/index.ts ***!
-  \*********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CallbackDatasetModifier": () => (/* reexport safe */ _Callback__WEBPACK_IMPORTED_MODULE_0__.CallbackDatasetModifier),
-/* harmony export */   "MinMaxScalingDatasetModifier": () => (/* reexport safe */ _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__.MinMaxScalingDatasetModifier),
-/* harmony export */   "MissingDataScalingDatasetModifier": () => (/* reexport safe */ _MissingData__WEBPACK_IMPORTED_MODULE_2__.MissingDataScalingDatasetModifier),
-/* harmony export */   "ShuffleDatasetModifier": () => (/* reexport safe */ _Shuffle__WEBPACK_IMPORTED_MODULE_3__.ShuffleDatasetModifier)
-/* harmony export */ });
-/* harmony import */ var _Callback__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Callback */ "./src/typescript/Dataset/DatasetModifier/Callback.ts");
-/* harmony import */ var _MinMaxScaling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MinMaxScaling */ "./src/typescript/Dataset/DatasetModifier/MinMaxScaling.ts");
-/* harmony import */ var _MissingData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MissingData */ "./src/typescript/Dataset/DatasetModifier/MissingData.ts");
-/* harmony import */ var _Shuffle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Shuffle */ "./src/typescript/Dataset/DatasetModifier/Shuffle.ts");
-
-
-
-
-
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/DatasetVocabulary.ts":
-/*!*****************************************************!*\
-  !*** ./src/typescript/Dataset/DatasetVocabulary.ts ***!
-  \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetVocabulary": () => (/* binding */ DatasetVocabulary)
-/* harmony export */ });
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var DatasetVocabulary = /*#__PURE__*/function () {
-  function DatasetVocabulary(str) {
-    _classCallCheck(this, DatasetVocabulary);
-    _defineProperty(this, "vocabularySize", 0);
-    _defineProperty(this, "dataSize", 0);
-    _defineProperty(this, "data", "");
-    this.data = str.toLowerCase();
-    var chars = _toConsumableArray(new Set(this.data.split("").sort()));
-    this.chars = chars;
-    this.dataSize = this.data.length;
-    this.vocabularySize = chars.length;
-  }
-  _createClass(DatasetVocabulary, [{
-    key: "getExamples",
-    value: function getExamples() {
-      return this.data.replace(/\n+/, "\n").split("\n").map(function (example) {
-        return example + "\n";
-      });
-    }
-  }, {
-    key: "getVocabularySize",
-    value: function getVocabularySize() {
-      return this.vocabularySize;
-    }
-  }, {
-    key: "getCharsLength",
-    value: function getCharsLength() {
-      return this.chars.length;
-    }
-  }, {
-    key: "getCharIndices",
-    value: function getCharIndices() {
-      var result = {};
-      this.chars.forEach(function (_char, i) {
-        result[_char] = i;
-      });
-      return result;
-    }
-  }, {
-    key: "buildData",
-    value: function buildData() {
-      var tx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 40;
-      var stride = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3;
-      var X = [];
-      var Y = [];
-      for (var i = 0; i < this.data.length - tx; i += stride) {
-        X.push(this.data.substr(i, tx));
-        Y.push(this.data[i + tx]);
-      }
-      return [X, Y];
-    }
-  }, {
-    key: "vectorization",
-    value: function vectorization(X, Y) {
-      var _this = this;
-      var nx = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 40;
-      var m = X.length;
-      var x = new Array(m);
-      var chars = this.getCharIndices();
-      var y = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(m, this.chars.length).setZeros();
-      var xIndex = 0;
-      var rowIndex = 0;
-      X.forEach(function (sentence, _m) {
-        x[_m] = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix(sentence.length, _this.chars.length).setZeros();
-        sentence.split("").forEach(function (_char2, t) {
-          x[_m].data[t][chars[_char2]] = 1;
-          rowIndex++;
-        });
-        xIndex++;
-        rowIndex = 0;
-        y.data[_m][chars[Y[_m]]] = 1;
-      });
-      return [x, y];
-    }
-  }, {
-    key: "getChars",
-    value: function getChars() {
-      return this.chars;
-    }
-  }, {
-    key: "getExampleX",
-    value: function getExampleX(exampleIndex) {
-      var _this2 = this;
-      var example = this.getExamples()[exampleIndex];
-      var data = [];
-      example.split("").forEach(function (ch, row) {
-        data[row] = [_this2.getCharIndices()[ch]];
-      });
-      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
-    }
-  }, {
-    key: "getExampleY",
-    value: function getExampleY(exampleIndex) {
-      var _this3 = this;
-      var example = this.getExamples()[exampleIndex];
-      var data = [];
-      example.split("").forEach(function (ch, row) {
-        data[row] = [_this3.getCharIndices()[ch]];
-      });
-      return _Math_Matrix__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(data);
-    }
-  }]);
-  return DatasetVocabulary;
-}();
-
-/***/ }),
-
-/***/ "./src/typescript/Dataset/index.ts":
-/*!*****************************************!*\
-  !*** ./src/typescript/Dataset/index.ts ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Dataset": () => (/* reexport safe */ _Dataset__WEBPACK_IMPORTED_MODULE_0__.Dataset)
-/* harmony export */ });
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/Dataset/Dataset.ts");
-
-
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetBuilder.ts":
-/*!*********************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetBuilder.ts ***!
-  \*********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetBuilder": () => (/* binding */ DatasetBuilder)
-/* harmony export */ });
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Dataset */ "./src/typescript/Dataset/index.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var DatasetBuilder = /*#__PURE__*/function () {
-  function DatasetBuilder() {
-    _classCallCheck(this, DatasetBuilder);
-  }
-  _createClass(DatasetBuilder, null, [{
-    key: "fromSource",
-    value: function fromSource(sourcePromise) {
-      return new Promise(function (resolve) {
-        sourcePromise.then(function (source) {
-          var matrix = source.parse();
-          var numberOfExamples = matrix.cols;
-          var exampleSize = matrix.rows;
-          var dataset = new _Dataset__WEBPACK_IMPORTED_MODULE_0__.Dataset(exampleSize, numberOfExamples, matrix.data);
-          resolve(dataset);
-        });
-      });
-    }
-  }]);
-  return DatasetBuilder;
-}();
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts":
-/*!********************************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts ***!
-  \********************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AbstractDatasetBuilderSource": () => (/* binding */ AbstractDatasetBuilderSource)
-/* harmony export */ });
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-var AbstractDatasetBuilderSource = /*#__PURE__*/_createClass(function AbstractDatasetBuilderSource() {
-  _classCallCheck(this, AbstractDatasetBuilderSource);
-});
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts":
-/*!***************************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts ***!
-  \***************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetBuilderSourceCSV": () => (/* binding */ DatasetBuilderSourceCSV)
-/* harmony export */ });
-/* harmony import */ var _AbstractDatasetBuilderSource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractDatasetBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/AbstractDatasetBuilderSource.ts");
-/* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! csvtojson */ "csvtojson");
-/* harmony import */ var csvtojson__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(csvtojson__WEBPACK_IMPORTED_MODULE_2__);
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-
-
-var CSVState;
-(function (CSVState) {
-  CSVState[CSVState["UnquotedField"] = 0] = "UnquotedField";
-  CSVState[CSVState["QuotedField"] = 1] = "QuotedField";
-  CSVState[CSVState["QuotedQuote"] = 2] = "QuotedQuote";
-})(CSVState || (CSVState = {}));
-var DatasetBuilderSourceCSV = /*#__PURE__*/function (_AbstractDatasetBuild) {
-  _inherits(DatasetBuilderSourceCSV, _AbstractDatasetBuild);
-  var _super = _createSuper(DatasetBuilderSourceCSV);
-  function DatasetBuilderSourceCSV(data) {
-    var _this;
-    _classCallCheck(this, DatasetBuilderSourceCSV);
-    _this = _super.call(this);
-    _defineProperty(_assertThisInitialized(_this), "data", null);
-    _defineProperty(_assertThisInitialized(_this), "matrixData", null);
-    _this.data = data;
-    return _this;
-  }
-  _createClass(DatasetBuilderSourceCSV, [{
-    key: "parse",
-    value: function parse() {
-      /*this.matrixData = [];
-       const lines = this.contentStr.trim().split(/\n+/);
-      lines.forEach((line, i) => this.parseLine(line.trim(), i));
-       return new Matrix(this.matrixData.length, this.matrixData[0].length, this.matrixData);*/
-
-      var numberOfExamples = this.data.length;
-      var exampleSize = this.data[0].length;
-      return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(numberOfExamples, exampleSize, this.data).transpose();
-    }
-    /*
-    protected parseLine(line: string, exampleIndexCol: number): void {
-      let state = CSVState.UnquotedField;
-      const fields = [];
-      let i = 0;
-       for (let j = 0; j < line.length; j += 1) {
-        const c = line.at(j);
-        switch (state) {
-          case CSVState.UnquotedField:
-            switch (c) {
-              case ",": // end of field
-                fields.push("");
-                i++;
-                break;
-              case '"':
-                state = CSVState.QuotedField;
-                break;
-              default:
-                fields[i] += c;
-                break;
-            }
-            break;
-          case CSVState.QuotedField:
-            switch (c) {
-              case '"':
-                state = CSVState.QuotedQuote;
-                break;
-              default:
-                fields[i] += c;
-                break;
-            }
-            break;
-          case CSVState.QuotedQuote:
-            switch (c) {
-              case ",": // , after closing quote
-                fields.push("");
-                i++;
-                state = CSVState.UnquotedField;
-                break;
-              case '"': // "" -> "
-                fields[i] += '"';
-                state = CSVState.QuotedField;
-                break;
-              default:
-                // end of quote
-                state = CSVState.UnquotedField;
-                break;
-            }
-            break;
-        }
-         fields.forEach((value, row) => {
-          if (value.length === 0) {
-            value = NaN;
-          }
-          value = parseFloat(value);
-          if (!this.matrixData[row]) {
-            this.matrixData[row] = [];
-          }
-          this.matrixData[row][exampleIndexCol] = value;
-        });
-      }
-    }*/
-  }], [{
-    key: "fromLocalFile",
-    value: function fromLocalFile(path) {
-      /*return new Promise((resolve, reject) => {
-        fs.readFile(path, (err, buffer) => {
-          console.log("first");
-          if (err) {
-            console.log(err);
-            reject();
-          } else {
-            const instance = new DatasetBuilderSourceCSV(buffer.toString("utf-8"));
-            resolve(instance);
-          }
-        });
-      });*/
-      return new Promise(function (resolve) {
-        csvtojson__WEBPACK_IMPORTED_MODULE_2__({
-          noheader: true,
-          output: "csv"
-        }).fromFile(path).then(function (arr) {
-          resolve(new DatasetBuilderSourceCSV(arr));
-        });
-      });
-    }
-  }]);
-  return DatasetBuilderSourceCSV;
-}(_AbstractDatasetBuilderSource__WEBPACK_IMPORTED_MODULE_0__.AbstractDatasetBuilderSource);
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts":
-/*!*********************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts ***!
-  \*********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetBuilderSourceCSV": () => (/* reexport safe */ _DatasetBuilderSourceCSV__WEBPACK_IMPORTED_MODULE_0__.DatasetBuilderSourceCSV)
-/* harmony export */ });
-/* harmony import */ var _DatasetBuilderSourceCSV__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetBuilderSourceCSV */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/DatasetBuilderSourceCSV.ts");
-
-
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts":
-/*!*******************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetVocabularyBuilder": () => (/* binding */ DatasetVocabularyBuilder)
-/* harmony export */ });
-/* harmony import */ var _Dataset_DatasetVocabulary__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Dataset/DatasetVocabulary */ "./src/typescript/Dataset/DatasetVocabulary.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-var DatasetVocabularyBuilder = /*#__PURE__*/function () {
-  function DatasetVocabularyBuilder() {
-    _classCallCheck(this, DatasetVocabularyBuilder);
-  }
-  _createClass(DatasetVocabularyBuilder, null, [{
-    key: "fromSource",
-    value: function fromSource(sourcePromise) {
-      return new Promise(function (resolve) {
-        sourcePromise.then(function (source) {
-          var str = source.parse();
-          resolve(new _Dataset_DatasetVocabulary__WEBPACK_IMPORTED_MODULE_0__.DatasetVocabulary(str));
-        });
-      });
-    }
-  }]);
-  return DatasetVocabularyBuilder;
-}();
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts":
-/*!****************************************************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts ***!
-  \****************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AbstractDatasetVocabularyBuilderSource": () => (/* binding */ AbstractDatasetVocabularyBuilderSource)
-/* harmony export */ });
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-var AbstractDatasetVocabularyBuilderSource = /*#__PURE__*/_createClass(function AbstractDatasetVocabularyBuilderSource() {
-  _classCallCheck(this, AbstractDatasetVocabularyBuilderSource);
-});
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts":
-/*!****************************************************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts ***!
-  \****************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetVocabularyBuilderSourceTextFile": () => (/* binding */ DatasetVocabularyBuilderSourceTextFile)
-/* harmony export */ });
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fs */ "fs");
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _AbstractDatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractDatasetVocabularyBuilderSource */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/AbstractDatasetVocabularyBuilderSource.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-
-var DatasetVocabularyBuilderSourceTextFile = /*#__PURE__*/function (_AbstractDatasetVocab) {
-  _inherits(DatasetVocabularyBuilderSourceTextFile, _AbstractDatasetVocab);
-  var _super = _createSuper(DatasetVocabularyBuilderSourceTextFile);
-  function DatasetVocabularyBuilderSourceTextFile(data) {
-    var _this;
-    _classCallCheck(this, DatasetVocabularyBuilderSourceTextFile);
-    _this = _super.call(this);
-    _defineProperty(_assertThisInitialized(_this), "data", "");
-    _this.data = data;
-    return _this;
-  }
-  _createClass(DatasetVocabularyBuilderSourceTextFile, [{
-    key: "parse",
-    value: function parse() {
-      return this.data;
-    }
-  }], [{
-    key: "fromLocalFile",
-    value: function fromLocalFile(path) {
-      return new Promise(function (resolve, reject) {
-        fs__WEBPACK_IMPORTED_MODULE_0__.readFile(path, function (err, buffer) {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(new DatasetVocabularyBuilderSourceTextFile(buffer.toString("utf-8")));
-        });
-      });
-    }
-  }]);
-  return DatasetVocabularyBuilderSourceTextFile;
-}(_AbstractDatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_1__.AbstractDatasetVocabularyBuilderSource);
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts":
-/*!*******************************************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts ***!
-  \*******************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetVocabularyBuilderSourceTextFile": () => (/* reexport safe */ _DatasetVocabularyBuilderSourceTextFile__WEBPACK_IMPORTED_MODULE_0__.DatasetVocabularyBuilderSourceTextFile)
-/* harmony export */ });
-/* harmony import */ var _DatasetVocabularyBuilderSourceTextFile__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetVocabularyBuilderSourceTextFile */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/DatasetVocabularyBuilderSourceTextFile.ts");
-
-
-
-/***/ }),
-
-/***/ "./src/typescript/DatasetBuilder/index.ts":
-/*!************************************************!*\
-  !*** ./src/typescript/DatasetBuilder/index.ts ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DatasetBuilder": () => (/* reexport safe */ _DatasetBuilder__WEBPACK_IMPORTED_MODULE_0__.DatasetBuilder),
-/* harmony export */   "DatasetVocabularyBuilder": () => (/* reexport safe */ _DatasetVocabularyBuilder__WEBPACK_IMPORTED_MODULE_1__.DatasetVocabularyBuilder)
-/* harmony export */ });
-/* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/DatasetBuilder/DatasetBuilder.ts");
-/* harmony import */ var _DatasetVocabularyBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatasetVocabularyBuilder */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilder.ts");
-
-
-
-
-/***/ }),
-
 /***/ "./src/typescript/Layer/AbstractLayer.ts":
 /*!***********************************************!*\
   !*** ./src/typescript/Layer/AbstractLayer.ts ***!
@@ -1892,7 +950,7 @@ var AbstractLayer1D = /*#__PURE__*/function (_AbstractLayer) {
       this.b.resize(this.getHeight(), 1);
       this.b = this.b.setRandom(this.previousLayer ? this.previousLayer.getHeight() : this.getHeight());
       this.gW.resize(this.getHeight(), this.getWidth());
-      this.gW = this.W.setZeros();
+      this.gW = this.gW.setZeros();
       this.gb.resize(this.getHeight(), 1);
       this.gb = this.gb.setZeros();
       this.sW.resize(this.getHeight(), this.getWidth());
@@ -3357,7 +2415,7 @@ var ReluLayer = /*#__PURE__*/function (_AbstractLayer1D) {
   _createClass(ReluLayer, [{
     key: "activation",
     value: function activation(m) {
-      return m.setMax(0.0);
+      return m.setMin(0.0);
     }
   }, {
     key: "getType",
@@ -3631,7 +2689,7 @@ var Matrix = /*#__PURE__*/function () {
     value: function resize(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.data = [];
+      this.data = new Array(this.rows);
       for (var row = 0; row < this.rows; row += 1) {
         this.data[row] = new Array(this.cols);
       }
@@ -3648,15 +2706,14 @@ var Matrix = /*#__PURE__*/function () {
         for (var _row3 = 0; _row3 < this.rows; _row3 += 1) {
           if (typeof arr[_row3] === "number") {
             data[_row3][col] = arr[_row3];
-          } else if (arr[_row3] instanceof Float32Array) {
-            data[_row3][col] = arr[_row3][col];
-          } else if (arr[_row3] && typeof arr[_row3][col] === "number") {
-            data[_row3][col] = arr[_row3][col];
           } else if (typeof arr[_row3][col] === "string") {
-            // @ts-ignore
-            data[_row3][col] = arr[_row3][col].length ? Number(arr[_row3][col]) : NaN;
+            if (/^[-0-9.e]+$/.test(String(arr[_row3][col]))) {
+              data[_row3][col] = Number(arr[_row3][col]);
+            } else {
+              data[_row3][col] = arr[_row3][col];
+            }
           } else {
-            data[_row3][col] = NaN;
+            data[_row3][col] = arr[_row3][col];
           }
         }
       }
@@ -3959,7 +3016,6 @@ var Matrix = /*#__PURE__*/function () {
         for (var row = 0; row < this.rows; row += 1) {
           data[row] = [];
           for (var col = 0; col < this.cols; col += 1) {
-            // @ts-ignore
             data[row][col] = this.data[row][col] * num;
           }
         }
@@ -3972,7 +3028,6 @@ var Matrix = /*#__PURE__*/function () {
         for (var _row5 = 0; _row5 < this.rows; _row5 += 1) {
           _data[_row5] = [];
           for (var _col3 = 0; _col3 < this.cols; _col3 += 1) {
-            // @ts-ignore
             _data[_row5][_col3] = this.data[_row5][_col3] * num.data[_row5][_col3];
           }
         }
@@ -3982,24 +3037,24 @@ var Matrix = /*#__PURE__*/function () {
   }, {
     key: "subtract",
     value: function subtract(m) {
-      if (m instanceof Matrix) {
-        if (this.rows !== m.rows || this.cols !== m.cols) {
-          throw new Error("Dimensions error: ".concat(this.rows, ", ").concat(this.cols, " !== ").concat(m.rows, ", ").concat(m.cols));
-        }
+      if (typeof m === "number") {
         var data = [];
         for (var row = 0; row < this.rows; row += 1) {
           data[row] = [];
           for (var col = 0; col < this.cols; col += 1) {
-            data[row][col] = this.data[row][col] - m.data[row][col];
+            data[row][col] = this.data[row][col] - m;
           }
         }
         return Matrix.from(data);
       } else {
+        if (this.rows !== m.rows || this.cols !== m.cols) {
+          throw new Error("Dimensions error: ".concat(this.rows, ", ").concat(this.cols, " !== ").concat(m.rows, ", ").concat(m.cols));
+        }
         var _data2 = [];
         for (var _row6 = 0; _row6 < this.rows; _row6 += 1) {
           _data2[_row6] = [];
           for (var _col4 = 0; _col4 < this.cols; _col4 += 1) {
-            _data2[_row6][_col4] = this.data[_row6][_col4] - m;
+            _data2[_row6][_col4] = this.data[_row6][_col4] - m.data[_row6][_col4];
           }
         }
         return Matrix.from(_data2);
@@ -4146,6 +3201,21 @@ var Matrix = /*#__PURE__*/function () {
       }
       return Matrix.from(data);
     }
+  }, {
+    key: "value",
+    value: function value(row, col) {
+      var _value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+      if (_value === undefined) {
+        return this.data[row][col];
+      }
+      this.data[row][col] = _value;
+      return this;
+    }
+  }, {
+    key: "copy",
+    value: function copy() {
+      return Matrix.from(this.data);
+    }
   }], [{
     key: "from",
     value: function from(arr) {
@@ -4278,8 +3348,9 @@ var Network = /*#__PURE__*/function () {
     }
   }, {
     key: "backward",
-    value: function backward(X, Y, predictions, regularization) {
+    value: function backward(X, Y, regularization) {
       var m = X.cols;
+      var predictions = this.forward(X);
       //let sigma = Y.divide(predictions).multiply(-1).subtract(Y.minusOne().divide(predictions.minusOne()));
       var sigma = predictions.subtract(Y);
       for (var layer = this.layers.length - 1; layer >= 0; layer -= 1) {
@@ -5596,8 +4667,7 @@ var Trainer = /*#__PURE__*/function (_AbstractTrainer) {
       this.optimizer.setLearningRate(this.learningRate);
       for (var i = 0; i < this.iterations; i += 1) {
         var startTime = new Date().getTime();
-        var predictions = this.network.forward(inputDataset.data);
-        this.network.backward(inputDataset.data, outputDataset.data, predictions, this.regularization);
+        this.network.backward(inputDataset.data, outputDataset.data, this.regularization);
         this.optimizer.setT(++t);
         this.network.getLayers().forEach(function (layer) {
           _this.optimizer.optimize(layer);
@@ -5666,16 +4736,6 @@ var LayerType;
   LayerType["purelin"] = "purelin";
   LayerType["rnnlayer"] = "rnnlayer";
 })(LayerType || (LayerType = {}));
-
-/***/ }),
-
-/***/ "csvtojson":
-/*!****************************!*\
-  !*** external "csvtojson" ***!
-  \****************************/
-/***/ ((module) => {
-
-module.exports = require("csvtojson");
 
 /***/ }),
 
@@ -5766,10 +4826,6 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Computation": () => (/* binding */ Computation),
-/* harmony export */   "Dataset": () => (/* binding */ Dataset),
-/* harmony export */   "DatasetBuilder": () => (/* binding */ DatasetBuilder),
-/* harmony export */   "DatasetBuilderSource": () => (/* binding */ DatasetBuilderSource),
-/* harmony export */   "DatasetModifier": () => (/* binding */ DatasetModifier),
 /* harmony export */   "Layer": () => (/* binding */ Layer),
 /* harmony export */   "Math": () => (/* binding */ Math),
 /* harmony export */   "Network": () => (/* binding */ Network),
@@ -5780,20 +4836,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NetworkBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NetworkBuilder */ "./src/typescript/NetworkBuilder/index.ts");
 /* harmony import */ var _Layer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Layer */ "./src/typescript/Layer/index.ts");
 /* harmony import */ var _Math_Matrix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Math/Matrix */ "./src/typescript/Math/Matrix.ts");
-/* harmony import */ var _Dataset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dataset */ "./src/typescript/Dataset/index.ts");
-/* harmony import */ var _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DatasetBuilder */ "./src/typescript/DatasetBuilder/index.ts");
-/* harmony import */ var _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Trainer/Optimizer */ "./src/typescript/Trainer/Optimizer/index.ts");
-/* harmony import */ var _Trainer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Trainer */ "./src/typescript/Trainer/index.ts");
-/* harmony import */ var _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Dataset/DatasetModifier */ "./src/typescript/Dataset/DatasetModifier/index.ts");
-/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Computation */ "./src/typescript/Computation/index.ts");
-/* harmony import */ var _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./DatasetBuilder/DatasetBuilderSource */ "./src/typescript/DatasetBuilder/DatasetBuilderSource/index.ts");
-/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/index.ts");
-/* harmony import */ var _DatasetBuilder_DatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./DatasetBuilder/DatasetVocabularyBuilderSource */ "./src/typescript/DatasetBuilder/DatasetVocabularyBuilderSource/index.ts");
-
-
-
-
-
+/* harmony import */ var _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Trainer/Optimizer */ "./src/typescript/Trainer/Optimizer/index.ts");
+/* harmony import */ var _Trainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Trainer */ "./src/typescript/Trainer/index.ts");
+/* harmony import */ var _Computation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Computation */ "./src/typescript/Computation/index.ts");
+/* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/index.ts");
 
 
 
@@ -5819,43 +4865,26 @@ var Layer = {
   FullyConnectedLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.FullyConnectedLayer,
   RecurrentLayer: _Layer__WEBPACK_IMPORTED_MODULE_1__.RecurrentLayer
 };
-var DatasetBuilder = {
-  DatasetBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetBuilder,
-  DatasetVocabularyBuilder: _DatasetBuilder__WEBPACK_IMPORTED_MODULE_4__.DatasetVocabularyBuilder
-};
 var Optimizer = {
-  OptimizerAdam: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdam,
-  OptimizerGradientDescent: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerGradientDescent,
-  OptimizerAdagrad: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerAdagrad,
-  OptimizerMomentum: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerMomentum,
-  OptimizerRMSProp: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_5__.OptimizerRMSProp
+  OptimizerAdam: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__.OptimizerAdam,
+  OptimizerGradientDescent: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__.OptimizerGradientDescent,
+  OptimizerAdagrad: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__.OptimizerAdagrad,
+  OptimizerMomentum: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__.OptimizerMomentum,
+  OptimizerRMSProp: _Trainer_Optimizer__WEBPACK_IMPORTED_MODULE_3__.OptimizerRMSProp
 };
 var Trainer = {
-  MiniBatchTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.MiniBatchTrainer,
-  Trainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.Trainer,
-  RNNTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_6__.RNNTrainer
-};
-var DatasetModifier = {
-  CallbackDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.CallbackDatasetModifier,
-  MinMaxScalingDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MinMaxScalingDatasetModifier,
-  MissingDataScalingDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.MissingDataScalingDatasetModifier,
-  ShuffleDatasetModifier: _Dataset_DatasetModifier__WEBPACK_IMPORTED_MODULE_7__.ShuffleDatasetModifier
+  MiniBatchTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_4__.MiniBatchTrainer,
+  Trainer: _Trainer__WEBPACK_IMPORTED_MODULE_4__.Trainer,
+  RNNTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_4__.RNNTrainer
 };
 var Computation = {
-  ComputationCPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationCPU,
-  ComputationGPU: _Computation__WEBPACK_IMPORTED_MODULE_8__.ComputationGPU,
-  setComputation: _Computation__WEBPACK_IMPORTED_MODULE_8__.setComputation,
-  getComputation: _Computation__WEBPACK_IMPORTED_MODULE_8__.getComputation
-};
-var Dataset = {
-  Dataset: _Dataset__WEBPACK_IMPORTED_MODULE_3__.Dataset
-};
-var DatasetBuilderSource = {
-  DatasetBuilderSourceCSV: _DatasetBuilder_DatasetBuilderSource__WEBPACK_IMPORTED_MODULE_9__.DatasetBuilderSourceCSV,
-  DatasetVocabularyBuilderSourceTextFile: _DatasetBuilder_DatasetVocabularyBuilderSource__WEBPACK_IMPORTED_MODULE_11__.DatasetVocabularyBuilderSourceTextFile
+  ComputationCPU: _Computation__WEBPACK_IMPORTED_MODULE_5__.ComputationCPU,
+  ComputationGPU: _Computation__WEBPACK_IMPORTED_MODULE_5__.ComputationGPU,
+  setComputation: _Computation__WEBPACK_IMPORTED_MODULE_5__.setComputation,
+  getComputation: _Computation__WEBPACK_IMPORTED_MODULE_5__.getComputation
 };
 var Network = {
-  NetworkRNN: _Network__WEBPACK_IMPORTED_MODULE_10__.NetworkRNN
+  NetworkRNN: _Network__WEBPACK_IMPORTED_MODULE_6__.NetworkRNN
 };
 
 })();
