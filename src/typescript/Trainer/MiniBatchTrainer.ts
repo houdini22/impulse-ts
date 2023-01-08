@@ -1,6 +1,6 @@
 import { AbstractTrainer, CostResult } from "./AbstractTrainer";
 import { Dataset } from "impulse-dataset-ts/src/typescript/Dataset/Dataset";
-import { round } from "../Math/math";
+import { round } from "impulse-math-ts";
 
 export class MiniBatchTrainer extends AbstractTrainer {
   batchSize = 100;

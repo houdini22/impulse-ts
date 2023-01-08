@@ -10,7 +10,7 @@ import {
   MaxPoolLayer,
   RecurrentLayer,
 } from "./Layer";
-import { Matrix } from "./Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import {
   OptimizerAdam,
   OptimizerGradientDescent,
@@ -19,7 +19,6 @@ import {
   OptimizerRMSProp,
 } from "./Trainer/Optimizer";
 import { MiniBatchTrainer, Trainer as TrainerTrainer, RNNTrainer } from "./Trainer";
-import { ComputationCPU, ComputationGPU, setComputation, getComputation } from "./Computation";
 import { NetworkRNN } from "./Network";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
@@ -49,14 +48,8 @@ const Trainer = {
   Trainer: TrainerTrainer,
   RNNTrainer,
 };
-const Computation = {
-  ComputationCPU,
-  ComputationGPU,
-  setComputation,
-  getComputation,
-};
 const Network = {
   NetworkRNN,
 };
 
-export { NetworkBuilder, Math, Layer, Optimizer, Trainer, Computation, Network };
+export { NetworkBuilder, Math, Layer, Optimizer, Trainer, Network };

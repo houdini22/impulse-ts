@@ -1,7 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer";
-import { Dimension, Layers } from "../types";
-import { Matrix } from "../Math/Matrix";
-import { getComputation } from "../Computation";
+import { Layers } from "../types";
+import { Matrix } from "impulse-math-ts";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;

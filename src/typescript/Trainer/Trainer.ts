@@ -1,6 +1,6 @@
 import { AbstractTrainer } from "./AbstractTrainer";
 import { Dataset } from "impulse-dataset-ts/src/typescript/Dataset/Dataset";
-import { round } from "../Math/math";
+import { round } from "impulse-math-ts";
 
 export class Trainer extends AbstractTrainer {
   train(inputDataset: Dataset, outputDataset: Dataset): AbstractTrainer {

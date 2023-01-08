@@ -1,5 +1,5 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
-import { Matrix } from "../../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { Layers } from "../../types";
 
 export class Backpropagation1Dto1D extends AbstractBackPropagation {

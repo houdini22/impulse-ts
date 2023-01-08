@@ -1,5 +1,5 @@
 import { Dimension, LayersRNN } from "../types";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { DatasetVocabulary } from "impulse-dataset-ts/src/typescript/Dataset/DatasetVocabulary";
 
 export class NetworkRNN {

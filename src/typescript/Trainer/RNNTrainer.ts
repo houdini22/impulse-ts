@@ -1,6 +1,6 @@
 import { NetworkRNN } from "../Network";
 import { DatasetVocabulary } from "impulse-dataset-ts/src/typescript/Dataset/DatasetVocabulary";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 
 export class RNNTrainer {
   protected network: NetworkRNN | null = null;

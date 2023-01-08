@@ -1,7 +1,6 @@
 import { Dimension, Layers } from "../types";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import * as fs from "fs";
-import { getComputation } from "../Computation";
 
 class Network {
   private readonly dimensions: Dimension | null = null;

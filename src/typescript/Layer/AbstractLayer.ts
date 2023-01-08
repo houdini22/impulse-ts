@@ -1,7 +1,6 @@
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { Dimension, Layers } from "../types";
 import { AbstractBackPropagation } from "./Backpropagation/AbstractBackpropagation";
-import { getComputation } from "../Computation";
 
 abstract class AbstractLayer {
   protected width = 0;

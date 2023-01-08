@@ -1,6 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer";
 import { Dimension, Layers } from "../types";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 
 abstract class AbstractLayer3D extends AbstractLayer {
   public W: Matrix;

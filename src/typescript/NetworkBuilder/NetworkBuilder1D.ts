@@ -3,7 +3,7 @@ import { Layers } from "../types";
 import { Network } from "../Network";
 import * as fs from "fs";
 import { LogisticLayer, ReluLayer, SoftmaxLayer, SoftplusLayer, TanhLayer } from "../Layer/";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { JSONLayerData } from "./types";
 
 class NetworkBuilder1D extends AbstractNetworkBuilder {
