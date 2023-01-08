@@ -3,7 +3,6 @@ const {
   Layer: { LogisticLayer, ReluLayer },
   Optimizer: { OptimizerGradientDescent, OptimizerAdam, OptimizerMomentum, OptimizerRMSProp },
   Trainer: { MiniBatchTrainer, Trainer },
-  Computation: { ComputationCPU, setComputation },
 } = require("../dist/impulse-ts.dev");
 const {
   DatasetBuilder: { DatasetBuilder },
@@ -11,8 +10,6 @@ const {
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
 } = require("impulse-dataset-ts");
 const path = require("path");
-
-setComputation(new ComputationCPU());
 
 const builder = new NetworkBuilder1D([400]);
 builder
