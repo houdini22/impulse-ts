@@ -538,116 +538,173 @@ var elementWiseDivide = function elementWiseDivide(m1, m2) {
   if (m1.cols !== m2.cols) {
     throw new Error("COLS number not equal.");
   }
-  var kernel = gpu.createKernel(function (a, b) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
-  }).setOutput([m1.rows, m2.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel(m1.data, m2.data));
+
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] / b[this.thread.x][this.thread.y];
+    })
+    .setOutput([m1.rows, m2.cols]);
+   return new Matrix(m1.rows, m1.cols, kernel(m1.data, m2.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var divideNumber = function divideNumber(m1, num) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] / this.constants.number;
-  }).setOutput([m1.rows, m1.cols]).setConstants({
-    number: num
-  });
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel(m1.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] / this.constants.number;
+    })
+    .setOutput([m1.rows, m1.cols])
+    .setConstants({
+      number: num,
+    });
+   return new Matrix(m1.rows, m1.cols, kernel(m1.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var softmaxActivation = function softmaxActivation(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.exp(a[this.thread.x][this.thread.y]);
-  }).setOutput([m.rows, m.cols]);
-  var data = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
-  var divider = new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(1, m.cols, data.colwiseSum().data).replicate(m.rows, 1);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.exp(a[this.thread.x][this.thread.y]);
+    })
+    .setOutput([m.rows, m.cols]);
+  const data = new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);
+  const divider = new Matrix(1, m.cols, data.colwiseSum().data).replicate(m.rows, 1);
+  return new Matrix(m.rows, m.cols, elementWiseDivide(data, divider).data);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var softmaxLoss = function softmaxLoss(output, predictions) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.log(a[this.thread.x][this.thread.y]);
-  }).setOutput([predictions.rows, predictions.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, elementWiseMultiply(output, new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, kernel(predictions.data))).data).sum();
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.log(a[this.thread.x][this.thread.y]);
+    })
+    .setOutput([predictions.rows, predictions.cols]);
+  return new Matrix(
+    output.rows,
+    output.cols,
+    elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(predictions.data) as number[][])).data
+  ).sum();*/
+  return 0;
 };
 var logisticActivation = function logisticActivation(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return 1.0 / (1.0 + Math.exp(-a[this.thread.x][this.thread.y]));
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var logisticLoss = function logisticLoss(output, predictions) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.log(a[this.thread.x][this.thread.y]);
-  }).setOutput([output.rows, output.cols]);
-  var kernel2 = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return 1.0 - a[this.thread.x][this.thread.y];
-  }).setOutput([output.rows, output.cols]);
-  var kernel3 = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.log(1.0 - a[this.thread.x][this.thread.y]);
-  }).setOutput([predictions.rows, predictions.cols]);
-  return add(elementWiseMultiply(output, new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, kernel(output.data))), elementWiseMultiply(new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, kernel2(output.data)), new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(predictions.rows, predictions.cols, kernel3(predictions.data)))).sum();
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.log(a[this.thread.x][this.thread.y]);
+    })
+    .setOutput([output.rows, output.cols]);
+  const kernel2 = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return 1.0 - a[this.thread.x][this.thread.y];
+    })
+    .setOutput([output.rows, output.cols]);
+  const kernel3 = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.log(1.0 - a[this.thread.x][this.thread.y]);
+    })
+    .setOutput([predictions.rows, predictions.cols]);
+   return add(
+    elementWiseMultiply(output, new Matrix(output.rows, output.cols, kernel(output.data) as number[][])),
+    elementWiseMultiply(
+      new Matrix(output.rows, output.cols, kernel2(output.data) as number[][]),
+      new Matrix(predictions.rows, predictions.cols, kernel3(predictions.data) as number[][])
+    )
+  ).sum();*/
+  return 0;
 };
 var tanhActivation = function tanhActivation(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return 2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0;
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return 2.0 / (1.0 + Math.exp(-2.0 * a[this.thread.x][this.thread.y])) - 1.0;
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var reluActivation = function reluActivation(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.max(0.0, a[this.thread.x][this.thread.y]);
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.max(0.0, a[this.thread.x][this.thread.y]);
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var softplusActivation = function softplusActivation(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.log(1 + Math.exp(a[this.thread.x][this.thread.y]));
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var penalty = function penalty(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.pow(a[this.thread.x][this.thread.y], 2);
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data)).sum();
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.pow(a[this.thread.x][this.thread.y], 2);
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]).sum();*/
+  return 0;
 };
 var sqrt = function sqrt(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
-  }).setOutput([m.rows, m.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.rows, m.cols, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return Math.sqrt(a[this.thread.x][this.thread.y] + 1e-8);
+    })
+    .setOutput([m.rows, m.cols]);
+  return new Matrix(m.rows, m.cols, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var purelinLoss = function purelinLoss(output, predictions) {
-  var kernel = gpu.createKernel(function (a, b) {
-    // @ts-ignore
-    return b[this.thread.x][this.thread.y] - Math.pow(a[this.thread.x][this.thread.y], 2);
-  }).setOutput([output.rows, output.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(output.rows, output.cols, kernel(output.data)).sum();
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      // @ts-ignore
+      return b[this.thread.x][this.thread.y] - Math.pow(a[this.thread.x][this.thread.y], 2);
+    })
+    .setOutput([output.rows, output.cols]);
+  return new Matrix(output.rows, output.cols, kernel(output.data) as number[][]).sum();*/
+  return 0;
 };
 var dot = function dot(m1, m2) {
   if (m1.cols !== m2.rows) {
     throw new Error("DIMENSIONS error. m1.cols ".concat(m1.cols, " !== m2.rows ").concat(m2.rows, "."));
   }
-  var kernel = gpu.createKernel(function (a, b) {
-    var sum = 0;
-    for (var i = 0; i < this.constants.cols; i++) {
-      // @ts-ignore
-      sum += a[this.thread.x][i] * b[i][this.thread.y];
-    }
-    return sum;
-  }).setOutput([m1.rows, m2.cols]).setConstants({
-    cols: m1.rows
-  });
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      let sum = 0;
+      for (let i = 0; i < this.constants.cols; i++) {
+        // @ts-ignore
+        sum += a[this.thread.x][i] * b[i][this.thread.y];
+      }
+      return sum;
+    })
+    .setOutput([m1.rows, m2.cols])
+    .setConstants({
+      cols: m1.rows,
+    });
+   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var add = function add(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -656,11 +713,15 @@ var add = function add(m1, m2) {
   if (m1.cols !== m2.cols) {
     throw new Error("COLS number not equal.");
   }
-  var kernel = gpu.createKernel(function (a, b) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
-  }).setOutput([m1.rows, m2.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] + b[this.thread.x][this.thread.y];
+    })
+    .setOutput([m1.rows, m2.cols]);
+   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var subtract = function subtract(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -669,31 +730,45 @@ var subtract = function subtract(m1, m2) {
   if (m1.cols !== m2.cols) {
     throw new Error("COLS number not equal.");
   }
-  var kernel = gpu.createKernel(function (a, b) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
-  }).setOutput([m1.rows, m2.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] - b[this.thread.x][this.thread.y];
+    })
+    .setOutput([m1.rows, m2.cols]);
+   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var fillRandom = function fillRandom(m1, parameter) {
-  var kernel = gpu.createKernel(function () {
-    return Math.random() - 0.5;
-  }).setOutput([m1.rows, m1.cols]).setConstants({
-    parameter: parameter
-  });
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel());
+  /*const kernel = gpu
+    .createKernel(function () {
+      return Math.random() - 0.5;
+    })
+    .setOutput([m1.rows, m1.cols])
+    .setConstants({
+      parameter,
+    });
+   return new Matrix(m1.rows, m1.cols, kernel() as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var fillZeros = function fillZeros(m1) {
-  var kernel = gpu.createKernel(function () {
-    return 0.0;
-  }).setOutput([m1.rows, m1.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel());
+  /*const kernel = gpu
+    .createKernel(function () {
+      return 0.0;
+    })
+    .setOutput([m1.rows, m1.cols]);
+  return new Matrix(m1.rows, m1.cols, kernel() as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var setOnes = function setOnes(m1) {
-  var kernel = gpu.createKernel(function () {
-    return 1.0;
-  }).setOutput([m1.rows, m1.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel());
+  /*const kernel = gpu
+    .createKernel(function () {
+      return 1.0;
+    })
+    .setOutput([m1.rows, m1.cols]);
+  return new Matrix(m1.rows, m1.cols, kernel() as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.rows !== m2.rows) {
@@ -702,27 +777,38 @@ var elementWiseMultiply = function elementWiseMultiply(m1, m2) {
   if (m1.cols !== m2.cols) {
     throw new Error("COLS number not equal.");
   }
-  var kernel = gpu.createKernel(function (a, b) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
-  }).setOutput([m1.rows, m2.cols]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data));
+
+  /*const kernel = gpu
+    .createKernel(function (a, b) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] * b[this.thread.x][this.thread.y];
+    })
+    .setOutput([m1.rows, m2.cols]);
+   return new Matrix(m1.rows, m2.cols, kernel(m1.data, m2.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var multiplyNumber = function multiplyNumber(m1, num) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return a[this.thread.x][this.thread.y] * this.constants.number;
-  }).setOutput([m1.rows, m1.cols]).setConstants({
-    number: num
-  });
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m1.rows, m1.cols, kernel(m1.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return a[this.thread.x][this.thread.y] * this.constants.number;
+    })
+    .setOutput([m1.rows, m1.cols])
+    .setConstants({
+      number: num,
+    });
+   return new Matrix(m1.rows, m1.cols, kernel(m1.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var transpose = function transpose(m) {
-  var kernel = gpu.createKernel(function (a) {
-    // @ts-ignore
-    return a[this.thread.y][this.thread.x];
-  }).setOutput([m.cols, m.rows]);
-  return new _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix(m.cols, m.rows, kernel(m.data));
+  /*const kernel = gpu
+    .createKernel(function (a) {
+      // @ts-ignore
+      return a[this.thread.y][this.thread.x];
+    })
+    .setOutput([m.cols, m.rows]);
+   return new Matrix(m.cols, m.rows, kernel(m.data) as number[][]);*/
+  return _Math_Matrix__WEBPACK_IMPORTED_MODULE_1__.Matrix.from([[]]);
 };
 var ComputationGPU = /*#__PURE__*/function (_AbstractComputation) {
   _inherits(ComputationGPU, _AbstractComputation);
@@ -4125,7 +4211,7 @@ var MiniBatchTrainer = /*#__PURE__*/function (_AbstractTrainer) {
           var input = inputDataset.getBatch(offset, this.batchSize);
           var output = outputDataset.getBatch(offset, this.batchSize);
           var predictions = this.network.forward(input.data);
-          this.network.backward(input.data, output.data, predictions, this.regularization);
+          this.network.backward(input.data, output.data, this.regularization);
           this.optimizer.setT(++t);
           this.network.getLayers().forEach(function (layer) {
             _this2.optimizer.optimize(layer);

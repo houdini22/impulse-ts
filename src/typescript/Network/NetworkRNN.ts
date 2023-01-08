@@ -1,6 +1,6 @@
 import { Dimension, LayersRNN } from "../types";
 import { Matrix } from "../Math/Matrix";
-import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
+import { DatasetVocabulary } from "impulse-dataset-ts/src/typescript/Dataset/DatasetVocabulary";
 
 export class NetworkRNN {
   private readonly dimensions: Dimension | null = null;

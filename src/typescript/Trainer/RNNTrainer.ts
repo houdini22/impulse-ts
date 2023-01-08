@@ -1,5 +1,5 @@
 import { NetworkRNN } from "../Network";
-import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
+import { DatasetVocabulary } from "impulse-dataset-ts/src/typescript/Dataset/DatasetVocabulary";
 import { Matrix } from "../Math/Matrix";
 
 export class RNNTrainer {

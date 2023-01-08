@@ -1,7 +1,6 @@
 import { AbstractTrainer, CostResult } from "./AbstractTrainer";
-import { Dataset } from "../Dataset";
+import { Dataset } from "impulse-dataset-ts/src/typescript/Dataset/Dataset";
 import { round } from "../Math/math";
-import { Matrix } from "../Math/Matrix";
 
 export class MiniBatchTrainer extends AbstractTrainer {
   batchSize = 100;
@@ -72,7 +71,7 @@ export class MiniBatchTrainer extends AbstractTrainer {
         const output = outputDataset.getBatch(offset, this.batchSize);
         const predictions = this.network.forward(input.data);
 
-        this.network.backward(input.data, output.data, predictions, this.regularization);
+        this.network.backward(input.data, output.data, this.regularization);
 
         this.optimizer.setT(++t);
 
