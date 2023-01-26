@@ -1,6 +1,6 @@
 import { AbstractTrainer } from "./AbstractTrainer";
-import { Dataset } from "../Dataset";
-import { round } from "../Math/math";
+import { Dataset } from "impulse-dataset-ts/src/typescript/Dataset/Dataset";
+import { round } from "impulse-math-ts";
 
 export class Trainer extends AbstractTrainer {
   train(inputDataset: Dataset, outputDataset: Dataset): AbstractTrainer {
@@ -13,9 +13,8 @@ export class Trainer extends AbstractTrainer {
 
     for (let i = 0; i < this.iterations; i += 1) {
       const startTime = new Date().getTime();
-      const predictions = this.network.forward(inputDataset.data);
 
-      this.network.backward(inputDataset.data, outputDataset.data, predictions, this.regularization);
+      this.network.backward(inputDataset.data, outputDataset.data, this.regularization);
 
       this.optimizer.setT(++t);
 

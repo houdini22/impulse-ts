@@ -1,5 +1,5 @@
-import { Matrix } from "../Math/Matrix";
-import { maxpool } from "../Math/math";
+import { Matrix } from "impulse-math-ts";
+import { maxpool } from "impulse-math-ts";
 import { LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
 

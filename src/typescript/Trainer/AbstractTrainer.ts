@@ -1,6 +1,6 @@
 import { Network } from "../Network";
 import { AbstractOptimizer } from "./Optimizer/AbstractOptimizer";
-import { Dataset } from "../Dataset";
+import { Dataset } from "impulse-dataset-ts/src/typescript/Dataset/Dataset";
 
 export interface CostResult {
   cost: number;

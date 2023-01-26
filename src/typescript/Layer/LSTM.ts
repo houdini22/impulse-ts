@@ -1,5 +1,5 @@
-import { Matrix } from "../Math/Matrix";
-import { Dimension, Layers, LayerType } from "../types";
+import { Matrix } from "impulse-math-ts";
+import { Dimension, LayerType } from "../types";
 import { AbstractLayer } from "./AbstractLayer";
 
 export class LSTMLayer extends AbstractLayer {

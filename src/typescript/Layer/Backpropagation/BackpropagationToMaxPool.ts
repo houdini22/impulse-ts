@@ -1,7 +1,7 @@
 import { AbstractBackPropagation } from "./AbstractBackpropagation";
-import { Matrix } from "../../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { Layers, Layers3D } from "../../types";
-import { getComputation } from "../../Computation/utils";
+import { getComputation } from "impulse-math-ts";
 
 export class BackpropagationToMaxPool extends AbstractBackPropagation {
   protected previousLayer: Layers3D | null = null;

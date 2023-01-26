@@ -1,7 +1,6 @@
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import { LayerType } from "../types";
 import { AbstractLayer1D } from "./AbstractLayer1D";
-import { getComputation } from "../Computation";
 
 class PurelinLayer extends AbstractLayer1D {
   activation(m: Matrix): Matrix {

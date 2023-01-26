@@ -1,5 +1,5 @@
 import { Dimension, Layers, LayersLSTM } from "../types";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 
 export class NetworkLSTM {
   private readonly dimensions: Dimension | null = null;

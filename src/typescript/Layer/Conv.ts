@@ -1,8 +1,6 @@
-import { Matrix } from "../Math/Matrix";
-import { im2col } from "../Math/math";
-import { Layers, LayerType } from "../types";
+import { Matrix, im2col, getComputation } from "impulse-math-ts";
+import { LayerType } from "../types";
 import { AbstractLayer3D } from "./AbstractLayer3D";
-import { getComputation } from "../Computation";
 
 export class ConvLayer extends AbstractLayer3D {
   protected numFilters = 32;

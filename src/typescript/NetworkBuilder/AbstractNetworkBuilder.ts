@@ -2,7 +2,7 @@ import { Dimension, Layers } from "../types";
 import { Network, NetworkRNN, Networks } from "../Network";
 import { BackpropagationFactory } from "../Layer/Backpropagation/BackpropagationFactory";
 import { NetworkLSTM } from "../Network/NetworkLSTM";
-import {DatasetVocabulary} from "../Dataset/DatasetVocabulary";
+import { DatasetVocabulary } from "../Dataset/DatasetVocabulary";
 
 abstract class AbstractNetworkBuilder {
   protected dimensions: Dimension | null = null;

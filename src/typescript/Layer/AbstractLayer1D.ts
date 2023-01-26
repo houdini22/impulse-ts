@@ -1,7 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer";
-import { Dimension, Layers } from "../types";
-import { Matrix } from "../Math/Matrix";
-import { getComputation } from "../Computation";
+import { Layers } from "../types";
+import { Matrix } from "impulse-math-ts";
 
 abstract class AbstractLayer1D extends AbstractLayer {
   protected depth = 1;
@@ -43,7 +42,7 @@ abstract class AbstractLayer1D extends AbstractLayer {
     this.b = this.b.setRandom(this.previousLayer ? (this.previousLayer.getHeight() as number) : this.getHeight());
 
     this.gW.resize(this.getHeight(), this.getWidth());
-    this.gW = this.W.setZeros();
+    this.gW = this.gW.setZeros();
 
     this.gb.resize(this.getHeight(), 1);
     this.gb = this.gb.setZeros();

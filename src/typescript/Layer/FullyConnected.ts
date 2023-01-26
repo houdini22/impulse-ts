@@ -1,8 +1,5 @@
 import { Dimension, LayerType } from "../types";
 import { ConvLayer } from "./Conv";
-import { Matrix } from "../Math/Matrix";
-import { im2col } from "../Math/math";
-import { getComputation } from "../Computation";
 
 class FullyConnectedLayer extends ConvLayer {
   transition(previousLayer: FullyConnectedLayer): FullyConnectedLayer {

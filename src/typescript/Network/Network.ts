@@ -1,7 +1,6 @@
 import { Dimension, Layers } from "../types";
-import { Matrix } from "../Math/Matrix";
+import { Matrix } from "impulse-math-ts";
 import * as fs from "fs";
-import { getComputation } from "../Computation";
 
 class Network {
   private readonly dimensions: Dimension | null = null;
@@ -33,8 +32,9 @@ class Network {
     return output;
   }
 
-  backward(X: Matrix, Y: Matrix, predictions: Matrix, regularization: number): void {
+  backward(X: Matrix, Y: Matrix, regularization: number): void {
     const m = X.cols;
+    const predictions = this.forward(X);
     //let sigma = Y.divide(predictions).multiply(-1).subtract(Y.minusOne().divide(predictions.minusOne()));
     let sigma = predictions.subtract(Y);
 
