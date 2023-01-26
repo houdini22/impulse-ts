@@ -1,15 +1,22 @@
 import { Dimension, Layers } from "../types";
-import { Network } from "../Network";
+import { Network, NetworkRNN, Networks } from "../Network";
 import { BackpropagationFactory } from "../Layer/Backpropagation/BackpropagationFactory";
+import { NetworkLSTM } from "../Network/NetworkLSTM";
 
 abstract class AbstractNetworkBuilder {
   protected dimensions: Dimension | null = null;
   protected lastLayer: Layers | null = null;
-  protected network: Network | null = null;
+  protected network: Networks | null = null;
 
-  constructor(dimension: Dimension) {
+  constructor(dimension: Dimension, type = "DNN") {
     this.dimensions = dimension;
-    this.network = new Network(dimension);
+    if (type === "DNN") {
+      this.network = new Network(dimension);
+    } else if (type === "RNN") {
+      this.network = new NetworkRNN(dimension);
+    } else if (type === "LSTM") {
+      this.network = new NetworkLSTM(dimension);
+    }
   }
 
   createLayer(layerClass: Layers, callback: (layer: Layers) => void | null = null): AbstractNetworkBuilder {
@@ -36,7 +43,7 @@ abstract class AbstractNetworkBuilder {
     return this;
   }
 
-  getNetwork(): Network | null {
+  getNetwork(): Networks | null {
     return this.network;
   }
 

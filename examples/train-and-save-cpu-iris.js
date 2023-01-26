@@ -6,7 +6,7 @@ const {
   Trainer: { Trainer },
   Computation: { ComputationCPU, setComputation },
   DatasetBuilderSource: { DatasetBuilderSourceCSV },
-    DatasetModifier: { MinMaxScalingDatasetModifier, MissingDataScalingDatasetModifier, ShuffleDatasetModifier },
+  DatasetModifier: { MinMaxScalingDatasetModifier, MissingDataScalingDatasetModifier, ShuffleDatasetModifier },
 } = require("../dist/impulse-ts.dev");
 const path = require("path");
 

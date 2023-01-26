@@ -9,6 +9,7 @@ import {
   FullyConnectedLayer,
   MaxPoolLayer,
   RecurrentLayer,
+  LSTMLayer,
 } from "./Layer";
 import { Matrix } from "./Math/Matrix";
 import { Dataset as DatasetDataset } from "./Dataset";
@@ -46,6 +47,7 @@ const Layer = {
   MaxPoolLayer,
   FullyConnectedLayer,
   RecurrentLayer,
+  LSTMLayer,
 };
 const DatasetBuilder = {
   DatasetBuilder: DatasetBuilderBuilder,

@@ -1,4 +1,7 @@
 import { Network } from "./Network";
 import { NetworkRNN } from "./NetworkRNN";
+import { NetworkLSTM } from "./NetworkLSTM";
 
-export { Network, NetworkRNN };
+type Networks = Network | NetworkRNN | NetworkLSTM;
+
+export { Network, NetworkRNN, Networks };
