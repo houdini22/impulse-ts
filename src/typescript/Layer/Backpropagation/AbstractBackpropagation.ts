@@ -10,5 +10,11 @@ export abstract class AbstractBackPropagation {
     this.previousLayer = previousLayer;
   }
 
-  abstract propagate(input: Matrix, numberOfExamples: number, regularization: number, layer: Layers, sigma: Matrix): Matrix;
+  abstract propagate(
+    input: Matrix,
+    numberOfExamples: number,
+    regularization: number,
+    layer: Layers,
+    sigma: Matrix
+  ): Matrix;
 }

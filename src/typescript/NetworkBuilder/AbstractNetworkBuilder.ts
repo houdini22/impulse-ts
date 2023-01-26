@@ -2,6 +2,7 @@ import { Dimension, Layers } from "../types";
 import { Network, NetworkRNN, Networks } from "../Network";
 import { BackpropagationFactory } from "../Layer/Backpropagation/BackpropagationFactory";
 import { NetworkLSTM } from "../Network/NetworkLSTM";
+import {DatasetVocabulary} from "../Dataset/DatasetVocabulary";
 
 abstract class AbstractNetworkBuilder {
   protected dimensions: Dimension | null = null;
@@ -10,12 +11,13 @@ abstract class AbstractNetworkBuilder {
 
   constructor(dimension: Dimension, type = "DNN") {
     this.dimensions = dimension;
+
     if (type === "DNN") {
-      this.network = new Network(dimension);
+      this.network = new Network(this.dimensions);
     } else if (type === "RNN") {
-      this.network = new NetworkRNN(dimension);
+      this.network = new NetworkRNN(this.dimensions);
     } else if (type === "LSTM") {
-      this.network = new NetworkLSTM(dimension);
+      this.network = new NetworkLSTM(this.dimensions);
     }
   }
 
