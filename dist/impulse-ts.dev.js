@@ -1084,7 +1084,7 @@ var LSTMLayer = /*#__PURE__*/function (_AbstractLayer) {
       var m = input.cols;
       var ny = this.Wy.rows;
       var na = this.Wy.cols;
-      var concat = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(nx + na, m);
+      var concat = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(nx + na, m).concat(input).concat(this.Wy);
       var ft = this.Wf.dot(concat).add(this.bf).sigmoid();
       var it = this.Wi.dot(concat).add(this.bi).sigmoid();
       var cct = this.Wc.dot(concat).add(this.bc).tanh();
@@ -1445,16 +1445,16 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
       args[_key] = arguments[_key];
     }
     _this = _super.call.apply(_super, [this].concat(args));
-    _defineProperty(_assertThisInitialized(_this), "Wax", null);
-    _defineProperty(_assertThisInitialized(_this), "Waa", null);
-    _defineProperty(_assertThisInitialized(_this), "Wya", null);
-    _defineProperty(_assertThisInitialized(_this), "b", null);
-    _defineProperty(_assertThisInitialized(_this), "by", null);
-    _defineProperty(_assertThisInitialized(_this), "dWax", null);
-    _defineProperty(_assertThisInitialized(_this), "dWaa", null);
-    _defineProperty(_assertThisInitialized(_this), "dWya", null);
-    _defineProperty(_assertThisInitialized(_this), "db", null);
-    _defineProperty(_assertThisInitialized(_this), "dby", null);
+    _defineProperty(_assertThisInitialized(_this), "wX", null);
+    _defineProperty(_assertThisInitialized(_this), "wA", null);
+    _defineProperty(_assertThisInitialized(_this), "wY", null);
+    _defineProperty(_assertThisInitialized(_this), "wB", null);
+    _defineProperty(_assertThisInitialized(_this), "wBY", null);
+    _defineProperty(_assertThisInitialized(_this), "dwX", null);
+    _defineProperty(_assertThisInitialized(_this), "dwA", null);
+    _defineProperty(_assertThisInitialized(_this), "dwY", null);
+    _defineProperty(_assertThisInitialized(_this), "dwB", null);
+    _defineProperty(_assertThisInitialized(_this), "dwBY", null);
     _defineProperty(_assertThisInitialized(_this), "Y", []);
     _defineProperty(_assertThisInitialized(_this), "A", []);
     _defineProperty(_assertThisInitialized(_this), "X", []);
@@ -1466,58 +1466,64 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
   _createClass(RecurrentLayer, [{
     key: "configure",
     value: function configure() {
-      this.Wax = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
-      this.Wax = this.Wax.setRandom(this.getWidth());
-      this.Waa = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
-      this.Waa = this.Waa.setRandom(this.getWidth());
-      this.Wya = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
-      this.Wya = this.Wya.setRandom(this.getDepth());
-      this.b = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
-      this.b = this.b.setRandom(this.getWidth());
-      this.by = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
-      this.by = this.by.setRandom(this.getDepth());
-      this.dWax = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
-      this.dWax = this.dWax.setZeros();
-      this.dWaa = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
-      this.dWaa = this.dWaa.setZeros();
-      this.dWya = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
-      this.dWya = this.dWya.setZeros();
-      this.db = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
-      this.db = this.db.setZeros();
-      this.dby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
-      this.dby = this.dby.setZeros();
+      this.wX = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
+      this.wX = this.wX.setRandom(this.getWidth());
+      this.wA = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
+      this.wA = this.wA.setRandom(this.getWidth());
+      this.wY = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
+      this.wY = this.wY.setRandom(this.getDepth());
+      this.wB = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
+      this.wB = this.wB.setRandom(this.getWidth());
+      this.wBY = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
+      this.wBY = this.wBY.setRandom(this.getDepth());
+      this.dwX = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getHeight());
+      this.dwX = this.dwX.setZeros();
+      this.dwA = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
+      this.dwA = this.dwA.setZeros();
+      this.dwY = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), this.getWidth());
+      this.dwY = this.dwY.setZeros();
+      this.dwB = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), 1);
+      this.dwB = this.dwB.setZeros();
+      this.dwBY = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getDepth(), 1);
+      this.dwBY = this.dwBY.setZeros();
       this.daNext = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.getWidth(), this.getWidth());
       this.daNext = this.daNext.setZeros();
     }
   }, {
     key: "forward",
     value: function forward(x, aPrev) {
-      var aNext = this.Wax.dot(x).add(this.Waa.dot(aPrev).replicate(1, this.getWidth())).add(this.b.replicate(1, x.cols)).tanh();
-      var y = this.Wya.dot(aNext).add(this.by.replicate(1, x.cols)).softmax();
-      this.A.push(aNext);
-      this.X.push(x);
-      this.Y.push(y);
-      this.aPrev = aPrev;
-      return [aNext, y];
+      var aNext = this.wX.dot(x).add(this.wA.dot(aPrev)).add(this.wB.replicate(1, x.cols)).tanh();
+      var y = this.wY.dot(aNext).add(this.wBY.replicate(1, x.cols));
+      var p = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(y.data);
+      for (var row = 0; row < y.rows; row += 1) {
+        for (var col = 0; col < y.cols; col += 1) {
+          p.data[row][col] = Math.exp(p.data[row][col]);
+        }
+      }
+
+      //p = p.divide(y.sum());
+
+      return {
+        aNext: aNext,
+        y: y,
+        p: p
+      };
     }
   }, {
     key: "backward",
-    value: function backward(dy, x, a, aPrev) {
-      var dTanh = a.pow(2).minusOne().multiply(dy);
-      var dWax = dTanh.dot(x.transpose());
-      var dWaa = dTanh.dot(aPrev.transpose());
-      var db = this.db; //.add(dtanh.colwiseSum().divide(dtanh.cols)).setMin(-5).setMax(5);
-      var dby = this.dby; //.replicate(1, this.getWidth()).add(dy).setMin(-5).setMax(5);
-      var dWya = this.dWya; //.add(dy.dot(a.transpose())).setMin(-5).setMax(5);
-      var daNext = this.Waa.transpose().dot(dTanh);
-      return {
-        dWax: dWax,
-        dWya: dWya,
-        dWaa: dWaa,
-        db: db,
-        dby: dby,
-        daNext: daNext
-      };
+    value: function backward(X, Y, A, aNext) {
+      this.dwY = this.dwY.add(Y.dot(aNext));
+      this.dwBY = this.dwBY.add(Y.rowwiseSum().transpose());
+      var dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext));
+      this.dwB = this.dwB.add(dhraw.colwiseSum());
+      this.dwX = this.dwX.add(dhraw.dot(X));
+      this.dwA = this.dwA.add(dhraw.dot(A));
+      this.daNext = this.wA.dot(dhraw);
+      this.dwX = this.dwX.setMin(-5).setMax(5);
+      this.dwY = this.dwY.setMin(-5).setMax(5);
+      this.dwA = this.dwA.setMin(-5).setMax(5);
+      this.dwB = this.dwB.setMin(-5).setMax(5);
+      this.dwBY = this.dwBY.setMin(-5).setMax(5);
     }
   }, {
     key: "activation",
@@ -1581,6 +1587,13 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
     key: "getWidth",
     value: function getWidth() {
       return this.width;
+    }
+  }, {
+    key: "reset",
+    value: function reset(a0) {
+      this.X = [null];
+      this.A = [a0];
+      this.Y = [null];
     }
   }]);
   return RecurrentLayer;
@@ -2154,17 +2167,22 @@ var NetworkRNN = /*#__PURE__*/function () {
     }
   }, {
     key: "loss",
-    value: function loss(vocabularySize, sequenceLength) {
-      return -Math.log(1 / vocabularySize) * sequenceLength;
+    value: function loss(X, Y) {
+      var loss = 0;
+      for (var i = 0; i < Y.rows; i += 1) {
+        var rowMaxCoeffIndex = X.rowMaxCoeffIndex(i);
+        loss += -Math.log(Math.max(0.0000000001, Y.data[i][rowMaxCoeffIndex]));
+      }
+      return loss;
     }
   }, {
     key: "sample",
     value: function sample(dataset) {
-      var Waa = this.layers[0].Waa;
-      var Wax = this.layers[0].Wax;
-      var Wya = this.layers[0].Wya;
-      var by = this.layers[0].by;
-      var b = this.layers[0].b;
+      var Waa = this.layers[0].wA;
+      var Wax = this.layers[0].wX;
+      var Wya = this.layers[0].wY;
+      var by = this.layers[0].wBY;
+      var b = this.layers[0].wB;
       var indices = [];
       var charIndices = dataset.getCharIndices();
       var newLineCharacter = charIndices["\n"];
@@ -2174,7 +2192,7 @@ var NetworkRNN = /*#__PURE__*/function () {
       var idx = -1;
       var counter = 0;
       while (idx != newLineCharacter && counter != 50) {
-        var a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).setMin(1e-3).tanh();
+        var a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
         var z = Wya.dot(a).add(by);
         var y = z.softmax();
         idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
@@ -2198,83 +2216,33 @@ var NetworkRNN = /*#__PURE__*/function () {
     }
   }, {
     key: "forward",
-    value: function forward(X, Y, a0) {
-      var x = [null];
-      var a = [a0];
-      var yHat = [null];
-      var loss = 0;
-      for (var t = 1; t <= X.rows; t += 1) {
-        x[t] = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[1], this.dimensions[0]).setZeros();
-        x[t].data[X.data[t - 1][0]][0] = 1;
-        var _this$layers$0$forwar = this.layers[0].forward(x[t], a[t - 1]),
-          _this$layers$0$forwar2 = _slicedToArray(_this$layers$0$forwar, 2),
-          _a = _this$layers$0$forwar2[0],
-          _yHat = _this$layers$0$forwar2[1];
-        a[t] = _a;
-        yHat[t] = _yHat; //.setMin(1e-5);
-        loss += 0; // todo
-      }
-
-      this.layers[0].A = a;
-      this.layers[0].X = x;
-      this.layers[0].Y = yHat;
-      return [loss];
+    value: function forward(X, aPrev) {
+      var _this$layers$0$forwar = this.layers[0].forward(X.transpose(), aPrev),
+        aNext = _this$layers$0$forwar.aNext,
+        y = _this$layers$0$forwar.y,
+        p = _this$layers$0$forwar.p;
+      return {
+        aNext: aNext,
+        y: y,
+        p: p
+      };
     }
   }, {
     key: "backward",
-    value: function backward(X) {
-      var a = this.layers[0].A;
-      var x = this.layers[0].X;
-      var yHat = this.layers[0].Y;
-      var _dWax = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wax.rows, this.layers[0].Wax.cols).setZeros();
-      var _dWaa = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Waa.rows, this.layers[0].Waa.cols).setZeros();
-      var _dWya = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].Wya.rows, this.layers[0].Wya.cols).setZeros();
-      var _db = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].db.rows, this.layers[0].db.cols).setZeros();
-      var _dby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].dby.rows, this.layers[0].dby.cols).setZeros();
-      var _daNext = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.layers[0].daNext.rows, this.layers[0].daNext.rows).setZeros();
-      for (var t = X.rows - 1; t >= 1; t -= 1) {
-        // loop over examples
-        var dy = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(a[t].data);
-        dy.data[X.data[t - 1][0]][0] -= 1;
-        var _this$layers$0$backwa = this.layers[0].backward(dy, x[t], a[t], a[t - 1]),
-          dWax = _this$layers$0$backwa.dWax,
-          dWya = _this$layers$0$backwa.dWya,
-          dWaa = _this$layers$0$backwa.dWaa,
-          db = _this$layers$0$backwa.db,
-          dby = _this$layers$0$backwa.dby,
-          daNext = _this$layers$0$backwa.daNext;
-        _dWax = _dWax.add(dWax.replicate(1, _dWax.cols));
-        _dWaa = _dWaa.add(dWaa.replicate(1, _dWaa.cols));
-        _dWya = _dWya.add(dWya);
-        _db = _db.add(db);
-        _dby = _dby.add(dby);
-        _daNext = _daNext.add(daNext);
-      }
-
-      // gradient clipping
-      this.layers[0].dWax = _dWax.setMin(-5).setMax(5);
-      this.layers[0].dWaa = _dWaa.setMin(-5).setMax(5);
-      this.layers[0].dWya = _dWya.setMin(-5).setMax(5);
-      this.layers[0].db = _dby.setMin(-5).setMax(5);
-      this.layers[0].dby = _dby.setMin(-5).setMax(5);
-      this.layers[0].daNext = _daNext.setMin(-5).setMax(5);
+    value: function backward(X, Y, A, aNext) {
+      this.layers[0].backward(X, Y, A, aNext);
     }
   }, {
     key: "optimize",
     value: function optimize(X, Y, aPrev, learningRate) {
       var _this$forward = this.forward(X, Y, aPrev),
         _this$forward2 = _slicedToArray(_this$forward, 1),
-        loss = _this$forward2[0];
-      this.backward(X);
-      this.layers[0].Wax = this.layers[0].Wax.add(this.layers[0].dWax.replicate(1, this.getDimensions()[2]).multiply(-learningRate));
-      this.layers[0].Waa = this.layers[0].Waa.add(this.layers[0].dWaa.multiply(-learningRate));
-      this.layers[0].Wya = this.layers[0].Wya.add(this.layers[0].dWya.multiply(-learningRate));
-      //this.layers[0].b = this.layers[0].b.add(this.layers[0].db.multiply(-learningRate));
-      //this.layers[0].by = this.layers[0].by.add(
-      //  this.layers[0].dby.multiply(-learningRate).rowwiseSum().divide(this.layers[0].dby.cols).transpose()
-      //);
-
-      return [loss, this.layers[0].A[X.rows - 1]];
+        y = _this$forward2[0];
+      this.backward(X, y);
+      this.layers[0].wX = this.layers[0].wX.add(this.layers[0].dwX.multiply(-learningRate));
+      this.layers[0].wA = this.layers[0].wA.add(this.layers[0].dwA.multiply(-learningRate));
+      this.layers[0].wB = this.layers[0].wB.add(this.layers[0].dwB.multiply(-learningRate));
+      return [0, this.layers[0].A[X.rows - 1]];
     }
   }, {
     key: "getDimensions",
@@ -3320,8 +3288,8 @@ var RNNTrainer = /*#__PURE__*/function () {
   _createClass(RNNTrainer, [{
     key: "train",
     value: function train(dataset) {
-      var loss = this.network.loss(dataset.getVocabularySize(), 7);
-      var _dataset$buildData = dataset.buildData(100),
+      var smoothLoss = -Math.log(1 / dataset.getVocabularySize()) * 100;
+      var _dataset$buildData = dataset.buildData(this.network.getDimensions()[0]),
         _dataset$buildData2 = _slicedToArray(_dataset$buildData, 2),
         X = _dataset$buildData2[0],
         Y = _dataset$buildData2[1];
@@ -3330,21 +3298,44 @@ var RNNTrainer = /*#__PURE__*/function () {
         x = _dataset$vectorizatio2[0],
         y = _dataset$vectorizatio2[1];
       var aPrev = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
+      var hs = {};
+      hs[-1] = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
+      var mWxh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[1]).setZeros();
+      var mWhh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
+      var mWhy = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[1], this.network.getDimensions()[0]).setZeros();
+      var mbh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwB.rows, this.network.layers[0].dwB.cols).setZeros();
+      var mby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwBY.rows, this.network.layers[0].dwBY.cols).setZeros();
       for (var iteration = 0; iteration < this.iterations; iteration += 1) {
-        var index = iteration % x.length;
-        var _this$network$forward = this.network.forward(x[index], y, aPrev),
-          _this$network$forward2 = _slicedToArray(_this$network$forward, 1),
-          _loss = _this$network$forward2[0];
-        loss = _loss;
-        var _this$network$optimiz = this.network.optimize(x[index], y, aPrev, this.learningRate),
-          _this$network$optimiz2 = _slicedToArray(_this$network$optimiz, 2),
-          currentLoss = _this$network$optimiz2[0],
-          _aPrev = _this$network$optimiz2[1];
-        aPrev = _aPrev;
-        loss = loss * 0.999 + currentLoss * 0.001;
-        console.log("Iteration ".concat(iteration + 1, " | Loss: ").concat(loss, " | Sample: ").concat(this.network.sample(dataset).trim()));
+        for (var i = 0; i < X.length; i += 1) {
+          var _this$network$forward = this.network.forward(x[i], aPrev),
+            aNext = _this$network$forward.aNext,
+            _y = _this$network$forward.y;
+          hs[i] = aNext;
+          var dy = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(_y.rows, _y.cols, _y.data);
+          for (var row = 0; row < dy.rows; row += 1) {
+            dy.data[row][x[i].rowMaxCoeffIndex(row)] -= 1;
+          }
+          this.network.backward(x[i], dy, hs[i - 1], aNext);
+          smoothLoss = this.network.loss(x[i], _y);
+          console.log("Example ".concat(i + 1, " | Iteration ").concat(iteration + 1, " | Loss: ").concat(smoothLoss, " | Sample: ").concat(this.network.sample(dataset).trim()));
+        }
+        mWxh = mWxh.add(this.network.layers[0].dwX.pow(2));
+        this.network.layers[0].wX = this.network.layers[0].wX.add(this.network.layers[0].dwX.divide(mWxh.add(1e-8)).multiply(-this.learningRate));
+        mWhh = mWhh.add(this.network.layers[0].dwA.pow(2));
+        this.network.layers[0].wA = this.network.layers[0].wA.add(this.network.layers[0].dwA.divide(mWhh.add(1e-8)).multiply(-this.learningRate));
+        mWhy = mWhy.add(this.network.layers[0].dwY.pow(2));
+        this.network.layers[0].wY = this.network.layers[0].wY.add(this.network.layers[0].dwY.divide(mWhy.add(1e-8)).multiply(-this.learningRate));
+        mbh = mbh.add(this.network.layers[0].dwB.pow(2));
+        this.network.layers[0].wB = this.network.layers[0].wB.add(this.network.layers[0].dwB.divide(mbh.add(1e-8)).multiply(-this.learningRate));
+        mby = mby.add(this.network.layers[0].dwBY.pow(2));
+        this.network.layers[0].wBY = this.network.layers[0].wBY.add(this.network.layers[0].dwBY.divide(mby.add(1e-8)).multiply(-this.learningRate));
+        this.network.layers[0].dwX = this.network.layers[0].dwX.setMin(-5).setMax(5);
+        this.network.layers[0].dwY = this.network.layers[0].dwY.setMin(-5).setMax(5);
+        this.network.layers[0].dwA = this.network.layers[0].dwA.setMin(-5).setMax(5);
+        this.network.layers[0].dwB = this.network.layers[0].dwB.setMin(-5).setMax(5);
+        this.network.layers[0].dwBY = this.network.layers[0].dwBY.setMin(-5).setMax(5);
       }
-      return [loss];
+      return [smoothLoss];
     }
   }, {
     key: "setIterations",
@@ -3488,9 +3479,9 @@ var LayerType;
 /*!**************************************************************!*\
   !*** ./node_modules/impulse-math-ts/dist/impulse-math-ts.js ***!
   \**************************************************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-(()=>{"use strict";var r={d:(t,o)=>{for(var e in o)r.o(o,e)&&!r.o(t,e)&&Object.defineProperty(t,e,{enumerable:!0,get:o[e]})},o:(r,t)=>Object.prototype.hasOwnProperty.call(r,t),r:r=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(r,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(r,"__esModule",{value:!0})}},t={};function o(r){return o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(r){return typeof r}:function(r){return r&&"function"==typeof Symbol&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r},o(r)}function e(r,t){for(var o=0;o<t.length;o++){var e=t[o];e.enumerable=e.enumerable||!1,e.configurable=!0,"value"in e&&(e.writable=!0),Object.defineProperty(r,n(e.key),e)}}function n(r){var t=function(r,t){if("object"!==o(r)||null===r)return r;var e=r[Symbol.toPrimitive];if(void 0!==e){var n=e.call(r,"string");if("object"!==o(n))return n;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(r)}(r);return"symbol"===o(t)?t:String(t)}r.r(t),r.d(t,{ComputationCPU:()=>W,ComputationGPU:()=>f,Matrix:()=>H,getComputation:()=>Z,im2col:()=>J,maxpool:()=>Q,round:()=>V,setComputation:()=>I});var a=function(){function r(){var t,o,e;!function(r,t){if(!(r instanceof t))throw new TypeError("Cannot call a class as a function")}(this,r),t=this,e={},(o=n(o="kernels"))in t?Object.defineProperty(t,o,{value:e,enumerable:!0,configurable:!0,writable:!0}):t[o]=e}var t,o;return t=r,o=[{key:"addKernel",value:function(r,t){return this.kernels[r]=t,this}},{key:"execute",value:function(r){if(!this.kernels[r])throw new Error("Kernel '".concat(r,"' not exists."));for(var t=arguments.length,o=new Array(t>1?t-1:0),e=1;e<t;e++)o[e-1]=arguments[e];return this.kernels[r].apply(null,o)}}],o&&e(t.prototype,o),Object.defineProperty(t,"prototype",{writable:!1}),r}();function s(r){return s="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(r){return typeof r}:function(r){return r&&"function"==typeof Symbol&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r},s(r)}function i(r,t){return i=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(r,t){return r.__proto__=t,r},i(r,t)}function c(r,t){if(t&&("object"===s(t)||"function"==typeof t))return t;if(void 0!==t)throw new TypeError("Derived constructors may only return object or undefined");return function(r){if(void 0===r)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return r}(r)}function u(r){return u=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(r){return r.__proto__||Object.getPrototypeOf(r)},u(r)}var f=function(r){!function(r,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");r.prototype=Object.create(t&&t.prototype,{constructor:{value:r,writable:!0,configurable:!0}}),Object.defineProperty(r,"prototype",{writable:!1}),t&&i(r,t)}(a,r);var t,o,e,n=(o=a,e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(r){return!1}}(),function(){var r,t=u(o);if(e){var n=u(this).constructor;r=Reflect.construct(t,arguments,n)}else r=t.apply(this,arguments);return c(this,r)});function a(){return function(r,t){if(!(r instanceof t))throw new TypeError("Cannot call a class as a function")}(this,a),n.call(this)}return t=a,Object.defineProperty(t,"prototype",{writable:!1}),t}(a);function l(r){return l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(r){return typeof r}:function(r){return r&&"function"==typeof Symbol&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r},l(r)}function h(r,t){return h=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(r,t){return r.__proto__=t,r},h(r,t)}function v(r,t){if(t&&("object"===l(t)||"function"==typeof t))return t;if(void 0!==t)throw new TypeError("Derived constructors may only return object or undefined");return function(r){if(void 0===r)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return r}(r)}function w(r){return w=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(r){return r.__proto__||Object.getPrototypeOf(r)},w(r)}var d=function(r,t){if(r.rows!==t.rows)throw new Error("ROWS number not equal.");if(r.cols!==t.cols)throw new Error("COLS number not equal.");for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)o[e][n]=r.data[e][n]/t.data[e][n]}return new H(r.rows,t.cols,o)},y=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)o[e][n]=r.data[e][n]/t}return new H(r.rows,r.cols,o)},p=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)t[o][e]=1/(1+Math.exp(-r.data[o][e]))}return H.from(t)},m=function(r,t){for(var o=[],e=0;e<t.rows;e+=1){o[e]=[];for(var n=0;n<t.cols;n+=1)t.data&&(o[e][n]=Math.log(t.data[e][n]+1e-8))}for(var a=_(new H(t.rows,t.cols,o),r),s=[],i=0;i<r.rows;i+=1){s[i]=[];for(var c=0;c<r.cols;c+=1)r.data&&(s[i][c]=1-r.data[i][c])}for(var u=new H(r.rows,r.cols,s),f=[],l=0;l<t.rows;l+=1){f[l]=[];for(var h=0;h<t.cols;h+=1)t.data&&(f[l][h]=Math.log(1-t.data[l][h]+1e-8))}var v=new H(t.rows,t.cols,f);return P(_(C(a,-1),r),_(C(v,-1),q(u,1))).sum()},b=function(r,t){return p(t).multiply(p(t).minusOne())},k=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)t[o][e]=(1-Math.exp(-2*r.data[o][e]))/(1+Math.exp(-2*r.data[o][e]))}return H.from(t)},g=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)r.data&&(t[o][e]=Math.max(0,r.data[o][e]))}return new H(r.rows,r.cols,t)},O=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=t.data[e][n]>0?1:0)}return _(new H(r.rows,r.cols,o),r)},S=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)r.data&&(t[o][e]=Math.log(1+Math.exp(r.data[o][e])))}return new H(r.rows,r.cols,t)},M=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)r.data&&(t[o][e]=Math.pow(r.data[o][e],2))}return new H(r.rows,r.cols,t).sum()},x=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)r.data&&(t[o][e]=Math.sqrt(r.data[o][e]+1e-8))}return new H(r.rows,r.cols,t)},j=function(r,t){if(r.cols!==t.rows)throw new Error("DIMENSIONS error. m1.cols ".concat(r.rows," ").concat(r.cols," !== m2.rows ").concat(t.rows," ").concat(t.cols,"."));for(var o=[],e=0;e<r.rows;++e){o[e]=new Array(t.cols);for(var n=0;n<t.cols;++n){o[e][n]=0;for(var a=0;a<r.cols;++a)r.data&&t.data&&(o[e][n]+=r.data[e][a]*t.data[a][n])}}return new H(r.rows,t.cols,o)},P=function(r,t){if(r.rows!==t.rows)throw new Error("ROWS number not equal.");if(r.cols!==t.cols)throw new Error("COLS number not equal. m1.cols ".concat(r.cols," !== m2.cols ").concat(t.cols));for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&t.data&&(o[e][n]=r.data[e][n]+t.data[e][n])}return new H(r.rows,r.cols,o)},E=function(r,t){if(r.rows!==t.rows)throw new Error("ROWS number not equal: m1.rows ".concat(r.rows," !== m2.rows ").concat(t.rows));if(r.cols!==t.cols)throw new Error("COLS number not equal: m1.cols ".concat(r.cols," !== m2.cols ").concat(t.cols));for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&t.data&&(o[e][n]=r.data[e][n]-t.data[e][n])}return new H(r.rows,r.cols,o)},K=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)o[e][n]=(4*Math.random()-2)*Math.sqrt(2/t)}return new H(r.rows,r.cols,o)},R=function(r){for(var t=[],o=0;o<r.rows;o+=1){t[o]=[];for(var e=0;e<r.cols;e+=1)t[o][e]=0}return new H(r.rows,r.cols,t)},_=function(r,t){if(r.rows!==t.rows)throw new Error("ROWS number not equal: m1.rows ".concat(r.rows," !== m2.rows ").concat(t.rows));if(r.cols!==t.cols)throw new Error("COLS number not equal: m1.cols ".concat(r.cols," !== m2.cols ").concat(t.cols));for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&t.data&&(o[e][n]=r.data[e][n]*t.data[e][n])}return new H(r.rows,r.cols,o)},C=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=r.data[e][n]*t)}return new H(r.rows,r.cols,o)},q=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=t-r.data[e][n])}return new H(r.rows,r.cols,o)},T=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=Math.pow(r.data[e][n],t))}return new H(r.rows,r.cols,o)},A=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=Math.log(r.data[e][n]+1e-8))}return new H(r.rows,r.cols,o)},D=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)r.data&&(o[e][n]=Math.log(1-r.data[e][n]))}return new H(r.rows,r.cols,o)},N=function(r,t){for(var o=[],e=0;e<r.rows;e+=1){o[e]=[];for(var n=0;n<r.cols;n+=1)o[e][n]=r.data[e][n]+t}return new H(r.rows,r.cols,o)},B=function(r){for(var t=[],o=0;o<r.cols;o+=1){t[o]=[];for(var e=0;e<r.rows;e+=1)r.data&&(t[o][e]=r.data[e][o])}return new H(r.cols,r.rows,t)},W=function(r){!function(r,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");r.prototype=Object.create(t&&t.prototype,{constructor:{value:r,writable:!0,configurable:!0}}),Object.defineProperty(r,"prototype",{writable:!1}),t&&h(r,t)}(a,r);var t,o,e,n=(o=a,e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(r){return!1}}(),function(){var r,t=w(o);if(e){var n=w(this).constructor;r=Reflect.construct(t,arguments,n)}else r=t.apply(this,arguments);return v(this,r)});function a(){var r;return function(r,t){if(!(r instanceof t))throw new TypeError("Cannot call a class as a function")}(this,a),(r=n.call(this)).addKernel("multiply",j),r.addKernel("add",P),r.addKernel("subtract",E),r.addKernel("subtractFromNumber",q),r.addKernel("fillRandom",K),r.addKernel("fillZeros",R),r.addKernel("elementWiseMultiply",_),r.addKernel("multiplyNumber",C),r.addKernel("elementWiseDivide",d),r.addKernel("divideNumber",y),r.addKernel("logisticActivation",p),r.addKernel("logisticLoss",m),r.addKernel("logisticBackpropagation",b),r.addKernel("tanhActivation",k),r.addKernel("reluActivation",g),r.addKernel("reluBackpropagation",O),r.addKernel("softplusActivation",S),r.addKernel("penalty",M),r.addKernel("sqrt",x),r.addKernel("transpose",B),r.addKernel("pow",T),r.addKernel("log",A),r.addKernel("logMinusOne",D),r.addKernel("addNumber",N),r}return t=a,Object.defineProperty(t,"prototype",{writable:!1}),t}(a),L=new W,I=function(r){L=r},Z=function(){return L};function z(r){return z="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(r){return typeof r}:function(r){return r&&"function"==typeof Symbol&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r},z(r)}function F(r,t){if(!(r instanceof t))throw new TypeError("Cannot call a class as a function")}function U(r,t){for(var o=0;o<t.length;o++){var e=t[o];e.enumerable=e.enumerable||!1,e.configurable=!0,"value"in e&&(e.writable=!0),Object.defineProperty(r,$(e.key),e)}}function G(r,t,o){return(t=$(t))in r?Object.defineProperty(r,t,{value:o,enumerable:!0,configurable:!0,writable:!0}):r[t]=o,r}function $(r){var t=function(r,t){if("object"!==z(r)||null===r)return r;var o=r[Symbol.toPrimitive];if(void 0!==o){var e=o.call(r,"string");if("object"!==z(e))return e;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(r)}(r);return"symbol"===z(t)?t:String(t)}var H=function(){function r(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,e=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;F(this,r),G(this,"rows",0),G(this,"cols",0),G(this,"data",null),this.resize(t,o),e&&this.generateData(e)}var t,o,e;return t=r,o=[{key:"resize",value:function(r,t){this.rows=r,this.cols=t,this.data=new Array(this.rows);for(var o=0;o<this.rows;o+=1)this.data[o]=new Array(this.cols);return this}},{key:"generateData",value:function(r){for(var t=[],o=0;o<this.rows;o+=1)t[o]=new Array(this.cols);for(var e=0;e<this.cols;e+=1)for(var n=0;n<this.rows;n+=1)"number"==typeof r[n]?t[n][e]=r[n]:"string"==typeof r[n][e]&&/^[0-9.]+$/.test(String(r[n][e]))?t[n][e]=Number(r[n][e]):t[n][e]=r[n][e];return this.data=t,this}},{key:"sum",value:function(){for(var r=0,t=0;t<this.rows;t+=1)for(var o=0;o<this.cols;o+=1)r+=this.data[t][o];return r}},{key:"colwiseSum",value:function(){for(var t=[],o=this.transpose(),e=0;e<o.rows;e+=1){t[e]=[0];for(var n=0;n<o.cols;n+=1)t[e][0]+=o.data[e][n]}return new r(this.cols,1,t)}},{key:"rowwiseSum",value:function(){for(var t=[[]],o=0;o<this.rows;o+=1){for(var e=0,n=0;n<this.cols;n+=1)e+=this.data[o][n];t[0].push(e)}return new r(1,this.rows,t)}},{key:"flatten",value:function(){for(var r=[],t=0;t<this.rows;t+=1)for(var o=0;o<this.cols;o+=1)r.push(this.data[t][o]);return r}},{key:"replicate",value:function(t,o){if(1===t&&1===this.cols&&o>1){for(var e=[],n=0;n<this.rows;n+=1){e[n]=[];for(var a=0;a<o;a+=1)e[n][a]=this.data[n][0]}return r.from(e)}if(1===o&&1===this.rows&&t>1){for(var s=[],i=0;i<t;i+=1){s[i]=[];for(var c=0;c<this.cols;c+=1)s[i][c]=this.data[0][c]}return r.from(s)}return this}},{key:"transpose",value:function(){return Z().execute("transpose",this)}},{key:"colMaxCoeffIndex",value:function(r){for(var t=-1,o=-1/0,e=0;e<this.rows;e+=1)this.data&&this.data[e][r]>o&&(o=this.data[e][r],t=e);return t}},{key:"rowMaxCoeffIndex",value:function(r){for(var t=-1,o=-1/0,e=0;e<this.cols;e+=1)this.data[r][e]>o&&(o=this.data[r][e],t=e);return t}},{key:"block",value:function(t,o,e,n){for(var a=[],s=t,i=0;s<this.rows&&s<t+e;s+=1,i+=1){a[i]=new Array(n);for(var c=o,u=0;c<this.cols&&c<o+n;c+=1,u+=1)a[i][u]=this.data[s][c]}return new r(e,n,a)}},{key:"col",value:function(t){for(var o=[],e=0;e<this.rows;e+=1)o[e]=[this.data[e][t]];return new r(this.rows,1,o)}},{key:"row",value:function(t){for(var o=[],e=0;e<this.cols;e+=1)o[e]=[this.data[t][e]];return new r(this.cols,1,o)}},{key:"setCol",value:function(r,t){for(var o=0;o<this.rows;o+=1)this.data&&t.data&&(this.data[o][r]=t.data[o][0]);return this}},{key:"sigmoid",value:function(){return this.multiply(-1).exp().add(1).fraction(1)}},{key:"rollToColMatrix",value:function(){for(var t=[],o=0,e=0;e<this.rows;e+=1)for(var n=0;n<this.cols;n+=1)t[o]=[],t[o++][0]=this.data[e][n];return r.from(t)}},{key:"abs",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=Math.abs(this.data[o][e])}return r.from(t)}},{key:"mean",value:function(){for(var r=0,t=this.rows*this.cols,o=0;o<this.rows;o+=1)for(var e=0;e<this.cols;e+=1)r+=this.data[o][e];return r/t}},{key:"max",value:function(){for(var r=-1/0,t=0;t<this.rows;t+=1)for(var o=0;o<this.cols;o+=1)r=Math.max(this.data[t][o],r);return r}},{key:"setMax",value:function(t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.min(this.data[e][n],t)}return r.from(o)}},{key:"setMin",value:function(t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.max(this.data[e][n],t)}return r.from(o)}},{key:"setZeros",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=0}return r.from(t)}},{key:"setOnes",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=1}return r.from(t)}},{key:"setRandom",value:function(){for(var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:1,o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=(4*Math.random()-2)*Math.sqrt(2/t)}return r.from(o)}},{key:"fraction",value:function(){for(var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:1,o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=t/this.data[e][n]}return r.from(o)}},{key:"sqrt",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=Math.sqrt(this.data[o][e]+1e-8)}return r.from(t)}},{key:"dot",value:function(r){return Z().execute("multiply",this,r)}},{key:"multiply",value:function(t){if("number"==typeof t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]*t}return r.from(o)}if(t.rows!==this.rows||this.cols!==t.cols)throw new Error("Dimension error: ".concat(this.shape()," !== ").concat(t.shape()));for(var a=[],s=0;s<this.rows;s+=1){a[s]=[];for(var i=0;i<this.cols;i+=1)a[s][i]=this.data[s][i]*t.data[s][i]}return r.from(a)}},{key:"subtract",value:function(t){if("number"==typeof t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]-t}return r.from(o)}if(this.rows!==t.rows||this.cols!==t.cols)throw new Error("Dimensions error: ".concat(this.rows,", ").concat(this.cols," !== ").concat(t.rows,", ").concat(t.cols));for(var a=[],s=0;s<this.rows;s+=1){a[s]=[];for(var i=0;i<this.cols;i+=1)a[s][i]=this.data[s][i]-t.data[s][i]}return r.from(a)}},{key:"forEach",value:function(t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=t(this.data[e][n])}return r.from(o)}},{key:"shape",value:function(){return[this.rows,this.cols]}},{key:"divide",value:function(t){if("number"==typeof t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]/t}return r.from(o)}if(t.rows!==this.rows||t.cols!==this.cols)throw new Error("Dimensions error (".concat(this.rows,", ").concat(this.cols,") !== (").concat(t.rows,", ").concat(t.cols,")"));for(var a=[],s=0;s<this.rows;s+=1){a[s]=[];for(var i=0;i<this.cols;i+=1)a[s][i]=this.data[s][i]/t.data[s][i]}return r.from(a)}},{key:"minusOne",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=1-this.data[o][e]}return r.from(t)}},{key:"subtractFromNumber",value:function(t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=t-this.data[e][n]}return r.from(o)}},{key:"add",value:function(t){if("number"==typeof t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]+t}return r.from(o)}if(t instanceof r){if(t.rows!==this.rows||t.cols!==this.cols)throw new Error("Dimention error: rows (x: ".concat(this.rows,", y: ").concat(this.cols,") !== (x: ").concat(t.rows,", y: ").concat(t.cols,")"));for(var a=[],s=0;s<this.rows;s+=1){a[s]=[];for(var i=0;i<this.cols;i+=1)a[s][i]=this.data[s][i]+t.data[s][i]}return r.from(a)}return this}},{key:"log",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=Math.log(this.data[o][e]+1e-8)}return r.from(t)}},{key:"tanh",value:function(){return this.exp().subtract(this.multiply(-1).exp()).divide(this.exp().add(this.multiply(-1).exp()))}},{key:"softmax",value:function(){var r=this.max()-1e-8;return this.subtract(r).exp().divide(this.rowwiseSum().replicate(this.cols,1).transpose())}},{key:"exp",value:function(){for(var t=[],o=0;o<this.rows;o+=1){t[o]=[];for(var e=0;e<this.cols;e+=1)t[o][e]=Math.exp(this.data[o][e]+1e-8)}return r.from(t)}},{key:"pow",value:function(t){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.pow(this.data[e][n],t)}return r.from(o)}},{key:"value",value:function(r,t){var o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:void 0;return void 0===o?this.data[r][t]:(this.data[r][t]=o,this)}},{key:"copy",value:function(){return r.from(this.data)}}],e=[{key:"from",value:function(t){var o;return new r(t.length,(null===(o=t[0])||void 0===o?void 0:o.length)||0,t)}}],o&&U(t.prototype,o),e&&U(t,e),Object.defineProperty(t,"prototype",{writable:!1}),r}(),J=function(r,t,o,e,n,a,s,i,c,u){for(var f=0,l=new H(((e-a+2*i)/u+1)*((o-n+2*s)/c+1),a*n*t).setZeros(),h=-s;h+n<=o+s;h+=c)for(var v=-i;v+a<=e+i;v+=u){for(var w=0,d=0;d<t;d++)for(var y=o*e*d,p=0;p<n;p++)for(var m=0;m<a;m++)h+p>=0&&v+m>=0&&v+m<e&&h+p<o&&(l.data[f][w]=r.data[(p+h)*e+v+m+y][0]),w++;f++}return l},Q=function(r,t,o,e,n,a,s,i){for(var c=(e-a)/i+1,u=(o-n)/s+1,f=0,l=new H(c*u*t,1).setZeros(),h=0;h+n<=o;h+=s)for(var v=0;v+a<=e;v+=i){for(var w=0;w<t;w++){for(var d=-1/0,y=o*e*w,p=c*u*w,m=0;m<n;m++)for(var b=0;b<a;b++)d=Math.max(d,r.data[y+(m+h)*e+v+b][0]);l.data[p+f][0]=d}f++}return l},V=function(r,t){return Math.round((r+223e-18)*Math.pow(10,t))/Math.pow(10,t)};module.exports=t})();
+(()=>{var t={382:(t,r,o)=>{t=o.nmd(t);try{process.dlopen(t,__dirname+o(17).sep+o.p+"9e034ce62a57cddc1a2b4486c9983546.node")}catch(t){throw new Error("node-loader:\n"+t)}},17:t=>{"use strict";t.exports=__webpack_require__(/*! path */ "path")}},r={};function o(e){var n=r[e];if(void 0!==n)return n.exports;var i=r[e]={id:e,loaded:!1,exports:{}};return t[e](i,i.exports,o),i.loaded=!0,i.exports}o.d=(t,r)=>{for(var e in r)o.o(r,e)&&!o.o(t,e)&&Object.defineProperty(t,e,{enumerable:!0,get:r[e]})},o.o=(t,r)=>Object.prototype.hasOwnProperty.call(t,r),o.r=t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},o.nmd=t=>(t.paths=[],t.children||(t.children=[]),t),o.p="";var e={};(()=>{"use strict";function t(r){return t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},t(r)}function r(t,r){for(var o=0;o<r.length;o++){var e=r[o];e.enumerable=e.enumerable||!1,e.configurable=!0,"value"in e&&(e.writable=!0),Object.defineProperty(t,n(e.key),e)}}function n(r){var o=function(r,o){if("object"!==t(r)||null===r)return r;var e=r[Symbol.toPrimitive];if(void 0!==e){var n=e.call(r,"string");if("object"!==t(n))return n;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(r)}(r);return"symbol"===t(o)?o:String(o)}o.r(e),o.d(e,{ComputationCPU:()=>b,ComputationMultiCore:()=>h,Matrix:()=>E,getComputation:()=>g,im2col:()=>_,maxpool:()=>C,round:()=>R,setComputation:()=>O});var i=function(){function t(){var r,o,e;!function(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,t),r=this,e={},(o=n(o="kernels"))in r?Object.defineProperty(r,o,{value:e,enumerable:!0,configurable:!0,writable:!0}):r[o]=e}var o,e;return o=t,e=[{key:"addKernel",value:function(t,r){return this.kernels[t]=r,this}},{key:"execute",value:function(t){if(!this.kernels[t])throw new Error("Kernel '".concat(t,"' not exists."));for(var r=arguments.length,o=new Array(r>1?r-1:0),e=1;e<r;e++)o[e-1]=arguments[e];return this.kernels[t].apply(null,o)}}],e&&r(o.prototype,e),Object.defineProperty(o,"prototype",{writable:!1}),t}(),a=o(382),s=function(t,r){console.log((0,a.MatrixMultiply)([1,2,3,4],[4,3,2,1]))};function u(t){return u="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},u(t)}function f(t,r){return f=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,r){return t.__proto__=r,t},f(t,r)}function c(t,r){if(r&&("object"===u(r)||"function"==typeof r))return r;if(void 0!==r)throw new TypeError("Derived constructors may only return object or undefined");return function(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t)}function l(t){return l=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(t){return t.__proto__||Object.getPrototypeOf(t)},l(t)}var h=function(t){!function(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),Object.defineProperty(t,"prototype",{writable:!1}),r&&f(t,r)}(i,t);var r,o,e,n=(o=i,e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(t){return!1}}(),function(){var t,r=l(o);if(e){var n=l(this).constructor;t=Reflect.construct(r,arguments,n)}else t=r.apply(this,arguments);return c(this,t)});function i(){var t;return function(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,i),(t=n.call(this)).addKernel("dot",s),t}return r=i,Object.defineProperty(r,"prototype",{writable:!1}),r}(i),v=function(t,r){if(t.cols!==r.rows)throw new Error("DIMENSIONS error. m1.cols ".concat(t.rows," ").concat(t.cols," !== m2.rows ").concat(r.rows," ").concat(r.cols,"."));for(var o=[],e=0;e<t.rows;++e){o[e]=new Array(r.cols);for(var n=0;n<r.cols;++n){o[e][n]=0;for(var i=0;i<t.cols;++i)t.data&&r.data&&(o[e][n]+=t.data[e][i]*r.data[i][n])}}return new E(t.rows,r.cols,o)},y=function(t){for(var r=[],o=0;o<t.cols;++o){r[o]=new Array(t.rows);for(var e=0;e<t.rows;++e)r[o][e]=t.data[e][o]}return new E(t.cols,t.rows,r)};function p(t){return p="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},p(t)}function d(t,r){return d=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,r){return t.__proto__=r,t},d(t,r)}function w(t,r){if(r&&("object"===p(r)||"function"==typeof r))return r;if(void 0!==r)throw new TypeError("Derived constructors may only return object or undefined");return function(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t)}function m(t){return m=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(t){return t.__proto__||Object.getPrototypeOf(t)},m(t)}var b=function(t){!function(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),Object.defineProperty(t,"prototype",{writable:!1}),r&&d(t,r)}(i,t);var r,o,e,n=(o=i,e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(t){return!1}}(),function(){var t,r=m(o);if(e){var n=m(this).constructor;t=Reflect.construct(r,arguments,n)}else t=r.apply(this,arguments);return w(this,t)});function i(){var t;return function(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,i),(t=n.call(this)).addKernel("dot",v),t.addKernel("transpose",y),t}return r=i,Object.defineProperty(r,"prototype",{writable:!1}),r}(i),k=new b,O=function(t){k=t},g=function(){return k};function x(t){return x="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},x(t)}function S(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}function j(t,r){for(var o=0;o<r.length;o++){var e=r[o];e.enumerable=e.enumerable||!1,e.configurable=!0,"value"in e&&(e.writable=!0),Object.defineProperty(t,M(e.key),e)}}function P(t,r,o){return(r=M(r))in t?Object.defineProperty(t,r,{value:o,enumerable:!0,configurable:!0,writable:!0}):t[r]=o,t}function M(t){var r=function(t,r){if("object"!==x(t)||null===t)return t;var o=t[Symbol.toPrimitive];if(void 0!==o){var e=o.call(t,"string");if("object"!==x(e))return e;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(t)}(t);return"symbol"===x(r)?r:String(r)}var E=function(){function t(){var r=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,e=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;S(this,t),P(this,"rows",0),P(this,"cols",0),P(this,"data",null),this.resize(r,o),e&&this.generateData(e)}var r,o,e;return r=t,o=[{key:"resize",value:function(t,r){this.rows=t,this.cols=r,this.data=new Array(this.rows);for(var o=0;o<this.rows;o+=1)this.data[o]=new Array(this.cols);return this}},{key:"generateData",value:function(t){for(var r=[],o=0;o<this.rows;o+=1)r[o]=new Array(this.cols);for(var e=0;e<this.cols;e+=1)for(var n=0;n<this.rows;n+=1)"number"==typeof t[n]?r[n][e]=t[n]:"string"==typeof t[n][e]&&/^[0-9.]+$/.test(String(t[n][e]))?r[n][e]=Number(t[n][e]):r[n][e]=t[n][e];return this.data=r,this}},{key:"sum",value:function(){for(var t=0,r=0;r<this.rows;r+=1)for(var o=0;o<this.cols;o+=1)t+=this.data[r][o];return t}},{key:"colwiseSum",value:function(){for(var r=[],o=this.transpose(),e=0;e<o.rows;e+=1){r[e]=[0];for(var n=0;n<o.cols;n+=1)r[e][0]+=o.data[e][n]}return new t(this.cols,1,r)}},{key:"rowwiseSum",value:function(){for(var r=[[]],o=0;o<this.rows;o+=1){for(var e=0,n=0;n<this.cols;n+=1)e+=this.data[o][n];r[0].push(e)}return new t(1,this.rows,r)}},{key:"flatten",value:function(){for(var t=[],r=0;r<this.rows;r+=1)for(var o=0;o<this.cols;o+=1)t.push(this.data[r][o]);return t}},{key:"replicate",value:function(r,o){if(1===r&&1===this.cols&&o>1){for(var e=[],n=0;n<this.rows;n+=1){e[n]=[];for(var i=0;i<o;i+=1)e[n][i]=this.data[n][0]}return t.from(e)}if(1===o&&1===this.rows&&r>1){for(var a=[],s=0;s<r;s+=1){a[s]=[];for(var u=0;u<this.cols;u+=1)a[s][u]=this.data[0][u]}return t.from(a)}return this}},{key:"transpose",value:function(){return g().execute("transpose",this)}},{key:"colMaxCoeffIndex",value:function(t){for(var r=-1,o=-1/0,e=0;e<this.rows;e+=1)this.data&&this.data[e][t]>o&&(o=this.data[e][t],r=e);return r}},{key:"rowMaxCoeffIndex",value:function(t){for(var r=-1,o=-1/0,e=0;e<this.cols;e+=1)this.data[t][e]>o&&(o=this.data[t][e],r=e);return r}},{key:"block",value:function(r,o,e,n){for(var i=[],a=r,s=0;a<this.rows&&a<r+e;a+=1,s+=1){i[s]=new Array(n);for(var u=o,f=0;u<this.cols&&u<o+n;u+=1,f+=1)i[s][f]=this.data[a][u]}return new t(e,n,i)}},{key:"col",value:function(r){for(var o=[],e=0;e<this.rows;e+=1)o[e]=[this.data[e][r]];return new t(this.rows,1,o)}},{key:"row",value:function(r){for(var o=[],e=0;e<this.cols;e+=1)o[e]=[this.data[r][e]];return new t(this.cols,1,o)}},{key:"setCol",value:function(t,r){for(var o=0;o<this.rows;o+=1)this.data&&r.data&&(this.data[o][t]=r.data[o][0]);return this}},{key:"sigmoid",value:function(){return this.multiply(-1).exp().add(1).fraction(1)}},{key:"rollToColMatrix",value:function(){for(var r=[],o=0,e=0;e<this.rows;e+=1)for(var n=0;n<this.cols;n+=1)r[o]=[],r[o++][0]=this.data[e][n];return t.from(r)}},{key:"abs",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=Math.abs(this.data[o][e])}return t.from(r)}},{key:"mean",value:function(){for(var t=0,r=this.rows*this.cols,o=0;o<this.rows;o+=1)for(var e=0;e<this.cols;e+=1)t+=this.data[o][e];return t/r}},{key:"max",value:function(){for(var t=-1/0,r=0;r<this.rows;r+=1)for(var o=0;o<this.cols;o+=1)t=Math.max(this.data[r][o],t);return t}},{key:"setMax",value:function(r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.min(this.data[e][n],r)}return t.from(o)}},{key:"setMin",value:function(r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.max(this.data[e][n],r)}return t.from(o)}},{key:"setZeros",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=0}return t.from(r)}},{key:"setOnes",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=1}return t.from(r)}},{key:"setRandom",value:function(){for(var r=arguments.length>0&&void 0!==arguments[0]?arguments[0]:1,o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=(4*Math.random()-2)*Math.sqrt(2/r)}return t.from(o)}},{key:"fraction",value:function(){for(var r=arguments.length>0&&void 0!==arguments[0]?arguments[0]:1,o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=r/this.data[e][n]}return t.from(o)}},{key:"sqrt",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=Math.sqrt(this.data[o][e]+1e-8)}return t.from(r)}},{key:"dot",value:function(t){return g().execute("dot",this,t)}},{key:"multiply",value:function(r){if("number"==typeof r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]*r}return t.from(o)}if(r.rows!==this.rows||this.cols!==r.cols)throw new Error("Dimension error: ".concat(this.shape()," !== ").concat(r.shape()));for(var i=[],a=0;a<this.rows;a+=1){i[a]=[];for(var s=0;s<this.cols;s+=1)i[a][s]=this.data[a][s]*r.data[a][s]}return t.from(i)}},{key:"subtract",value:function(r){if("number"==typeof r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]-r}return t.from(o)}if(this.rows!==r.rows||this.cols!==r.cols)throw new Error("Dimensions error: ".concat(this.rows,", ").concat(this.cols," !== ").concat(r.rows,", ").concat(r.cols));for(var i=[],a=0;a<this.rows;a+=1){i[a]=[];for(var s=0;s<this.cols;s+=1)i[a][s]=this.data[a][s]-r.data[a][s]}return t.from(i)}},{key:"forEach",value:function(r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=r(this.data[e][n])}return t.from(o)}},{key:"shape",value:function(){return[this.rows,this.cols]}},{key:"divide",value:function(r){if("number"==typeof r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]/r}return t.from(o)}if(r.rows!==this.rows||r.cols!==this.cols)throw new Error("Dimensions error (".concat(this.rows,", ").concat(this.cols,") !== (").concat(r.rows,", ").concat(r.cols,")"));for(var i=[],a=0;a<this.rows;a+=1){i[a]=[];for(var s=0;s<this.cols;s+=1)i[a][s]=this.data[a][s]/r.data[a][s]}return t.from(i)}},{key:"minusOne",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=1-this.data[o][e]}return t.from(r)}},{key:"subtractFromNumber",value:function(r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=r-this.data[e][n]}return t.from(o)}},{key:"add",value:function(r){if("number"==typeof r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=this.data[e][n]+r}return t.from(o)}if(r instanceof t){if(r.rows!==this.rows||r.cols!==this.cols)throw new Error("Dimention error: rows (x: ".concat(this.rows,", y: ").concat(this.cols,") !== (x: ").concat(r.rows,", y: ").concat(r.cols,")"));for(var i=[],a=0;a<this.rows;a+=1){i[a]=[];for(var s=0;s<this.cols;s+=1)i[a][s]=this.data[a][s]+r.data[a][s]}return t.from(i)}return this}},{key:"log",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=Math.log(this.data[o][e]+1e-8)}return t.from(r)}},{key:"tanh",value:function(){return this.exp().subtract(this.multiply(-1).exp()).divide(this.exp().add(this.multiply(-1).exp()))}},{key:"softmax",value:function(){var t=this.max()-1e-8;return this.subtract(t).exp().divide(this.rowwiseSum().replicate(this.cols,1).transpose())}},{key:"exp",value:function(){for(var r=[],o=0;o<this.rows;o+=1){r[o]=[];for(var e=0;e<this.cols;e+=1)r[o][e]=Math.exp(this.data[o][e]+1e-8)}return t.from(r)}},{key:"pow",value:function(r){for(var o=[],e=0;e<this.rows;e+=1){o[e]=[];for(var n=0;n<this.cols;n+=1)o[e][n]=Math.pow(this.data[e][n],r)}return t.from(o)}},{key:"value",value:function(t,r){var o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:void 0;return void 0===o?this.data[t][r]:(this.data[t][r]=o,this)}},{key:"copy",value:function(){return t.from(this.data)}},{key:"concat",value:function(t){for(var r=0;r<t.rows;r+=1)this.data.push(t.data[r]);return this}}],e=[{key:"from",value:function(r){var o;return new t(r.length,(null===(o=r[0])||void 0===o?void 0:o.length)||0,r)}}],o&&j(r.prototype,o),e&&j(r,e),Object.defineProperty(r,"prototype",{writable:!1}),t}(),_=function(t,r,o,e,n,i,a,s,u,f){for(var c=0,l=new E(((e-i+2*s)/f+1)*((o-n+2*a)/u+1),i*n*r).setZeros(),h=-a;h+n<=o+a;h+=u)for(var v=-s;v+i<=e+s;v+=f){for(var y=0,p=0;p<r;p++)for(var d=o*e*p,w=0;w<n;w++)for(var m=0;m<i;m++)h+w>=0&&v+m>=0&&v+m<e&&h+w<o&&(l.data[c][y]=t.data[(w+h)*e+v+m+d][0]),y++;c++}return l},C=function(t,r,o,e,n,i,a,s){for(var u=(e-i)/s+1,f=(o-n)/a+1,c=0,l=new E(u*f*r,1).setZeros(),h=0;h+n<=o;h+=a)for(var v=0;v+i<=e;v+=s){for(var y=0;y<r;y++){for(var p=-1/0,d=o*e*y,w=u*f*y,m=0;m<n;m++)for(var b=0;b<i;b++)p=Math.max(p,t.data[d+(m+h)*e+v+b][0]);l.data[w+c][0]=p}c++}return l},R=function(t,r){return Math.round((t+223e-18)*Math.pow(10,r))/Math.pow(10,r)}})(),module.exports=e})();
 //# sourceMappingURL=impulse-math-ts.js.map
 
 /***/ }),
@@ -3503,6 +3494,17 @@ var LayerType;
 
 "use strict";
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");
 
 /***/ })
 

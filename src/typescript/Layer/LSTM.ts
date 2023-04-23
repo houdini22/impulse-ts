@@ -31,7 +31,7 @@ export class LSTMLayer extends AbstractLayer {
     const ny = this.Wy.rows;
     const na = this.Wy.cols;
 
-    const concat = new Matrix(nx + na, m);
+    const concat = new Matrix(nx + na, m).concat(input).concat(this.Wy);
 
     const ft = this.Wf.dot(concat).add(this.bf).sigmoid();
     const it = this.Wi.dot(concat).add(this.bi).sigmoid();

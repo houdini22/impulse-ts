@@ -12,16 +12,16 @@ export interface GradientResult {
 }
 
 export class RecurrentLayer extends AbstractLayer {
-  public Wax: Matrix | null = null;
-  public Waa: Matrix | null = null;
-  public Wya: Matrix | null = null;
-  public b: Matrix | null = null;
-  public by: Matrix | null = null;
-  public dWax: Matrix | null = null;
-  public dWaa: Matrix | null = null;
-  public dWya: Matrix | null = null;
-  public db: Matrix | null = null;
-  public dby: Matrix | null = null;
+  public wX: Matrix | null = null;
+  public wA: Matrix | null = null;
+  public wY: Matrix | null = null;
+  public wB: Matrix | null = null;
+  public wBY: Matrix | null = null;
+  public dwX: Matrix | null = null;
+  public dwA: Matrix | null = null;
+  public dwY: Matrix | null = null;
+  public dwB: Matrix | null = null;
+  public dwBY: Matrix | null = null;
   public Y: Matrix[] = [];
   public A: Matrix[] = [];
   public X: Matrix[] = [];
@@ -30,71 +30,70 @@ export class RecurrentLayer extends AbstractLayer {
   public daNext: Matrix | null = null;
 
   configure(): void {
-    this.Wax = new Matrix(this.getWidth(), this.getHeight());
-    this.Wax = this.Wax.setRandom(this.getWidth());
+    this.wX = new Matrix(this.getWidth(), this.getHeight());
+    this.wX = this.wX.setRandom(this.getWidth());
 
-    this.Waa = new Matrix(this.getWidth(), this.getWidth());
-    this.Waa = this.Waa.setRandom(this.getWidth());
+    this.wA = new Matrix(this.getWidth(), this.getWidth());
+    this.wA = this.wA.setRandom(this.getWidth());
 
-    this.Wya = new Matrix(this.getDepth(), this.getWidth());
-    this.Wya = this.Wya.setRandom(this.getDepth());
+    this.wY = new Matrix(this.getDepth(), this.getWidth());
+    this.wY = this.wY.setRandom(this.getDepth());
 
-    this.b = new Matrix(this.getWidth(), 1);
-    this.b = this.b.setRandom(this.getWidth());
+    this.wB = new Matrix(this.getWidth(), 1);
+    this.wB = this.wB.setRandom(this.getWidth());
 
-    this.by = new Matrix(this.getDepth(), 1);
-    this.by = this.by.setRandom(this.getDepth());
+    this.wBY = new Matrix(this.getDepth(), 1);
+    this.wBY = this.wBY.setRandom(this.getDepth());
 
-    this.dWax = new Matrix(this.getWidth(), this.getHeight());
-    this.dWax = this.dWax.setZeros();
+    this.dwX = new Matrix(this.getWidth(), this.getHeight());
+    this.dwX = this.dwX.setZeros();
 
-    this.dWaa = new Matrix(this.getWidth(), this.getWidth());
-    this.dWaa = this.dWaa.setZeros();
+    this.dwA = new Matrix(this.getWidth(), this.getWidth());
+    this.dwA = this.dwA.setZeros();
 
-    this.dWya = new Matrix(this.getDepth(), this.getWidth());
-    this.dWya = this.dWya.setZeros();
+    this.dwY = new Matrix(this.getDepth(), this.getWidth());
+    this.dwY = this.dwY.setZeros();
 
-    this.db = new Matrix(this.getWidth(), 1);
-    this.db = this.db.setZeros();
+    this.dwB = new Matrix(this.getWidth(), 1);
+    this.dwB = this.dwB.setZeros();
 
-    this.dby = new Matrix(this.getDepth(), 1);
-    this.dby = this.dby.setZeros();
+    this.dwBY = new Matrix(this.getDepth(), 1);
+    this.dwBY = this.dwBY.setZeros();
 
     this.daNext = new Matrix(this.getWidth(), this.getWidth());
     this.daNext = this.daNext.setZeros();
   }
 
-  forward(x: Matrix, aPrev: Matrix): Matrix[] {
-    const aNext = this.Wax.dot(x)
-      .add(this.Waa.dot(aPrev).replicate(1, this.getWidth()))
-      .add(this.b.replicate(1, x.cols))
-      .tanh();
-    const y = this.Wya.dot(aNext).add(this.by.replicate(1, x.cols)).softmax();
-    this.A.push(aNext);
-    this.X.push(x);
-    this.Y.push(y);
-    this.aPrev = aPrev;
-    return [aNext, y];
+  forward(x: Matrix, aPrev: Matrix): Object {
+    const aNext = this.wX.dot(x).add(this.wA.dot(aPrev)).add(this.wB.replicate(1, x.cols)).tanh();
+    const y = this.wY.dot(aNext).add(this.wBY.replicate(1, x.cols));
+    let p = Matrix.from(y.data);
+
+    for (let row = 0; row < y.rows; row += 1) {
+      for (let col = 0; col < y.cols; col += 1) {
+        p.data[row][col] = Math.exp(p.data[row][col]);
+      }
+    }
+
+    //p = p.divide(y.sum());
+
+    return { aNext, y, p };
   }
 
-  backward(dy: Matrix, x: Matrix, a: Matrix, aPrev: Matrix): GradientResult {
-    const dTanh = a.pow(2).minusOne().multiply(dy);
+  backward(X: Matrix, Y: Matrix, A: Matrix, aNext: Matrix): GradientResult {
+    this.dwY = this.dwY.add(Y.dot(aNext));
+    this.dwBY = this.dwBY.add(Y.rowwiseSum().transpose());
+    const dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext));
+    this.dwB = this.dwB.add(dhraw.colwiseSum());
+    this.dwX = this.dwX.add(dhraw.dot(X));
+    this.dwA = this.dwA.add(dhraw.dot(A));
+    this.daNext = this.wA.dot(dhraw);
 
-    const dWax = dTanh.dot(x.transpose());
-    const dWaa = dTanh.dot(aPrev.transpose());
-    const db = this.db; //.add(dtanh.colwiseSum().divide(dtanh.cols)).setMin(-5).setMax(5);
-    const dby = this.dby; //.replicate(1, this.getWidth()).add(dy).setMin(-5).setMax(5);
-    const dWya = this.dWya; //.add(dy.dot(a.transpose())).setMin(-5).setMax(5);
-    const daNext = this.Waa.transpose().dot(dTanh);
-
-    return {
-      dWax,
-      dWya,
-      dWaa,
-      db,
-      dby,
-      daNext,
-    };
+    this.dwX = this.dwX.setMin(-5).setMax(5);
+    this.dwY = this.dwY.setMin(-5).setMax(5);
+    this.dwA = this.dwA.setMin(-5).setMax(5);
+    this.dwB = this.dwB.setMin(-5).setMax(5);
+    this.dwBY = this.dwBY.setMin(-5).setMax(5);
   }
 
   activation(m: Matrix): Matrix {
@@ -147,5 +146,11 @@ export class RecurrentLayer extends AbstractLayer {
 
   getWidth(): number {
     return this.width;
+  }
+
+  reset(a0: Matrix): void {
+    this.X = [null];
+    this.A = [a0];
+    this.Y = [null];
   }
 }
