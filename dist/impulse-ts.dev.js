@@ -1499,12 +1499,12 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
       for (var row = 0; row < y.rows; row += 1) {
         for (var col = 0; col < y.cols; col += 1) {
           p.data[row][col] = Math.exp(p.data[row][col]);
-          loss += -Math.log(p.data[row][col]);
         }
       }
-
-      //p = p.divide(y.sum());
-
+      p = p.divide(y.sum());
+      for (var _row = 0; _row < p.rows; _row += 1) {
+        loss += -Math.log(Math.max(p.data[_row][Y.colMaxCoeffIndex(_row)], 1e-9));
+      }
       return {
         aNext: aNext,
         y: y,
@@ -1517,17 +1517,11 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
     value: function backward(X, Y, A, aNext) {
       this.dwY = this.dwY.add(Y.dot(aNext.transpose()));
       this.dwBY = this.dwBY.add(Y.rowwiseSum().transpose());
-      var dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext)).setMin(-5).setMax(5);
+      var dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext)).setMin(-10e18).setMax(10e18);
       this.dwB = this.dwB.add(dhraw.colwiseSum());
       this.dwX = this.dwX.add(dhraw.dot(X));
       this.dwA = this.dwA.add(dhraw.dot(A.transpose()));
       this.daNext = this.wA.transpose().dot(dhraw);
-
-      /*this.dwX = this.dwX.setMin(-5).setMax(5);
-      this.dwY = this.dwY.setMin(-5).setMax(5);
-      this.dwA = this.dwA.setMin(-5).setMax(5);
-      this.dwB = this.dwB.setMin(-5).setMax(5);
-      this.dwBY = this.dwBY.setMin(-5).setMax(5);*/
     }
   }, {
     key: "activation",
@@ -1591,13 +1585,6 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
     key: "getWidth",
     value: function getWidth() {
       return this.width;
-    }
-  }, {
-    key: "reset",
-    value: function reset(a0) {
-      this.X = [null];
-      this.A = [a0];
-      this.Y = [null];
     }
   }]);
   return RecurrentLayer;
@@ -2135,19 +2122,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! impulse-math-ts */ "./node_modules/impulse-math-ts/dist/impulse-math-ts.js");
 /* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
 
 var NetworkRNN = /*#__PURE__*/function () {
   function NetworkRNN(dimensions) {
@@ -2170,18 +2154,9 @@ var NetworkRNN = /*#__PURE__*/function () {
       return this.layers;
     }
   }, {
-    key: "loss",
-    value: function loss(X, Y) {
-      var loss = 0;
-      for (var i = 0; i < Y.rows; i += 1) {
-        var rowMaxCoeffIndex = X.rowMaxCoeffIndex(i);
-        loss += -Math.log(Math.max(0.0000000001, Y.data[i][rowMaxCoeffIndex]));
-      }
-      return loss;
-    }
-  }, {
     key: "sample",
     value: function sample(dataset) {
+      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 50;
       var Waa = this.layers[0].wA;
       var Wax = this.layers[0].wX;
       var Wya = this.layers[0].wY;
@@ -2195,17 +2170,13 @@ var NetworkRNN = /*#__PURE__*/function () {
       var aPrev = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[0], 1).setRandom(this.dimensions[1]);
       var idx = -1;
       var counter = 0;
-      while (idx != newLineCharacter && counter != 50) {
+      while (idx != newLineCharacter && counter != length) {
         var a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
         var z = Wya.dot(a).add(by);
         var y = z.softmax();
         idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
         x = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.dimensions[1], 1).setZeros();
         var maxIndex = y.colMaxCoeffIndex(0);
-        if (maxIndex === -1) {
-          maxIndex = Math.floor(Math.random() * this.dimensions[1]);
-          idx = charIndices[chars[maxIndex]];
-        }
         x.data[maxIndex][0] = 1;
         indices.push(idx);
         aPrev = a;
@@ -2239,41 +2210,33 @@ var NetworkRNN = /*#__PURE__*/function () {
       this.layers[0].backward(X, Y, A, aNext);
     }
   }, {
-    key: "optimize",
-    value: function optimize(X, Y, aPrev, learningRate) {
-      var _this$forward = this.forward(X, Y, aPrev),
-        _this$forward2 = _slicedToArray(_this$forward, 1),
-        y = _this$forward2[0];
-      this.backward(X, y);
-      this.layers[0].wX = this.layers[0].wX.add(this.layers[0].dwX.multiply(-learningRate));
-      this.layers[0].wA = this.layers[0].wA.add(this.layers[0].dwA.multiply(-learningRate));
-      this.layers[0].wB = this.layers[0].wB.add(this.layers[0].dwB.multiply(-learningRate));
-      return [0, this.layers[0].A[X.rows - 1]];
-    }
-  }, {
     key: "getDimensions",
     value: function getDimensions() {
       return this.dimensions;
     }
-
-    /*save(path: string): Promise<string> {
-      const resultJSON = {
+  }, {
+    key: "save",
+    value: function save(path) {
+      var resultJSON = {
         dimensions: this.dimensions,
-        layers: [],
+        layers: []
       };
-       this.layers.forEach((layer: Layers) => {
+      this.layers.forEach(function (layer) {
         resultJSON.layers.push({
           type: layer.getType(),
           size: layer.getSize(),
           weights: {
-            W: layer.W.data,
-            b: layer.b.data,
-          },
+            wX: layer.wX.data,
+            wA: layer.wA.data,
+            wY: layer.wY.data,
+            wB: layer.wB.data,
+            wBY: layer.wBY.data
+          }
         });
       });
-       const result = JSON.stringify(resultJSON);
-       return new Promise((resolve, reject) => {
-        fs.writeFile(path, result, (err) => {
+      var result = JSON.stringify(resultJSON);
+      return new Promise(function (resolve, reject) {
+        fs__WEBPACK_IMPORTED_MODULE_1__.writeFile(path, result, function (err) {
           if (err) {
             console.error(err);
             reject();
@@ -2281,7 +2244,7 @@ var NetworkRNN = /*#__PURE__*/function () {
           resolve(result);
         });
       });
-    }*/
+    }
   }]);
   return NetworkRNN;
 }();
@@ -2298,10 +2261,13 @@ var NetworkRNN = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Network": () => (/* reexport safe */ _Network__WEBPACK_IMPORTED_MODULE_0__.Network),
+/* harmony export */   "NetworkLSTM": () => (/* reexport safe */ _NetworkLSTM__WEBPACK_IMPORTED_MODULE_2__.NetworkLSTM),
 /* harmony export */   "NetworkRNN": () => (/* reexport safe */ _NetworkRNN__WEBPACK_IMPORTED_MODULE_1__.NetworkRNN)
 /* harmony export */ });
 /* harmony import */ var _Network__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Network */ "./src/typescript/Network/Network.ts");
 /* harmony import */ var _NetworkRNN__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NetworkRNN */ "./src/typescript/Network/NetworkRNN.ts");
+/* harmony import */ var _NetworkLSTM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NetworkLSTM */ "./src/typescript/Network/NetworkLSTM.ts");
+
 
 
 
@@ -3227,6 +3193,94 @@ var OptimizerRMSProp = /*#__PURE__*/function (_AbstractOptimizer) {
 
 /***/ }),
 
+/***/ "./src/typescript/Trainer/Optimizer/OptimizerRNN.ts":
+/*!**********************************************************!*\
+  !*** ./src/typescript/Trainer/Optimizer/OptimizerRNN.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "OptimizerRNN": () => (/* binding */ OptimizerRNN)
+/* harmony export */ });
+/* harmony import */ var _AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractOptimizer */ "./src/typescript/Trainer/Optimizer/AbstractOptimizer.ts");
+/* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! impulse-math-ts */ "./node_modules/impulse-math-ts/dist/impulse-math-ts.js");
+/* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
+var OptimizerRNN = /*#__PURE__*/function (_AbstractOptimizer) {
+  _inherits(OptimizerRNN, _AbstractOptimizer);
+  var _super = _createSuper(OptimizerRNN);
+  function OptimizerRNN(network) {
+    var _this;
+    _classCallCheck(this, OptimizerRNN);
+    _this = _super.call(this);
+    _defineProperty(_assertThisInitialized(_this), "hs", {});
+    _defineProperty(_assertThisInitialized(_this), "ys", {});
+    _defineProperty(_assertThisInitialized(_this), "mWxh", null);
+    _defineProperty(_assertThisInitialized(_this), "mWhh", null);
+    _defineProperty(_assertThisInitialized(_this), "mWhy", null);
+    _defineProperty(_assertThisInitialized(_this), "mbh", null);
+    _defineProperty(_assertThisInitialized(_this), "mby", null);
+    _this.mWxh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__.Matrix(network.getDimensions()[0], network.getDimensions()[1]).setZeros();
+    _this.mWhh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__.Matrix(network.getDimensions()[0], network.getDimensions()[0]).setZeros();
+    _this.mWhy = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__.Matrix(network.getDimensions()[1], network.getDimensions()[0]).setZeros();
+    _this.mbh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__.Matrix(network.getDimensions()[0], 1).setZeros();
+    _this.mby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_1__.Matrix(network.getDimensions()[1], 1).setZeros();
+    return _this;
+  }
+  _createClass(OptimizerRNN, [{
+    key: "optimize",
+    value: function optimize(layer) {
+      layer.dwX = layer.dwX.setMin(-5).setMax(5);
+      layer.dwY = layer.dwY.setMin(-5).setMax(5);
+      layer.dwA = layer.dwA.setMin(-5).setMax(5);
+      layer.dwB = layer.dwB.setMin(-5).setMax(5);
+      layer.dwBY = layer.dwBY.setMin(-5).setMax(5);
+      this.mWxh = this.mWxh.add(layer.dwX.pow(2));
+      layer.wX = layer.wX.add(layer.dwX.divide(this.mWxh.add(1e-8).sqrt()).multiply(-this.learningRate));
+      this.mWhh = this.mWhh.add(layer.dwA.pow(2));
+      layer.wA = layer.wA.add(layer.dwA.divide(this.mWhh.add(1e-8).sqrt()).multiply(-this.learningRate));
+      this.mWhy = this.mWhy.add(layer.dwY.pow(2));
+      layer.wY = layer.wY.add(layer.dwY.divide(this.mWhy.add(1e-8).sqrt()).multiply(-this.learningRate));
+      this.mbh = this.mbh.add(layer.dwB.pow(2));
+      layer.wB = layer.wB.add(layer.dwB.divide(this.mbh.add(1e-8).sqrt()).multiply(-this.learningRate));
+      this.mby = this.mby.add(layer.dwBY.pow(2));
+      layer.wBY = layer.wBY.add(layer.dwBY.divide(this.mby.add(1e-8).sqrt()).multiply(-this.learningRate));
+    }
+  }, {
+    key: "setHS",
+    value: function setHS(hs) {
+      this.hs[this.t] = hs;
+      return this;
+    }
+  }, {
+    key: "setYS",
+    value: function setYS(ys) {
+      this.ys[this.t] = ys;
+      return this;
+    }
+  }]);
+  return OptimizerRNN;
+}(_AbstractOptimizer__WEBPACK_IMPORTED_MODULE_0__.AbstractOptimizer);
+
+/***/ }),
+
 /***/ "./src/typescript/Trainer/Optimizer/index.ts":
 /*!***************************************************!*\
   !*** ./src/typescript/Trainer/Optimizer/index.ts ***!
@@ -3269,6 +3323,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! impulse-math-ts */ "./node_modules/impulse-math-ts/dist/impulse-math-ts.js");
 /* harmony import */ var impulse_math_ts__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Optimizer_OptimizerRNN__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Optimizer/OptimizerRNN */ "./src/typescript/Trainer/Optimizer/OptimizerRNN.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -3283,18 +3338,20 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
+
 var RNNTrainer = /*#__PURE__*/function () {
   function RNNTrainer(network) {
     _classCallCheck(this, RNNTrainer);
     _defineProperty(this, "network", null);
     _defineProperty(this, "iterations", 1000);
     _defineProperty(this, "learningRate", 0.01);
+    _defineProperty(this, "optimizer", null);
     this.network = network;
+    this.optimizer = new _Optimizer_OptimizerRNN__WEBPACK_IMPORTED_MODULE_1__.OptimizerRNN(network).setLearningRate(this.learningRate);
   }
   _createClass(RNNTrainer, [{
     key: "train",
     value: function train(dataset) {
-      var smoothLoss = -Math.log(1 / dataset.getVocabularySize()) * 100;
       var _dataset$buildData = dataset.buildData(this.network.getDimensions()[0]),
         _dataset$buildData2 = _slicedToArray(_dataset$buildData, 2),
         X = _dataset$buildData2[0],
@@ -3303,60 +3360,48 @@ var RNNTrainer = /*#__PURE__*/function () {
         _dataset$vectorizatio2 = _slicedToArray(_dataset$vectorizatio, 2),
         x = _dataset$vectorizatio2[0],
         y = _dataset$vectorizatio2[1];
-      var aPrev = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
-      var hs = {};
-      var ys = {};
-      hs[-1] = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
-      var mWxh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[1]).setZeros();
-      var mWhh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
-      var mWhy = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[1], this.network.getDimensions()[0]).setZeros();
-      var mbh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwB.rows, this.network.layers[0].dwB.cols).setZeros();
-      var mby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwBY.rows, this.network.layers[0].dwBY.cols).setZeros();
+
+      //const hs = {};
+      //const ys = {};
+      this.optimizer.setT(-1).setHS(new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros());
+
+      /*let mWxh = new Matrix(this.network.getDimensions()[0], this.network.getDimensions()[1]).setZeros();
+      let mWhh = new Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
+      let mWhy = new Matrix(this.network.getDimensions()[1], this.network.getDimensions()[0]).setZeros();
+      let mbh = new Matrix(this.network.layers[0].dwB.rows, this.network.layers[0].dwB.cols).setZeros();
+      let mby = new Matrix(this.network.layers[0].dwBY.rows, this.network.layers[0].dwBY.cols).setZeros();*/
+
       for (var iteration = 0; iteration < this.iterations; iteration += 1) {
         var _loss = 0;
         for (var i = 0; i < X.length; i += 1) {
-          var _this$network$forward = this.network.forward(x[i], y[i], aPrev),
+          var _this$network$forward = this.network.forward(x[i], y[i], this.optimizer.hs[i - 1]),
             aNext = _this$network$forward.aNext,
             _y = _this$network$forward.y,
             loss = _this$network$forward.loss;
-          hs[i] = aNext;
-          ys[i] = _y;
+          this.optimizer.setT(i).setHS(aNext).setYS(_y);
+          //hs[i] = aNext;
+          //ys[i] = _y;
+
           if ((i + 1) % 1000 === 0) {
             console.log("FORWARD Example ".concat(i + 1, " | Iteration ").concat(iteration + 1));
           }
           _loss += loss;
         }
-
-        //smoothLoss = smoothLoss * 0.999 + _loss * 0.001;
-        console.log("Loss ".concat(_loss));
+        console.log("Loss ".concat(_loss, " | Iteration: ").concat(iteration));
         for (var _i2 = X.length - 1; _i2 >= 0; _i2 -= 1) {
-          var dy = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(ys[_i2].data);
+          var dy = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(this.optimizer.ys[_i2].data);
           for (var row = 0; row < dy.rows; row += 1) {
             dy.data[row][x[_i2].transpose().rowMaxCoeffIndex(row)] -= 1;
           }
-          this.network.backward(x[_i2], dy, hs[_i2 - 1], hs[_i2]);
+          this.network.backward(x[_i2], dy, this.optimizer.hs[_i2 - 1], this.optimizer.hs[_i2]);
           if ((_i2 + 1) % 1000 === 0) {
             console.log("BACKWARD Example ".concat(_i2 + 1, " | Iteration ").concat(iteration + 1));
           }
         }
-        this.network.layers[0].dwX = this.network.layers[0].dwX.setMin(-5).setMax(5);
-        this.network.layers[0].dwY = this.network.layers[0].dwY.setMin(-5).setMax(5);
-        this.network.layers[0].dwA = this.network.layers[0].dwA.setMin(-5).setMax(5);
-        this.network.layers[0].dwB = this.network.layers[0].dwB.setMin(-5).setMax(5);
-        this.network.layers[0].dwBY = this.network.layers[0].dwBY.setMin(-5).setMax(5);
-        mWxh = mWxh.add(this.network.layers[0].dwX.pow(2));
-        this.network.layers[0].wX = this.network.layers[0].wX.add(this.network.layers[0].dwX.divide(mWxh.add(1e-8).sqrt()).multiply(-this.learningRate));
-        mWhh = mWhh.add(this.network.layers[0].dwA.pow(2));
-        this.network.layers[0].wA = this.network.layers[0].wA.add(this.network.layers[0].dwA.divide(mWhh.add(1e-8).sqrt()).multiply(-this.learningRate));
-        mWhy = mWhy.add(this.network.layers[0].dwY.pow(2));
-        this.network.layers[0].wY = this.network.layers[0].wY.add(this.network.layers[0].dwY.divide(mWhy.add(1e-8).sqrt()).multiply(-this.learningRate));
-        mbh = mbh.add(this.network.layers[0].dwB.pow(2));
-        this.network.layers[0].wB = this.network.layers[0].wB.add(this.network.layers[0].dwB.divide(mbh.add(1e-8).sqrt()).multiply(-this.learningRate));
-        mby = mby.add(this.network.layers[0].dwBY.pow(2));
-        this.network.layers[0].wBY = this.network.layers[0].wBY.add(this.network.layers[0].dwBY.divide(mby.add(1e-8).sqrt()).multiply(-this.learningRate));
+        this.optimizer.optimize(this.network.layers[0]);
         console.log(this.network.sample(dataset).trim());
       }
-      return [smoothLoss];
+      return [0];
     }
   }, {
     key: "setIterations",
@@ -3368,6 +3413,7 @@ var RNNTrainer = /*#__PURE__*/function () {
     key: "setLearningRate",
     value: function setLearningRate(num) {
       this.learningRate = num;
+      this.optimizer.setLearningRate(num);
       return this;
     }
   }]);
@@ -3658,7 +3704,8 @@ var Trainer = {
   RNNTrainer: _Trainer__WEBPACK_IMPORTED_MODULE_4__.RNNTrainer
 };
 var Network = {
-  NetworkRNN: _Network__WEBPACK_IMPORTED_MODULE_5__.NetworkRNN
+  NetworkRNN: _Network__WEBPACK_IMPORTED_MODULE_5__.NetworkRNN,
+  NetworkLSTM: _Network__WEBPACK_IMPORTED_MODULE_5__.NetworkLSTM
 };
 
 })();

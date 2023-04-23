@@ -33,6 +33,7 @@ export type Layers =
   | MaxPoolLayer
   | FullyConnectedLayer
   | PurelinLayer
+  | RecurrentLayer
   | AbstractLayer3D
   | AbstractLayer1D;
 export type Layers1D = LogisticLayer | SoftmaxLayer | TanhLayer | ReluLayer | SoftplusLayer | PurelinLayer;

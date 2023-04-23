@@ -20,7 +20,7 @@ import {
   OptimizerRMSProp,
 } from "./Trainer/Optimizer";
 import { MiniBatchTrainer, Trainer as TrainerTrainer, RNNTrainer } from "./Trainer";
-import { NetworkRNN } from "./Network";
+import { NetworkRNN, NetworkLSTM } from "./Network";
 
 const NetworkBuilder = { NetworkBuilder1D, NetworkBuilder3D };
 const Math = {
@@ -52,6 +52,7 @@ const Trainer = {
 };
 const Network = {
   NetworkRNN,
+  NetworkLSTM,
 };
 
 export { NetworkBuilder, Math, Layer, Optimizer, Trainer, Network };

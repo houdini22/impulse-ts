@@ -4,4 +4,4 @@ import { NetworkLSTM } from "./NetworkLSTM";
 
 type Networks = Network | NetworkRNN | NetworkLSTM;
 
-export { Network, NetworkRNN, Networks };
+export { Network, NetworkRNN, NetworkLSTM, Networks };

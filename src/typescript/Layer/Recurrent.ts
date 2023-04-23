@@ -73,11 +73,14 @@ export class RecurrentLayer extends AbstractLayer {
     for (let row = 0; row < y.rows; row += 1) {
       for (let col = 0; col < y.cols; col += 1) {
         p.data[row][col] = Math.exp(p.data[row][col]);
-        loss += -Math.log(p.data[row][col]);
       }
     }
 
-    //p = p.divide(y.sum());
+    p = p.divide(y.sum());
+
+    for (let row = 0; row < p.rows; row += 1) {
+      loss += -Math.log(Math.max(p.data[row][Y.colMaxCoeffIndex(row)], 1e-9));
+    }
 
     return { aNext, y, p, loss };
   }
@@ -85,17 +88,16 @@ export class RecurrentLayer extends AbstractLayer {
   backward(X: Matrix, Y: Matrix, A: Matrix, aNext: Matrix): GradientResult {
     this.dwY = this.dwY.add(Y.dot(aNext.transpose()));
     this.dwBY = this.dwBY.add(Y.rowwiseSum().transpose());
-    const dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext)).setMin(-5).setMax(5);
+    const dhraw = aNext
+      .pow(2)
+      .minusOne()
+      .multiply(this.wY.transpose().dot(Y).add(this.daNext))
+      .setMin(-10e18)
+      .setMax(10e18);
     this.dwB = this.dwB.add(dhraw.colwiseSum());
     this.dwX = this.dwX.add(dhraw.dot(X));
     this.dwA = this.dwA.add(dhraw.dot(A.transpose()));
     this.daNext = this.wA.transpose().dot(dhraw);
-
-    /*this.dwX = this.dwX.setMin(-5).setMax(5);
-    this.dwY = this.dwY.setMin(-5).setMax(5);
-    this.dwA = this.dwA.setMin(-5).setMax(5);
-    this.dwB = this.dwB.setMin(-5).setMax(5);
-    this.dwBY = this.dwBY.setMin(-5).setMax(5);*/
   }
 
   activation(m: Matrix): Matrix {
@@ -148,11 +150,5 @@ export class RecurrentLayer extends AbstractLayer {
 
   getWidth(): number {
     return this.width;
-  }
-
-  reset(a0: Matrix): void {
-    this.X = [null];
-    this.A = [a0];
-    this.Y = [null];
   }
 }

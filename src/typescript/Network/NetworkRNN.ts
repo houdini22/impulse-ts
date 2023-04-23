@@ -1,6 +1,7 @@
-import { Dimension, LayersRNN } from "../types";
+import { Dimension, LayersRNN, Layers } from "../types";
 import { Matrix } from "impulse-math-ts";
 import { DatasetVocabulary } from "impulse-dataset-ts/src/typescript/Dataset/DatasetVocabulary";
+import * as fs from "fs";
 
 export class NetworkRNN {
   private readonly dimensions: Dimension | null = null;
@@ -22,16 +23,7 @@ export class NetworkRNN {
     return this.layers;
   }
 
-  loss(X: Matrix, Y: Matrix): number {
-    let loss = 0;
-    for (let i = 0; i < Y.rows; i += 1) {
-      const rowMaxCoeffIndex = X.rowMaxCoeffIndex(i);
-      loss += -Math.log(Math.max(0.0000000001, Y.data[i][rowMaxCoeffIndex]));
-    }
-    return loss;
-  }
-
-  sample(dataset: DatasetVocabulary) {
+  sample(dataset: DatasetVocabulary, length = 50) {
     const Waa = this.layers[0].wA;
     const Wax = this.layers[0].wX;
     const Wya = this.layers[0].wY;
@@ -48,18 +40,15 @@ export class NetworkRNN {
     let idx = -1;
     let counter = 0;
 
-    while (idx != newLineCharacter && counter != 50) {
+    while (idx != newLineCharacter && counter != length) {
       const a = Wax.dot(x).add(Waa.dot(aPrev)).add(b).tanh();
       const z = Wya.dot(a).add(by);
       const y = z.softmax();
 
       idx = charIndices[chars[y.colMaxCoeffIndex(0)]];
       x = new Matrix(this.dimensions[1], 1).setZeros();
-      let maxIndex = y.colMaxCoeffIndex(0);
-      if (maxIndex === -1) {
-        maxIndex = Math.floor(Math.random() * this.dimensions[1]);
-        idx = charIndices[chars[maxIndex]];
-      }
+      const maxIndex = y.colMaxCoeffIndex(0);
+
       x.data[maxIndex][0] = 1;
 
       indices.push(idx);
@@ -88,22 +77,11 @@ export class NetworkRNN {
     this.layers[0].backward(X, Y, A, aNext);
   }
 
-  optimize(X: Matrix, Y: Matrix, aPrev: Matrix, learningRate: number): [number, Matrix] {
-    const [y] = this.forward(X, Y, aPrev);
-    this.backward(X, y);
-
-    this.layers[0].wX = this.layers[0].wX.add(this.layers[0].dwX.multiply(-learningRate));
-    this.layers[0].wA = this.layers[0].wA.add(this.layers[0].dwA.multiply(-learningRate));
-    this.layers[0].wB = this.layers[0].wB.add(this.layers[0].dwB.multiply(-learningRate));
-
-    return [0, this.layers[0].A[X.rows - 1]];
-  }
-
   getDimensions(): Dimension {
     return this.dimensions;
   }
 
-  /*save(path: string): Promise<string> {
+  save(path: string): Promise<string> {
     const resultJSON = {
       dimensions: this.dimensions,
       layers: [],
@@ -114,8 +92,11 @@ export class NetworkRNN {
         type: layer.getType(),
         size: layer.getSize(),
         weights: {
-          W: layer.W.data,
-          b: layer.b.data,
+          wX: layer.wX.data,
+          wA: layer.wA.data,
+          wY: layer.wY.data,
+          wB: layer.wB.data,
+          wBY: layer.wBY.data,
         },
       });
     });
@@ -131,5 +112,5 @@ export class NetworkRNN {
         resolve(result);
       });
     });
-  }*/
+  }
 }
