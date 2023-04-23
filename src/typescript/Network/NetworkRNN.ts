@@ -79,9 +79,9 @@ export class NetworkRNN {
       .join("");
   }
 
-  forward(X: Matrix, aPrev: Matrix): Object {
-    const { aNext, y, p } = this.layers[0].forward(X.transpose(), aPrev);
-    return { aNext, y, p };
+  forward(X: Matrix, Y: Matrix, aPrev: Matrix): Object {
+    const { aNext, y, p, loss } = this.layers[0].forward(X.transpose(), Y, aPrev);
+    return { aNext, y, p, loss };
   }
 
   backward(X: Matrix, Y: Matrix, A: Matrix, aNext: Matrix): void {

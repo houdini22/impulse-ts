@@ -1491,13 +1491,15 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
     }
   }, {
     key: "forward",
-    value: function forward(x, aPrev) {
+    value: function forward(x, Y, aPrev) {
       var aNext = this.wX.dot(x).add(this.wA.dot(aPrev)).add(this.wB.replicate(1, x.cols)).tanh();
       var y = this.wY.dot(aNext).add(this.wBY.replicate(1, x.cols));
-      var p = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(y.data);
+      var p = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(y.data).setMin(1e-8);
+      var loss = 0;
       for (var row = 0; row < y.rows; row += 1) {
         for (var col = 0; col < y.cols; col += 1) {
           p.data[row][col] = Math.exp(p.data[row][col]);
+          loss += -Math.log(p.data[row][col]);
         }
       }
 
@@ -1506,24 +1508,26 @@ var RecurrentLayer = /*#__PURE__*/function (_AbstractLayer) {
       return {
         aNext: aNext,
         y: y,
-        p: p
+        p: p,
+        loss: loss
       };
     }
   }, {
     key: "backward",
     value: function backward(X, Y, A, aNext) {
-      this.dwY = this.dwY.add(Y.dot(aNext));
+      this.dwY = this.dwY.add(Y.dot(aNext.transpose()));
       this.dwBY = this.dwBY.add(Y.rowwiseSum().transpose());
-      var dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext));
+      var dhraw = aNext.pow(2).minusOne().multiply(this.wY.transpose().dot(Y).add(this.daNext)).setMin(-5).setMax(5);
       this.dwB = this.dwB.add(dhraw.colwiseSum());
       this.dwX = this.dwX.add(dhraw.dot(X));
-      this.dwA = this.dwA.add(dhraw.dot(A));
-      this.daNext = this.wA.dot(dhraw);
-      this.dwX = this.dwX.setMin(-5).setMax(5);
+      this.dwA = this.dwA.add(dhraw.dot(A.transpose()));
+      this.daNext = this.wA.transpose().dot(dhraw);
+
+      /*this.dwX = this.dwX.setMin(-5).setMax(5);
       this.dwY = this.dwY.setMin(-5).setMax(5);
       this.dwA = this.dwA.setMin(-5).setMax(5);
       this.dwB = this.dwB.setMin(-5).setMax(5);
-      this.dwBY = this.dwBY.setMin(-5).setMax(5);
+      this.dwBY = this.dwBY.setMin(-5).setMax(5);*/
     }
   }, {
     key: "activation",
@@ -2216,15 +2220,17 @@ var NetworkRNN = /*#__PURE__*/function () {
     }
   }, {
     key: "forward",
-    value: function forward(X, aPrev) {
-      var _this$layers$0$forwar = this.layers[0].forward(X.transpose(), aPrev),
+    value: function forward(X, Y, aPrev) {
+      var _this$layers$0$forwar = this.layers[0].forward(X.transpose(), Y, aPrev),
         aNext = _this$layers$0$forwar.aNext,
         y = _this$layers$0$forwar.y,
-        p = _this$layers$0$forwar.p;
+        p = _this$layers$0$forwar.p,
+        loss = _this$layers$0$forwar.loss;
       return {
         aNext: aNext,
         y: y,
-        p: p
+        p: p,
+        loss: loss
       };
     }
   }, {
@@ -3299,6 +3305,7 @@ var RNNTrainer = /*#__PURE__*/function () {
         y = _dataset$vectorizatio2[1];
       var aPrev = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
       var hs = {};
+      var ys = {};
       hs[-1] = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
       var mWxh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[1]).setZeros();
       var mWhh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.getDimensions()[0], this.network.getDimensions()[0]).setZeros();
@@ -3306,34 +3313,48 @@ var RNNTrainer = /*#__PURE__*/function () {
       var mbh = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwB.rows, this.network.layers[0].dwB.cols).setZeros();
       var mby = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(this.network.layers[0].dwBY.rows, this.network.layers[0].dwBY.cols).setZeros();
       for (var iteration = 0; iteration < this.iterations; iteration += 1) {
+        var _loss = 0;
         for (var i = 0; i < X.length; i += 1) {
-          var _this$network$forward = this.network.forward(x[i], aPrev),
+          var _this$network$forward = this.network.forward(x[i], y[i], aPrev),
             aNext = _this$network$forward.aNext,
-            _y = _this$network$forward.y;
+            _y = _this$network$forward.y,
+            loss = _this$network$forward.loss;
           hs[i] = aNext;
-          var dy = new impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix(_y.rows, _y.cols, _y.data);
-          for (var row = 0; row < dy.rows; row += 1) {
-            dy.data[row][x[i].rowMaxCoeffIndex(row)] -= 1;
+          ys[i] = _y;
+          if ((i + 1) % 1000 === 0) {
+            console.log("FORWARD Example ".concat(i + 1, " | Iteration ").concat(iteration + 1));
           }
-          this.network.backward(x[i], dy, hs[i - 1], aNext);
-          smoothLoss = this.network.loss(x[i], _y);
-          console.log("Example ".concat(i + 1, " | Iteration ").concat(iteration + 1, " | Loss: ").concat(smoothLoss, " | Sample: ").concat(this.network.sample(dataset).trim()));
+          _loss += loss;
         }
-        mWxh = mWxh.add(this.network.layers[0].dwX.pow(2));
-        this.network.layers[0].wX = this.network.layers[0].wX.add(this.network.layers[0].dwX.divide(mWxh.add(1e-8)).multiply(-this.learningRate));
-        mWhh = mWhh.add(this.network.layers[0].dwA.pow(2));
-        this.network.layers[0].wA = this.network.layers[0].wA.add(this.network.layers[0].dwA.divide(mWhh.add(1e-8)).multiply(-this.learningRate));
-        mWhy = mWhy.add(this.network.layers[0].dwY.pow(2));
-        this.network.layers[0].wY = this.network.layers[0].wY.add(this.network.layers[0].dwY.divide(mWhy.add(1e-8)).multiply(-this.learningRate));
-        mbh = mbh.add(this.network.layers[0].dwB.pow(2));
-        this.network.layers[0].wB = this.network.layers[0].wB.add(this.network.layers[0].dwB.divide(mbh.add(1e-8)).multiply(-this.learningRate));
-        mby = mby.add(this.network.layers[0].dwBY.pow(2));
-        this.network.layers[0].wBY = this.network.layers[0].wBY.add(this.network.layers[0].dwBY.divide(mby.add(1e-8)).multiply(-this.learningRate));
+
+        //smoothLoss = smoothLoss * 0.999 + _loss * 0.001;
+        console.log("Loss ".concat(_loss));
+        for (var _i2 = X.length - 1; _i2 >= 0; _i2 -= 1) {
+          var dy = impulse_math_ts__WEBPACK_IMPORTED_MODULE_0__.Matrix.from(ys[_i2].data);
+          for (var row = 0; row < dy.rows; row += 1) {
+            dy.data[row][x[_i2].transpose().rowMaxCoeffIndex(row)] -= 1;
+          }
+          this.network.backward(x[_i2], dy, hs[_i2 - 1], hs[_i2]);
+          if ((_i2 + 1) % 1000 === 0) {
+            console.log("BACKWARD Example ".concat(_i2 + 1, " | Iteration ").concat(iteration + 1));
+          }
+        }
         this.network.layers[0].dwX = this.network.layers[0].dwX.setMin(-5).setMax(5);
         this.network.layers[0].dwY = this.network.layers[0].dwY.setMin(-5).setMax(5);
         this.network.layers[0].dwA = this.network.layers[0].dwA.setMin(-5).setMax(5);
         this.network.layers[0].dwB = this.network.layers[0].dwB.setMin(-5).setMax(5);
         this.network.layers[0].dwBY = this.network.layers[0].dwBY.setMin(-5).setMax(5);
+        mWxh = mWxh.add(this.network.layers[0].dwX.pow(2));
+        this.network.layers[0].wX = this.network.layers[0].wX.add(this.network.layers[0].dwX.divide(mWxh.add(1e-8).sqrt()).multiply(-this.learningRate));
+        mWhh = mWhh.add(this.network.layers[0].dwA.pow(2));
+        this.network.layers[0].wA = this.network.layers[0].wA.add(this.network.layers[0].dwA.divide(mWhh.add(1e-8).sqrt()).multiply(-this.learningRate));
+        mWhy = mWhy.add(this.network.layers[0].dwY.pow(2));
+        this.network.layers[0].wY = this.network.layers[0].wY.add(this.network.layers[0].dwY.divide(mWhy.add(1e-8).sqrt()).multiply(-this.learningRate));
+        mbh = mbh.add(this.network.layers[0].dwB.pow(2));
+        this.network.layers[0].wB = this.network.layers[0].wB.add(this.network.layers[0].dwB.divide(mbh.add(1e-8).sqrt()).multiply(-this.learningRate));
+        mby = mby.add(this.network.layers[0].dwBY.pow(2));
+        this.network.layers[0].wBY = this.network.layers[0].wBY.add(this.network.layers[0].dwBY.divide(mby.add(1e-8).sqrt()).multiply(-this.learningRate));
+        console.log(this.network.sample(dataset).trim());
       }
       return [smoothLoss];
     }
